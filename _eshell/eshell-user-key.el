@@ -67,11 +67,11 @@
         )))
 
 ;; * define-key-s
-(add-hook 'eshell-mode-hook (lambda()(def-key-s eshell-mode-map
-          "<tab>"    'user-tab
-          "<return>" 'user-ret
-          "SPC"      'user-spc
-          "C-w"      'user-del
+(add-hook 'eshell-mode-hook (lambda()(def-k-s eshell-mode-map
+          "<tab>"    user-tab
+          "<return>" user-ret
+          "SPC"      user-spc
+          "C-w"      user-del
 )))
 
 

@@ -3,6 +3,22 @@
 (add-to-list 'load-path (expand-file-name "magit/" init-dir))
 (autoload 'magit-status "magit" nil t)
 
+(add-hook 'magit-mode-hook '(lambda () (def-k-s magit-mode-map
+    "M-4" delete-window
+    "M-1" delete-other-windows
+    "M-2" split-window-vertically
+    "M-3" split-window-horizontally
+    "M-0" other-window "M-o" other-window
+    "1" magit-show-level-1-all
+    "2" magit-show-level-2-all
+    "3" magit-show-level-3-all
+    "4" magit-show-level-4-all
+    "C-1" magit-show-level-1
+    "C-2" magit-show-level-2
+    "C-3" magit-show-level-3
+    "C-4" magit-show-level-4
+    )))
+
 (custom-set-faces
  '(magit-diff-add ((t (:foreground "lime green"))))
  '(magit-diff-del ((t (:foreground "tomato"))))

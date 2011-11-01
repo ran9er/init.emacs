@@ -30,6 +30,12 @@
   `(rq-x ',action ',lst))
 
 ;; * define-key-s
+(defun 2list (lst)
+  (if lst
+      (cons
+       (list (car lst)(cadr lst))
+       (2list (cddr lst)))))
+
 (defun define-key-s (keymap key-defs &optional group)
   "(define-key-s 0 '(\"key\" def \"key\" def ...))
 \(define-key-s 0 '(\"a\" \"b\" \"c\" ...) 'self-insert-command)
@@ -40,26 +46,19 @@ See also `def-key-s'."
   (let ((map (cond
               ((eq keymap 0) (current-global-map))
               ((eq keymap 1) (current-local-map))
-              (t keymap))))
-    (while key-defs
-      (let* ((key (pop key-defs))
-             (def (if (eq group nil)(pop key-defs) group)))
-        (define-key
-          map
-          (eval `(kbd ,key))
-          def)
-        ))))
+              (t keymap)))
+        (defs (if (eq group nil)
+                  (2list key-defs)
+                (mapcar (lambda (k) (list k group)) key-defs))))
+    (mapc
+     (lambda (d) (define-key map (eval `(kbd ,(car d))) (cadr d)))
+     defs)))
 
 (defmacro def-k-s (km &rest kd)
   "(def-key-s map \"key\" def \"key\" def ...)
 See also `define-key-s'."
 ;  (list 'define-key-s km `',kd))
   `(define-key-s ,km ',kd))
-
-(defun def-key-s (keymap &rest key-defs)
-  "(def-key-s map \"key\" 'def \"key\" 'def ...)
-See also `define-key-s'."
-  (define-key-s keymap key-defs))
 
 ;; * backward-kill-word-or-kill-region
 (defun backward-kill-word-or-kill-region ()
