@@ -1,0 +1,32 @@
+     (setq default-mode-line-format
+      (quote
+       (#("-" 0 1
+          (help-echo
+           "mouse-1: select window, mouse-2: delete others ..."))
+        mode-line-mule-info
+        mode-line-modified
+        mode-line-frame-identification
+        " "
+        mode-line-buffer-identification
+        " "
+        (:eval (substring
+                (system-name) 0 (string-match "\\..+" (system-name))))
+        ":"
+        default-directory
+        #(" " 0 1
+          (help-echo
+           "mouse-1: select window, mouse-2: delete others ..."))
+        (line-number-mode " Line %l ")
+        global-mode-string
+        #("   %[(" 0 6
+          (help-echo
+           "mouse-1: select window, mouse-2: delete others ..."))
+        (:eval (mode-line-mode-name))
+        mode-line-process
+        minor-mode-alist
+        #("%n" 0 2 (help-echo "mouse-2: widen" local-map (keymap ...)))
+        ")%] "
+        (-3 . "%P")
+        ;;   "-%-"
+        )))
+

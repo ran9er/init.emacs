@@ -1,0 +1,7 @@
+alias ls ls -a
+alias e find-file $1
+alias d dired $1
+alias s switch-to-buffer "*scratch*"
+alias m switch-to-buffer "*Messages*"
+alias I $(expand-file-name init-dir)
+alias S $(expand-file-name sand-box)

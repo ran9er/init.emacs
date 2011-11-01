@@ -1,0 +1,51 @@
+;; -*- encoding: utf-8-unix; -*-
+;; * tabbar
+(require 'tabbar)  
+(tabbar-mode 1)  
+
+;; * face
+(custom-set-variables
+ '(tabbar-separator (quote (0.5)))
+ '(tabbar-use-images nil))
+(defmacro tabbar-customize-faces-macro (foreground background sforeground uforeground ubackground)
+`(custom-set-faces
+ '(tabbar-button ((t (:inherit tabbar-default))))
+ '(tabbar-default ((((class color grayscale) (background dark)) (:inherit variable-pitch :background ,background :foreground ,foreground :height 0.8))))
+ '(tabbar-highlight ((t (:overline ,background))))
+ '(tabbar-selected ((t (:inherit tabbar-default :background "background-color-at-point" :foreground ,sforeground))))
+ '(tabbar-unselected ((t (:inherit tabbar-default :background ,ubackground :foreground ,uforeground)))))
+)
+
+
+(tabbar-customize-faces-macro 
+ "gray50"                               ;foreground
+ "gray15"                               ;background
+ "yellow"                               ;sforeground
+ "gray60"                               ;uforeground
+ "gray25"                               ;ubackground
+ )
+
+;; * keybind
+(def-key-s 0
+  "M-j" 'tabbar-backward-tab
+  "M-k" 'tabbar-forward-tab
+    )
+
+;; * group rules
+(defun tabbar-buffer-groups ()
+  (list
+   (cond
+    ((member (buffer-name)
+             '("*shell*" "*sdcv*" "*scratch*"))
+     "User Buffer")
+    ((string-equal "*eshell*" (substring-buffer-name 0 8))
+     "User Buffer")
+    ((string-equal "*" (substring-buffer-name 0 1))
+     "Emacs Buffer")
+    ((or (string-equal "emacs" (substring-buffer-name 1 6))
+         (string-equal init-dir (substring-buffer-name 0 (length init-dir) t)))
+     "Configuration")
+    (t
+     "User Buffer")
+    )))
+(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)

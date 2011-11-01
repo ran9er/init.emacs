@@ -1,0 +1,2 @@
+(add-to-list 'load-path (expand-file-name "company" init-dir))
+(autoload 'company-mode "company" nil t)

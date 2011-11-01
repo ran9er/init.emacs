@@ -1,0 +1,25 @@
+(add-to-list-p 'load-path (expand-file-name "cedet/" init-dir)
+;              ""
+               "common"
+               "eieio"
+               "semantic"
+               "srecode"
+               "ede"
+)
+
+(rq-x 'require
+        '(
+          cedet
+          eieio
+          semantic
+          srecode
+          ede
+          speedbar
+;         ecb
+))
+
+(global-ede-mode t)
+(semantic-load-enable-code-helpers)
+(global-srecode-minor-mode 1)
+
+;(setq init-stop (time-to-seconds))

@@ -1,0 +1,6 @@
+(add-to-list 'load-path
+	     (setq yasnippet-dir (expand-file-name "yasnippet/" init-dir)))
+
+(require 'yasnippet) ;; not yasnippet-bundle
+    (yas/initialize)
+    (yas/load-directory (expand-file-name "snippets/" yasnippet-dir))

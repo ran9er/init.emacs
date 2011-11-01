@@ -1,0 +1,9 @@
+[color]
+    branch = auto
+    diff = auto
+    status = auto    
+[user]
+    name = ran9er
+    email = 2999am@gmail.com
+[core]
+    editor = emacs
