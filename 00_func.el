@@ -47,7 +47,7 @@ See also `def-key-s'."
               ((eq keymap 0) (current-global-map))
               ((eq keymap 1) (current-local-map))
               (t keymap)))
-        (defs (if (eq group nil)
+        (defs (if (null group)
                   (2list key-defs)
                 (mapcar (lambda (k) (list k group)) key-defs))))
     (mapc
@@ -98,3 +98,23 @@ blank lines."
               (make-string n ?*))
              m n))
 
+;; * test
+(defmacro test-list (n &rest fn)
+  "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)"
+  `(let* ((i ,n)(x nil))
+    (while (> i 0)
+      (setq x (cons (number-to-string i) x))
+      (setq i (- i 1)))
+    (,@fn x)
+    ))
+
+(defmacro test-times (n &rest body)
+  "计算 body 运行 n 次所需时间"
+  `(let ((tm ,n)(beg (time-to-seconds)))
+     (while (> tm 0)
+       (progn ,@body)
+       (setq tm (1- tm)))
+     (- (time-to-seconds) beg)
+     ))
+
+;(test-times 100 (test-list 9 define-key-s (current-local-map)))
