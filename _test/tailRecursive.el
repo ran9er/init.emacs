@@ -13,8 +13,10 @@
   (t2list lst (list (list (car lst)(cadr lst)))))
 
 ;; max-lisp-eval-depth 1000
-(test-list 660 2list)
-(test-list 990 tlist)
+(test-list 662 2list)
+(test-list 992 tlist)
+(tlist (mklst 992))
+(2list (mklst 662))
 (test-times 1000 (test-list 100 2list)) ;=> 1.35
 (test-times 1000 (test-list 100 tlist)) ;=> 1.42
 
@@ -27,5 +29,3 @@
 (test-times 10000 (setq x 1000000)) ;=> 0.016
 (test-times 100 (test-times 100 (setq x 1000000))) ;=> 0.062
 )   ;=> -0.046
-
-

@@ -99,14 +99,17 @@ blank lines."
              m n))
 
 ;; * test
-(defmacro test-list (n &rest fn)
-  "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)"
-  `(let* ((i ,n)(x nil))
+(defun mklst (n)
+  "创建大小为 n 的字符串列表"
+  (let* ((i n)(x nil))
     (while (> i 0)
       (setq x (cons (number-to-string i) x))
-      (setq i (- i 1)))
-    (,@fn x)
-    ))
+      (setq i (1- i)))
+    x))
+
+(defmacro test-list (n &rest fn)
+  "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)"
+  `(,@fn (mklst ,n)))
 
 (defmacro test-times (n &rest body)
   "计算 body 运行 n 次所需时间"
