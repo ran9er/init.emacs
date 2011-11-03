@@ -14,9 +14,8 @@ Not documented
               (file-name-sans-extension from-file)
             (concat from-file "." suffix))))
     (if (file-exists-p  new-file)
-        (progn (delete-file new-file)
-               (rename-file from-file new-file))
-      (rename-file from-file new-file))
+        (delete-file new-file))
+    (rename-file from-file new-file)
     (revert-buffer)
     ))
 
