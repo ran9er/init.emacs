@@ -60,6 +60,11 @@ See also `define-key-s'."
 ;  (list 'define-key-s km `',kd))
   `(define-key-s ,km ',kd))
 
+(defun def-key-s (keymap &rest key-defs)
+  "(def-key-s map \"key\" 'def \"key\" 'def ...)
+See also `define-key-s'."
+  (define-key-s keymap key-defs))
+
 ;; * backward-kill-word-or-kill-region
 (defun backward-kill-word-or-kill-region ()
   (interactive)
