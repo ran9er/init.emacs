@@ -6,15 +6,15 @@
 (setq sand-box (expand-file-name "sandbox/" init-dir))
 (cd sand-box)
 
-;; * 打开特定文件时使用 View 模式
+;; * 打开特定文件操作
 (add-hook 'find-file-hook
           '(lambda ()
-             (when
-                 (and
-                  (file-exists-p (buffer-file-name))                ; 已存在文件
-                  (member (file-name-extension (buffer-name))
-                          '("el" "bak" "txt")))                     ; 匹配扩展名
-               (view-mode)
+             (if (file-exists-p (buffer-file-name))             ; 已存在文件
+                 (if (member (file-name-extension (buffer-name))
+                             '("el" "bak" "txt"))               ; 匹配扩展名
+                     (view-mode))                               ; 启用 view-mode
+               (insert comment-start comment-start
+                       " -*- encoding: utf-8-unix; -*- \n")    ; 插入文件变量
                )))
 
 ;; * max
