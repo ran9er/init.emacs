@@ -2,6 +2,8 @@
 (define-key-s 0 '(
     "M-s M-s"   eshell                              ;;
     "C-x C-x"   eshell                              ;; exchange-point-and-mark
+    "C-x x"     compile
+    "C-x m"     compile                             ;; compose-mail
     "C-x C-j"   ido-execute-extended-command        ;; 
     "C-c C-j"   execute-extended-command            ;; 执行命令 
     "C-o"       set-mark-command                    ;; (open-line) 设置标记
