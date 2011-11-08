@@ -5,7 +5,9 @@
          (common-head '(
                     "-*- encoding: utf-8-unix; -*-" "\n"
                     "Filename: " (if (buffer-file-name)
-                     (file-name-nondirectory (buffer-file-name))) "\n"
+                    (file-name-nondirectory (buffer-file-name))) "\n"
+                    "CreateTime: "
+                    (format-time-string "%Y-%m-%d %a %H:%M:%S" (current-time)) "\n"
                     "Time-stamp: <>" "\n"
                     ))
 ;        (v (apply 'concat (cdr (assoc major-mode head-alist))))
