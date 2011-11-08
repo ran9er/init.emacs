@@ -2,30 +2,32 @@
 (defun insert-doc-head ()
   (interactive)
   (let* ((cmnt (if (string= "" comment-end) comment-start))
+         (common-head '(
+                    "-*- encoding: utf-8-unix; -*-" "\n"
+                    "Filename: " (if (buffer-file-name)
+                     (file-name-nondirectory (buffer-file-name))) "\n"
+                    "Time-stamp: <>" "\n"
+                    ))
 ;        (v (apply 'concat (cdr (assoc major-mode head-alist))))
-         (v (eval `(concat ,@(cdr (assoc major-mode head-alist)))))
+         (v (eval `(concat ,@common-head
+                           ,@(cdr (assoc major-mode head-alist)))))
          (o (apply 'concat 
           (mapcar
-           (lambda(x)(concat comment-start cmnt
+           (lambda(x)(concat comment-start cmnt " "
                              x comment-end "\n"))
            (split-string v "\n")))))
     (insert o)))
 
-(let* ((common-head '(
-                    "-*- encoding: utf-8-emacs-unix; -*-" "\n"
-                    "Filename: " (if (buffer-file-name)
-                     (file-name-nondirectory (buffer-file-name))) "\n"
-                    "Time-stamp: <>"
-                    )))
-  (setq head-alist `(
-                     (c-mode . ,common-head)
+(setq head-alist '(
+;                     (c-mode . ,common-head)
 ;                     (emacs-lisp-mode . ,common-head)
                      (emacs-lisp-mode . ("CreateTime: "
-                                         (number-to-string(time-to-seconds)) "\n"
-                                         ,@common-head))
-                     (lisp-interaction-mode . ,common-head)
-                     (ruby-mode . ,common-head)
-                     )))
+                                         (number-to-string(time-to-seconds))
+                                         ))
+;                     (lisp-interaction-mode . ,common-head)
+;                     (ruby-mode . ,common-head)
+                     ))
+
 ;(insert-doc-head)
 ;;CreateTime: 1320756076.64
 ;;-*- encoding: utf-8-emacs-unix; -*-
