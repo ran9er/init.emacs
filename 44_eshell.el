@@ -35,8 +35,8 @@
            (eldoc-mode)
            (my-auto-pair)
            (enable-theme 'eshell)
-           (make-local-variable 'scroll-margin)
-           (setq scroll-margin 0
+           (eshell-scroll-conservatively)
+           (setq
                  pcomplete-cycle-completions   nil
 ;                 pcomplete-cycle-cutoff-length 4
                  outline-regexp "^[^#$\n]* [#$>]+ "
@@ -57,7 +57,6 @@
 ))
 
 ;; * setting
-
 (setq
       eshell-save-history-on-exit   t
       eshell-history-size           512
@@ -83,6 +82,12 @@
                                         0)
                                        " # " " $ ")))
 )
+(defun eshell-scroll-conservatively () 
+  "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
+  (mapc (lambda(x)(set (make-local-variable (car x))(cdr x)))
+        (cons-list '(scroll-margin            0
+                     scroll-conservatively    10
+                     scroll-step              1))))
 
 ;; * exntension
 (rqx 0

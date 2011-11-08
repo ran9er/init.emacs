@@ -55,20 +55,20 @@
              "b" View-search-last-regexp-backward
              ))
 
-;; (make-local-variable  'vol-map)
-;; (setq vol-map (make-sparse-keymap))
-;; (define-key view-mode-map "o" vol-map)
-(if outline-minor-mode 
-(def-k-s view-mode-map 
-             "M-k" outline-previous-visible-heading
-             "M-j" outline-next-visible-heading
-             "M-p" outline-backward-same-level
-             "M-n" outline-forward-same-level
-             "M-u" outline-up-heading
-             "M-i" hide-body
-             "M-o" show-subtree
-             "SPC" outline-cycle
-             ))
+(if outline-minor-mode (progn
+    (make-local-variable 'vol-map)
+    (setq vol-map (make-sparse-keymap))
+    (define-key view-mode-map "o" vol-map)
+    (def-k-s vol-map
+                 "k" outline-previous-visible-heading
+                 "j" outline-next-visible-heading
+                 "p" outline-backward-same-level
+                 "n" outline-forward-same-level
+                 "u" outline-up-heading
+                 "i" hide-body
+                 "o" show-subtree
+                 "SPC" outline-cycle
+                 )))
 
 ;; * 
 ))

@@ -30,11 +30,11 @@
   `(rq-x ',action ',lst))
 
 ;; * define-key-s
-(defun 2list (lst)
+(defun cons-list (lst)
   (if lst
       (cons
-       (list (car lst)(cadr lst))
-       (2list (cddr lst)))))
+       (cons (car lst)(cadr lst))
+       (cons-list (cddr lst)))))
 
 (defun define-key-s (keymap key-defs &optional group)
   "(define-key-s 0 '(\"key\" def \"key\" def ...))
@@ -48,10 +48,10 @@ See also `def-key-s'."
               ((eq keymap 1) (current-local-map))
               (t keymap)))
         (defs (if (null group)
-                  (2list key-defs)
-                (mapcar (lambda (k) (list k group)) key-defs))))
+                  (cons-list key-defs)
+                (mapcar (lambda (k) (cons k group)) key-defs))))
     (mapc
-     (lambda (d) (define-key map (eval `(kbd ,(car d))) (cadr d)))
+     (lambda (d) (define-key map (eval `(kbd ,(car d))) (cdr d)))
      defs)))
 
 (defmacro def-k-s (km &rest kd)

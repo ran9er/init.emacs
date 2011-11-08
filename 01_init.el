@@ -13,8 +13,10 @@
                  (if (member (file-name-extension (buffer-name))
                              '("el" "bak" "txt"))               ; 匹配扩展名
                      (view-mode))                               ; 启用 view-mode
-               (insert comment-start comment-start
-                       " -*- encoding: utf-8-unix; -*- \n")    ; 插入文件变量
+               (insert " -*- encoding: utf-8-unix; -*- ")       ; 插入文件变量
+               (mark-whole-buffer)
+               (comment-region)
+               (end-of-line)(newline)
                )))
 
 ;; * max
