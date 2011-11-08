@@ -28,7 +28,12 @@
     "C-x g"     magit-status
     "C-x C-r"   recentf-open-files-compl            ;; 最近打开的文件
     "C-."       undo-tree-visualize
-    "C-;"       toggle-comment-region               ;; toggle-comment-region
+    "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
+    "C-x f"     (lambda()                           ;; set-fill-column
+                  (interactive)
+                  (let ((p (point)))
+                    (find-alternate-file (buffer-file-name))
+                    (goto-char p)))
 ))
 
 

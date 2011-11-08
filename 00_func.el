@@ -72,25 +72,6 @@ See also `define-key-s'."
       (call-interactively 'kill-region)
     (call-interactively 'backward-kill-word)))
 
-;; * toggle-comment-region
-(defun toggle-comment-region (beg end &optional n)
-  "Comment the lines in the region if the first non-blank line is
-commented, and conversely, uncomment region. If optional prefix arg
-N is non-nil, then for N positive, add N comment delimiters or for N
-negative, remove N comment delimiters.
-Uses `comment-region' which does not place comment delimiters on
-blank lines."
-  (interactive "r\nP")
-  (if n
-      (comment-region beg end (prefix-numeric-value n))
-    (save-excursion
-      (goto-char beg)
-      (beginning-of-line)
-      ;; skip blank lines
-      (skip-chars-forward " \t\n")
-      (if (looking-at (concat "[ \t]*\\(" (regexp-quote comment-start) "+\\)"))
-          (uncomment-region beg end)
-        (comment-region beg end)))))
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\

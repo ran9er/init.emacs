@@ -13,11 +13,10 @@
                  (if (member (file-name-extension (buffer-name))
                              '("el" "bak" "txt"))               ; 匹配扩展名
                      (view-mode))                               ; 启用 view-mode
-               (insert " -*- encoding: utf-8-unix; -*- ")       ; 插入文件变量
-               (mark-whole-buffer)
-               (comment-region)
-               (end-of-line)(newline)
-               )))
+               (insert "-*- encoding: utf-8-unix; -*-")       ; 插入文件变量
+               (comment-region 0 (point-max))
+               (end-of-line)(newline))
+             ))
 
 ;; * max
 (setq max-lisp-eval-depth   1000        ;lisp最大执行深度   500
