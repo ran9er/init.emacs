@@ -1,7 +1,8 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
-;; Create-time:  <2011-11-09 10:10:41>
-;; Time-stamp:   <2011-11-09 13:47:16>
+;; Create:       <2011-11-09 13:55:46 ran9er>
+;; Time-stamp:   <2011-11-09 13:58:09 ran9er>
+;; Mail:         <2999am@gmail.com>
 
 (defun insert-doc-head ()
   (interactive)
@@ -11,8 +12,9 @@
           "-*- encoding: utf-8-unix; -*-" "\n"
           "File-name:    <" (if (buffer-file-name)
             (file-name-nondirectory (buffer-file-name))) ">\n"
-          "Create-time:  <"
-            (format-time-string "%Y-%m-%d %H:%M:%S" (current-time)) ">\n"
+          "Create:       <"
+            (format-time-string "%Y-%m-%d %H:%M:%S" (current-time)) 
+            " " user-full-name ">\n"
           "Time-stamp:   <>" "\n"
           ))
 ;        (v (apply 'concat (cdr (assoc major-mode head-alist))))
@@ -31,8 +33,7 @@
 (setq head-alist '(
 ;                     (c-mode . ,common-head)
 ;                     (emacs-lisp-mode . ,common-head)
-                   (emacs-lisp-mode . ("Create-by:    <"
-                                       user-full-name "|" 
+                   (emacs-lisp-mode . ("Mail:         <"
                                        user-mail-address ">\n"
                                        ))
 ;                     (lisp-interaction-mode . ,common-head)
