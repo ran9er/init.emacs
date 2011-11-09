@@ -30,6 +30,8 @@
     "C-."       undo-tree-visualize
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
     "C-9"       outside-list
+    "C-8"       down-list
+    "C-7"       (lambda nil (interactive)(up-list -1))
     "C-x f"     (lambda()                           ;; set-fill-column
                   (interactive)
                   (let ((p (point)))

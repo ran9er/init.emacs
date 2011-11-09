@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2011-11-09 13:58:09 ran9er>
+;; Time-stamp:   <2011-11-09 14:09:13 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defun insert-doc-head ()
@@ -11,7 +11,8 @@
          (common-head '(
           "-*- encoding: utf-8-unix; -*-" "\n"
           "File-name:    <" (if (buffer-file-name)
-            (file-name-nondirectory (buffer-file-name))) ">\n"
+            (file-name-nondirectory (buffer-file-name))
+            (buffer-name)) ">\n"
           "Create:       <"
             (format-time-string "%Y-%m-%d %H:%M:%S" (current-time)) 
             " " user-full-name ">\n"
