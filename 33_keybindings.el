@@ -29,6 +29,7 @@
     "C-x C-r"   recentf-open-files-compl            ;; 最近打开的文件
     "C-."       undo-tree-visualize
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
+    "C-9"       outside-list
     "C-x f"     (lambda()                           ;; set-fill-column
                   (interactive)
                   (let ((p (point)))

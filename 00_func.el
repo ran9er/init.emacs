@@ -72,6 +72,23 @@ See also `define-key-s'."
       (call-interactively 'kill-region)
     (call-interactively 'backward-kill-word)))
 
+;; * outside
+(defun outside (s &optional n)
+  (let ((x (if n (prefix-numeric-value n) 1)))
+    (up-list x)
+    (backward-list)
+    (let ((p (point)))
+      (forward-list)
+      (kill-region p (point))
+      (insert-string s)
+      (backward-char)
+      (save-excursion
+        (insert-string " ")
+        (yank)))))
+(defun outside-list (&optional n)
+  (interactive "P")
+  (outside "()" n))
+
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\
