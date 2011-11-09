@@ -6,6 +6,9 @@
 (setq sand-box (expand-file-name "sandbox/" init-dir))
 (cd sand-box)
 
+;; * time-stamp-format
+(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
+
 ;; * 打开特定文件操作
 (add-hook 'find-file-hook
           '(lambda ()

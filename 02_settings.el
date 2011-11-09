@@ -8,10 +8,10 @@
 
 ;; * date
 (setq 	system-time-locale "C"
- 	display-time-format "%Y-%m-%d %a %H:%M:%S"
-;	display-time-day-and-date t
-;	display-time-24hr-format t
-	display-time-interval 1)
+        display-time-format "%Y-%m-%d %a %H:%M:%S"
+        ;; display-time-day-and-date t
+        ;; display-time-24hr-format t
+        display-time-interval 1)
 (display-time-mode t)                ;;显示时间
 
 ;; * 高亮显示成对括号，但不来回弹跳

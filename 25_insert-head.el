@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create-time:  <2011-11-09 10:10:41>
-;; Time-stamp:   <2011-11-09 12:36:56 Administrator>
+;; Time-stamp:   <2011-11-09 13:47:16>
 
 (defun insert-doc-head ()
   (interactive)
@@ -31,8 +31,9 @@
 (setq head-alist '(
 ;                     (c-mode . ,common-head)
 ;                     (emacs-lisp-mode . ,common-head)
-                   (emacs-lisp-mode . ("CreateTime: "
-                                       (number-to-string(time-to-seconds))
+                   (emacs-lisp-mode . ("Create-by:    <"
+                                       user-full-name "|" 
+                                       user-mail-address ">\n"
                                        ))
 ;                     (lisp-interaction-mode . ,common-head)
 ;                     (ruby-mode . ,common-head)
