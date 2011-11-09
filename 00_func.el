@@ -73,21 +73,23 @@ See also `define-key-s'."
     (call-interactively 'backward-kill-word)))
 
 ;; * outside
-(defun outside (s &optional n)
-  (let ((x (if n (prefix-numeric-value n) 1)))
+(defun outside (str bk &optional n)
+  "up list N level, append STR , backward BK char"
+  (let ((x (if n (prefix-numeric-value n) 1))
+        p)
     (up-list x)
+    (setq p (point))
     (backward-list)
-    (let ((p (point)))
-      (forward-list)
-      (kill-region p (point))
-      (insert-string s)
-      (backward-char)
-      (save-excursion
-        (insert-string " ")
-        (yank)))))
+    (kill-region (point) p)
+    (insert-string str)
+    (backward-char bk)
+    (save-excursion
+      (insert-string " ")
+      (yank))))
 (defun outside-list (&optional n)
+  "See also `outside'"
   (interactive "P")
-  (outside "()" n))
+  (outside "()" 1 n))
 
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)

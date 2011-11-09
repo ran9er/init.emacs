@@ -3,7 +3,7 @@
 ;; * tab
 (defun user-tab ()
   (interactive)
-  (let ((input (eshell-get-old-input)))
+  (let ((input (eshell-get-old-input)) len)
     (if (string-equal input "")
         (insert-string "cd ")
       (progn
@@ -12,9 +12,9 @@
           (delete-backward-char 1)
           (insert-string "-0"))
          ((string-match "^cd\\ -[0-9]+$" input)
-          (let ((len (length input)))
-            (delete-backward-char (- len 4))
-            (insert-string (1+ (read(substring input 4 len))))))
+          (setq len (length input))
+          (delete-backward-char (- len 4))
+          (insert-string (1+ (read(substring input 4 len)))))
          (t
           (pcomplete))
          )))))

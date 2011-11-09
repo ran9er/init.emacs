@@ -1,11 +1,12 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create-time:  <2011-11-09 10:10:41>
-;; Time-stamp:   <2011-11-09 11:21:39 Administrator>
+;; Time-stamp:   <2011-11-09 12:36:56 Administrator>
 
 (defun insert-doc-head ()
   (interactive)
-  (let* (;(cmnt (if (string= "" comment-end) comment-start))
+  (let* (beg
+        ;(cmnt (if (string= "" comment-end) comment-start))
          (common-head '(
           "-*- encoding: utf-8-unix; -*-" "\n"
           "File-name:    <" (if (buffer-file-name)
@@ -22,10 +23,10 @@
          ;;   (lambda(x)(concat comment-start cmnt " "
          ;;                     x comment-end "\n"))
          ;;   (split-string v "\n")))))
-    (let ((beg (point)))
-      (insert v)
-      (comment-region beg (point))
-      )))
+    (setq beg (point))
+    (insert v)
+    (comment-region beg (point))
+    ))
 
 (setq head-alist '(
 ;                     (c-mode . ,common-head)
