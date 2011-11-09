@@ -1,11 +1,11 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create-time:  <2011-11-09 10:10:41>
-;; Time-stamp:   <2011-11-09 10:15:28 Administrator>
+;; Time-stamp:   <2011-11-09 11:21:39 Administrator>
 
 (defun insert-doc-head ()
   (interactive)
-  (let* ((cmnt (if (string= "" comment-end) comment-start))
+  (let* (;(cmnt (if (string= "" comment-end) comment-start))
          (common-head '(
           "-*- encoding: utf-8-unix; -*-" "\n"
           "File-name:    <" (if (buffer-file-name)
