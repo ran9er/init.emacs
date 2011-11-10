@@ -29,9 +29,6 @@
     "C-x C-r"   recentf-open-files-compl            ;; 最近打开的文件
     "C-."       undo-tree-visualize
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
-    "C-9"       outside-list
-    "C-8"       down-list
-    "C-7"       (lambda nil (interactive)(up-list -1))
     "C-x f"     (lambda()                           ;; set-fill-column
                   (interactive)
                   (let ((p (point)))
@@ -39,10 +36,12 @@
                     (goto-char p)))
 ))
 
+(def-key-s 0
+    "C-9"       (outside "()" 1)
+    "C-8"       'down-list
+    "C-7"       '(lambda nil (interactive)(up-list -1))
+    )
 
-
-
-      
 ;;F10 显示/隐藏菜单栏 ;; M-x menu-bar-open
 ;;(global-set-key (kbd "F10") 'menu-bar-mode)
 

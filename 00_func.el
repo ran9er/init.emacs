@@ -61,6 +61,7 @@ See also `define-key-s'."
   `(define-key-s ,km ',kd))
 
 (defun def-key-s (keymap &rest key-defs)
+  ;; 对参数求值
   "(def-key-s map \"key\" 'def \"key\" 'def ...)
 See also `define-key-s'."
   (define-key-s keymap key-defs))
@@ -73,27 +74,28 @@ See also `define-key-s'."
     (call-interactively 'backward-kill-word)))
 
 ;; * outside
-(defun outside (str bk &optional n)
+(defmacro outside (str bk)
   "up list N level, append STR , backward BK char"
-  (let ((x (if n (prefix-numeric-value n) 1))
-        p q)
-    (up-list x)
-    (setq p (point))
-    (backward-list)
-    (setq q (point))
-    (while (member (char-to-string (get-byte (1- q))) 
-                   '("'" "`" "," "#"))
-      (setq q (1- q)))
-    (kill-region q p)
-    (insert-string str)
-    (backward-char bk)
-    (save-excursion
-      (insert-string " ")
-      (yank))))
-(defun outside-list (&optional n)
-  "See also `outside'"
-  (interactive "P")
-  (outside "()" 1 n))
+  `(lambda(&optional n)
+    (interactive "P")
+    (let ((x (if n (prefix-numeric-value n) 1))
+          p q)
+      (up-list x)
+      (setq p (point))
+      (backward-list)
+      (setq q (point))
+      (while (member (char-to-string (get-byte (1- q))) 
+                     '("'" "`" "," "#"))
+        (setq q (1- q)))
+      (kill-region q p)
+      (insert-string ,str)
+      (backward-char ,bk)
+      (save-excursion
+        (insert-string " ")
+        (yank)))))
+;(def-key-s 0 "C-9" (outside "()" 1))
+   
+
 
 ;; * shell-command-symbol-to-string
 (defmacro shell-command-symbol-to-string (&rest s)
