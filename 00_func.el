@@ -91,6 +91,11 @@ See also `define-key-s'."
   (interactive "P")
   (outside "()" 1 n))
 
+;; * shell-command-symbol-to-string
+(defmacro shell-command-symbol-to-string (s)
+  `(shell-command-to-string (symbol-name ',s)))
+(defalias 'ss 'shell-command-symbol-to-string)
+
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\

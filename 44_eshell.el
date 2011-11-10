@@ -102,14 +102,23 @@
 ;(set-face-attribute 'eshell-custom-face nil :font "宋体-10")
 
 ;; * func & alias
-(defalias 'ff 'find-file)
-(defalias 'ee (lambda()(find-file (expand-file-name "44_eshell.el" init-dir))))
-(defalias 'aa (lambda()(find-file eshell-aliases-file)))
-(defalias 'rr (lambda()(find-file (expand-file-name "_qref.org" sand-box))))
-(defalias 'ss  'shell-command-to-string)
-(defalias 'img (lambda(img)(propertize "Image" (quote display) (create-image (expand-file-name img)))))
+(defun eshell/ff(file)
+  (find-file file))
 
-(defun eshell/ed (file1 file2)(ediff-files file1 file2))
+(defun eshell/img(img)
+  (propertize "Image" (quote display) (create-image (expand-file-name img))))
+
+(defun eshell/ee ()
+  (find-file (expand-file-name "44_eshell.el" init-dir)))
+
+(defun eshell/aa ()
+  (find-file eshell-aliases-file))
+
+(defun eshell/rr ()
+  (find-file (expand-file-name "_qref.org" sand-box)))
+
+(defun eshell/ed (file1 file2)
+  (ediff-files file1 file2))
 
 ;; ** alternate func
 (defun eshell/less (&rest args)
