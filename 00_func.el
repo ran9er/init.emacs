@@ -92,8 +92,11 @@ See also `define-key-s'."
   (outside "()" 1 n))
 
 ;; * shell-command-symbol-to-string
-(defmacro shell-command-symbol-to-string (s)
-  `(shell-command-to-string (symbol-name ',s)))
+(defmacro shell-command-symbol-to-string (&rest s)
+  `(shell-command-to-string
+    (apply 'concat (mapcar
+     (lambda(x)(concat (symbol-name x) " "))
+     ',s))))
 (defalias 'ss 'shell-command-symbol-to-string)
 
 ;; * substring-buffer-name
