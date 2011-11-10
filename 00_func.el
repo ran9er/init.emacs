@@ -76,11 +76,15 @@ See also `define-key-s'."
 (defun outside (str bk &optional n)
   "up list N level, append STR , backward BK char"
   (let ((x (if n (prefix-numeric-value n) 1))
-        p)
+        p q)
     (up-list x)
     (setq p (point))
     (backward-list)
-    (kill-region (point) p)
+    (setq q (point))
+    (while (member (char-to-string (get-byte (1- q))) 
+                   '("'" "`" "," "#"))
+      (setq q (1- q)))
+    (kill-region q p)
     (insert-string str)
     (backward-char bk)
     (save-excursion
