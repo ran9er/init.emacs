@@ -74,28 +74,25 @@ See also `define-key-s'."
     (call-interactively 'backward-kill-word)))
 
 ;; * outside
-(defmacro outside (str bk)
-  "up list N level, append STR , backward BK char"
+(defmacro outside (pre suf m)
+  "up list N level, append PRE ahead and SUF behind, backward M char"
   `(lambda(&optional n)
-    (interactive "P")
-    (let ((x (if n (prefix-numeric-value n) 1))
-          p q)
-      (up-list x)
-      (setq p (point))
-      (backward-list)
-      (setq q (point))
-      (while (member (char-to-string (get-byte (1- q))) 
-                     '("'" "`" "," "#"))
-        (setq q (1- q)))
-      (kill-region q p)
-      (insert-string ,str)
-      (backward-char ,bk)
-      (save-excursion
-        (insert-string " ")
-        (yank)))))
+     (interactive "P")
+     (let ((x (if n (prefix-numeric-value n) 1))
+           p)
+       (up-list x)
+       (setq p (point))
+       (insert ,suf)
+       (goto-char p)
+       (setq p (backward-list))
+       (while (member (char-to-string (get-byte (1- p)))
+                      '("'" "`" "," "#"))
+         (setq p (1- p)))
+       (goto-char p)
+       (insert ,pre)
+       (backward-char ,m)
+       )))
 ;(def-key-s 0 "C-9" (outside "()" 1))
-   
-
 
 ;; * shell-command-symbol-to-string
 (defmacro shell-command-symbol-to-string (&rest s)
@@ -104,6 +101,18 @@ See also `define-key-s'."
      (lambda(x)(concat (symbol-name x) " "))
      ',s))))
 (defalias 'ss 'shell-command-symbol-to-string)
+
+;; * del-tail-spc
+(defun del-tail-spc()
+  (interactive)
+  (save-excursion
+    (goto-char 1)
+    (end-of-line)
+    (delete-horizontal-space)
+    (while (null (next-line))
+      (end-of-line)
+      (delete-horizontal-space)
+       )))
 
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
@@ -132,11 +141,11 @@ See also `define-key-s'."
 
 (defmacro test-times (n &rest body)
   "计算 body 运行 n 次所需时间"
-  `(let ((tm ,n)(beg (time-to-seconds)))
+  `(let ((tm ,n)(beg (float-time)))
      (while (> tm 0)
        (progn ,@body)
        (setq tm (1- tm)))
-     (- (time-to-seconds) beg)
+     (- (float-time) beg)
      ))
 
 ;(test-times 100 (test-list 9 define-key-s (current-local-map)))

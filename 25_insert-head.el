@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2011-11-09 14:09:13 ran9er>
+;; Time-stamp:   <2011-11-11 15:34:35 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defun insert-doc-head ()
@@ -14,14 +14,14 @@
             (file-name-nondirectory (buffer-file-name))
             (buffer-name)) ">\n"
           "Create:       <"
-            (format-time-string "%Y-%m-%d %H:%M:%S" (current-time)) 
+            (format-time-string "%Y-%m-%d %H:%M:%S" (current-time))
             " " user-full-name ">\n"
           "Time-stamp:   <>" "\n"
           ))
-;        (v (apply 'concat (cdr (assoc major-mode head-alist))))
+;        (v (apply 'concat (append common-head (cdr (assoc major-mode head-alist))))))
          (v (eval `(concat ,@common-head
                            ,@(cdr (assoc major-mode head-alist))))))
-         ;; (o (apply 'concat 
+         ;; (o (apply 'concat
          ;;  (mapcar
          ;;   (lambda(x)(concat comment-start cmnt " "
          ;;                     x comment-end "\n"))

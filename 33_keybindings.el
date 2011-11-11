@@ -37,7 +37,7 @@
 ))
 
 (def-key-s 0
-    "C-9"       (outside "()" 1)
+    "C-9"       (outside "( " ")" 1)
     "C-8"       'down-list
     "C-7"       '(lambda nil (interactive)(up-list -1))
     )

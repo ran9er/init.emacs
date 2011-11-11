@@ -135,9 +135,9 @@
 
 ;; * last command timer
 (add-hook 'eshell-load-hook
-          (lambda()(setq last-command-start-time (time-to-seconds))))
+          (lambda()(setq last-command-start-time (float-time))))
 (add-hook 'eshell-pre-command-hook
-          (lambda()(setq last-command-start-time (time-to-seconds))))
+          (lambda()(setq last-command-start-time (float-time))))
 (add-hook 'eshell-before-prompt-hook
           (lambda()
               (message "%s ==> spend %g seconds" 
@@ -146,7 +146,7 @@
                         ((string-match "^#<" eshell-last-command-name)
                          (substring eshell-last-command-name 2 -1))
                         (t eshell-last-command-name))
-                       (- (time-to-seconds) last-command-start-time))))
+                       (- (float-time) last-command-start-time))))
 
 ;; * ac-mode
 ;+++++++++++++++++++++++++++++++++++++++

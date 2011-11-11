@@ -9,7 +9,7 @@
 ;; * time-stamp-format
 ;(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
 
-;; * 打开特定文件操作
+;; * 打开文件
 (add-hook 'find-file-hook
           '(lambda ()
              (if (file-exists-p (buffer-file-name))             ; 已存在文件
@@ -22,7 +22,11 @@
                (insert-doc-head)
              )))
 
-(add-hook 'before-save-hook 'time-stamp)
+;; * 保存文件
+(add-hook 'before-save-hook
+          '(lambda()
+;             (del-tail-spc)
+             (time-stamp)))
 
 ;; * max
 (setq max-lisp-eval-depth   1000        ;lisp最大执行深度   500

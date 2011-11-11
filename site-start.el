@@ -9,21 +9,23 @@
 
 (if (file-exists-p init-dir)
  (progn
-   (setq   init-start  (time-to-seconds))
+
+   (setq init-time (cons (float-time)()))
 
    (dolist (init-load-path (cons init-dir (directory-files init-dir t "^_")))
      (if (file-directory-p init-load-path)
          (add-to-list 'load-path init-load-path)))
 
-   (setq   init-files  (mapc 'load (directory-files init-dir t "\\.el\\'"))
-           init-stop   (time-to-seconds))
+   (setq init-files (mapc 'load (directory-files init-dir t "\\.el\\'")))
+
+   (setcdr init-time (float-time))
 
    (add-hook 'emacs-startup-hook
              '(lambda ()
                 (message "load %d init file , spend %g seconds ; startup spend %g seconds"
                          (length init-files)
-                         (- init-stop init-start)
-                         (- (time-to-seconds) init-start))))
+                         (- (cdr init-time) (car init-time))
+                         (- (float-time) (car init-time)))))
 ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 );;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
