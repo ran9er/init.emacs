@@ -102,18 +102,6 @@ See also `define-key-s'."
      ',s))))
 (defalias 'ss 'shell-command-symbol-to-string)
 
-;; * del-tail-spc
-(defun del-tail-spc()
-  (interactive)
-  (save-excursion
-    (goto-char 1)
-    (end-of-line)
-    (delete-horizontal-space)
-    (while (null (next-line))
-      (end-of-line)
-      (delete-horizontal-space)
-       )))
-
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\
