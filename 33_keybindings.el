@@ -34,6 +34,10 @@
                   (let ((p (point)))
                     (find-alternate-file (buffer-file-name))
                     (goto-char p)))
+    "<C-return>"
+                (lambda()
+                  (interactive)
+                   (message (number-to-string (point))))
 ))
 
 (def-key-s 0
