@@ -25,6 +25,9 @@
 ;; * 保存文件
 (add-hook 'before-save-hook
           '(lambda()
+             (if (and (eolp)
+                      (equal (char-before) 32))
+                 (del-tail-spc))
              (time-stamp)))
 
 ;; * max
