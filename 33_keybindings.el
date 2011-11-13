@@ -1,6 +1,6 @@
 ;; -*- encoding: utf-8-unix; -*-
 (define-key-s 0 '(
-    "M-s M-s"   eshell                              ;;
+    "<C-return>" eshell
     "C-x C-x"   eshell                              ;; exchange-point-and-mark
     "C-x x"     compile
     "C-x m"     compile                             ;; compose-mail
@@ -34,10 +34,6 @@
                   (let ((p (point)))
                     (find-alternate-file (buffer-file-name))
                     (goto-char p)))
-    "<C-return>"
-                (lambda()
-                  (interactive)
-                   (message (number-to-string (point))))
 ))
 
 (def-key-s 0

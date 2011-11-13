@@ -135,6 +135,13 @@ See also `define-key-s'."
       (setq i (1- i)))
     x))
 
+(defun eval-buffer-time ()
+  ""
+  (interactive)
+  (let ((tm (float-time)))
+    (eval-buffer)
+    (message (number-to-string (- (float-time) tm)))))
+
 (defmacro test-list (n &rest fn)
   "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)"
   `(,@fn (mklst ,n)))
