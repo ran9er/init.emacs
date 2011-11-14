@@ -86,7 +86,7 @@ See also `define-key-s'."
        (goto-char p)
        (setq p (backward-list))
        (while (member (char-to-string (get-byte (1- p)))
-                      '("'" "`" "," "#"))
+                      '("'" "`" "," "#" "@"))
          (setq p (1- p)))
        (goto-char p)
        (insert ,pre)
