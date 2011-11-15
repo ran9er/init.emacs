@@ -48,6 +48,6 @@
         (add-hook hook (lambda () (my-buffer-face-mode))))
 ;; ** mode-line
       (custom-set-faces
-       `(mode-line ((t (:foreground "#96dd3b" :background "#336442" 
-                                    :height 0.8 :family ,myfont1)))))
+       `(mode-line ((t (:height 0.8 :family ,myfont1))))
+       `(header-line ((t (:height 0.8 :family ,myfont1)))))
 ))

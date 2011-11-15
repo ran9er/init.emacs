@@ -64,7 +64,8 @@
  '(font-lock-string-face ((t (:foreground "#9df39f"))))
  '(font-lock-type-face ((t (:foreground"#91bb9e"))))
  '(font-lock-variable-name-face ((t (:foreground "#ffaa3e"))))
- '(font-lock-warning-face ((t (:foreground "eb939a" :bold t))))
+ '(font-lock-warning-face ((t (:foreground "#eb939a" :bold t))))
+ '(header-line ((t (:background "#2f4f4f" :foreground "#778899"))))
 )
 (provide-theme 'forest)
 
