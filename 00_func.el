@@ -102,18 +102,6 @@ See also `define-key-s'."
      ',s))))
 (defalias 'ss 'shell-command-symbol-to-string)
 
-;; * del-tail-spc
-(defun del-tail-spc()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((n (line-number-at-pos (point-max))))
-      (while (<= 0 (setq n (1- n)))
-        (goto-char (line-end-position))
-        (delete-horizontal-space)
-        (forward-line)
-       ))))
-
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\
@@ -125,6 +113,20 @@ See also `define-key-s'."
                 (buffer-name))
               (make-string n ?*))
              m n))
+
+;; * pretty lambda 
+(defun pretty-lambdas ()
+  (font-lock-add-keywords
+   nil `(("(?\\(lambda\\>\\)"
+          (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+
+;; * add-watchwords
+(defun add-watchwords ()
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+          1 font-lock-warning-face t))))
 
 ;; * test
 (defun mklst (n)

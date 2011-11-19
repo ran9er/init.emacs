@@ -27,7 +27,10 @@
           '(lambda()
              (if (and (eolp)
                       (equal (char-before) 32))
-                 (del-tail-spc))
+                 (progn 
+                   ;; (del-tail-spc)
+                   (delete-trailing-whitespace)
+                   (untabify (point-min) (point-max))))
              (time-stamp)))
 
 ;; * max
