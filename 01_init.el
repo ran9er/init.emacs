@@ -34,7 +34,7 @@
              (time-stamp)))
 
 ;; * lisp mode
-(add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
+(add-hook 'emacs-lisp-mode-hook 'lisp-symbol)
 ;(add-hook 'eshell-mode-hook 'pretty-lambdas)
 
 ;; * max

@@ -22,7 +22,7 @@
                       (greater-than-or-equal-to #X2265)                        
                       (logical-and #X2227)
                       (logical-or #X2228)
-                      (logical-neg #X00AC)                                                  
+                      (logical-neg #X00AC)
                       ('nil #X2205)
                       (horizontal-ellipsis #X2026)
                       (double-exclamation #X203C)
