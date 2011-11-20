@@ -181,13 +181,13 @@ See also `define-key-s'."
   (substitute-patterns-with-unicode
    (cons-list '("(?\\(lambda\\>\\)" lambda
                 ;; "\\<\\(lambda\\)\\>" lambda
+                "\\(;;\\ \\)" reference-mark
                 "\\(<-\\)" left-arrow
                 "\\(->\\)" right-arrow
                 "\\(==\\)" identical
                 "\\(/=\\)" not-identical
                 "\\(>=\\)" greater-than-or-equal-to
                 "\\(<=\\)" less-than-or-equal-to
-                "\\(;;\\ \\)" reference-mark
                 "\\(\\.\\.\\)" horizontal-ellipsis))))
 
 ;; * test
