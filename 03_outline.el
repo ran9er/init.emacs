@@ -4,31 +4,31 @@
   ""
   (outline-minor-mode 1)
   (let ((regexp-list (append outline-minor-mode-list nil))
-	(find-regexp
-	 (lambda (lst)
-	   ""
-	   (let ((innerList (car lst)))
-	     (if innerList
-		 (if (string= (car innerList) major-mode)
-		     (car (cdr innerList))
-		   (progn (pop lst)
-			  (funcall find-regexp lst))))
-	     ))))
+    (find-regexp
+     (lambda (lst)
+       ""
+       (let ((innerList (car lst)))
+         (if innerList
+         (if (string= (car innerList) major-mode)
+             (car (cdr innerList))
+           (progn (pop lst)
+              (funcall find-regexp lst))))
+         ))))
     (make-local-variable 'outline-regexp)
     (setq outline-regexp (funcall find-regexp regexp-list)))
-  
+
 ;  (define-key-bindings 1 `(
-;		     ("C-c C-t" hide-body)
-;		     ("C-c C-a" show-all)
-;		     ("C-c C-e" show-entry)
-;		     ))
+;            ("C-c C-t" hide-body)
+;            ("C-c C-a" show-all)
+;            ("C-c C-e" show-entry)
+;            ))
 
   (hide-body)
   )
 
 ;; * 定义数据
-(setq outline-minor-mode-list 
-      (list 
+(setq outline-minor-mode-list
+      (list
        '(lisp-interaction-mode "(")
        '(emacs-lisp-mode ";;\\ \\*+")
        '(shell-mode ".*[bB]ash.*[#\$] \\|^.:\.*>")
@@ -47,8 +47,8 @@
 (setq outline-minor-mode-prefix [(control t)])
 ;; * 自定义省略提示
 ;; ** 字符
-; (set-display-table-slot standard-display-table 
-;                         'selective-display 
+; (set-display-table-slot standard-display-table
+;                         'selective-display
 ;                         (string-to-vector " [...] "))
 ;; ** 主题
 (set-display-table-slot
@@ -62,12 +62,11 @@
 ;;           (lambda ()
 ;;             (require 'outline-cycle)))
 
-(add-hook 'outline-minor-mode-hook 
-          (lambda () 
+(add-hook 'outline-minor-mode-hook
+          (lambda ()
             (require 'outline-magic)
             ;; 定义快捷键 tab | f1
             (define-key outline-minor-mode-map [(f1)] 'outline-cycle)))
 
 ;; 在正文中模拟tab，用tab作快捷键时开启
 ;(setq outline-cycle-emulate-tab t)
-

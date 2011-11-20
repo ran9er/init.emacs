@@ -102,6 +102,35 @@ See also `define-key-s'."
      ',s))))
 (defalias 'ss 'shell-command-symbol-to-string)
 
+;; * temp file
+(defun find-temp (&optional suffix)
+  (interactive "MExtension: ")
+  (let ((suf (if suffix (concat "." suffix))))
+    (find-file
+     (concat
+      (make-temp-name
+      (expand-file-name
+       (format-time-string "%Y%m%d%H%M%S-" (current-time))
+       work-dir)) suf))
+    (run-hooks 'find-temp-hook)))
+(defun write-temp (filename &optional confirm)
+  (interactive
+   (list (if buffer-file-name
+             (read-file-name "Write file: "
+                             nil nil nil nil)
+           (read-file-name "Write file: " default-directory
+                           (expand-file-name
+                            (file-name-nondirectory (buffer-name))
+                            default-directory)
+                           nil nil))
+         (not current-prefix-arg)))
+  (let ((fnm buffer-file-name))
+    (write-file filename confirm)
+    (if (file-exists-p fnm)
+        (delete-file fnm))))
+(add-hook 'find-temp-hook (lambda ()
+                            (yank)))
+
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\

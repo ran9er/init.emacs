@@ -115,7 +115,7 @@
   (find-file eshell-aliases-file))
 
 (defun eshell/rr ()
-  (find-file (expand-file-name "_qref.org" sand-box)))
+  (find-file (expand-file-name "_qref.org" work-dir)))
 
 (defun eshell/ed (file1 file2)
   (ediff-files file1 file2))

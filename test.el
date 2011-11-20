@@ -30,4 +30,8 @@
 ;;       (if (looking-at (concat "[ \t]*\\(" (regexp-quote comment-start) "+\\)"))
 ;;           (uncomment-region beg end)
 ;;         (comment-region beg end)))))
-;; *
+;; * make-temp-file
+;; (make-temp-file
+;;       (format-time-string "%Y%m%d%H%M%S-" (current-time))
+;;       nil
+;;       suf)

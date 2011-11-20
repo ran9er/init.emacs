@@ -3,8 +3,8 @@
 (mapc 'load (directory-files (expand-file-name "_autoload" init-dir) t "\\.el\\'"))
 
 ;; * working dir
-(setq sand-box (expand-file-name "sandbox/" init-dir))
-(cd sand-box)
+(setq work-dir (expand-file-name "sandbox/" init-dir))
+(cd work-dir)
 
 ;; * time-stamp-format
 ;(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
