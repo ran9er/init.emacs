@@ -142,7 +142,10 @@ See also `define-key-s'."
                       (logical-or #X2228)
                       (logical-neg #X00AC)
                       ('nil #X2205)
+                      (dagger #X2020)
+                      (double-dagger #X2021)
                       (horizontal-ellipsis #X2026)
+                      (reference-mark #X203B)
                       (double-exclamation #X203C)
                       (prime #X2032)
                       (double-prime #X2033)
@@ -184,7 +187,7 @@ See also `define-key-s'."
                 "\\(/=\\)" not-identical
                 "\\(>=\\)" greater-than-or-equal-to
                 "\\(<=\\)" less-than-or-equal-to
-                "\\(!!\\)" double-exclamation
+                "\\(;;\\ \\)" reference-mark
                 "\\(\\.\\.\\)" horizontal-ellipsis))))
 
 ;; * test
