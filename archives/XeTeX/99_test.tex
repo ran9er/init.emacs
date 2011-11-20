@@ -1,0 +1,11 @@
+%% -*- encoding: utf-8-unix; -*- 
+\section{测试}
+
+\begin{lstlisting}
+;; 中文注释
+(defun 2list (lst)
+  (if lst
+      (cons
+       (list (car lst)(cadr lst))
+       (2list (cddr lst)))))
+\end{lstlisting}

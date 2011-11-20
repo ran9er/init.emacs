@@ -114,7 +114,7 @@ See also `define-key-s'."
               (make-string n ?*))
              m n))
 
-;; * pretty lambda 
+;; * pretty lambda
 (defun pretty-lambdas ()
   (font-lock-add-keywords
    nil `(("(?\\(lambda\\>\\)"

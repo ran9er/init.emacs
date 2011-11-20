@@ -33,6 +33,10 @@
                    (untabify (point-min) (point-max))))
              (time-stamp)))
 
+;; * lisp mode
+(add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
+;(add-hook 'eshell-mode-hook 'pretty-lambdas)
+
 ;; * max
 (setq max-lisp-eval-depth   1000        ;lisp最大执行深度   500
       max-specpdl-size      10000       ;最大容量           1000

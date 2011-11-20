@@ -1,0 +1,29 @@
+%% -*- encoding: utf-8-unix; -*-
+%% File-name:    <mycmd.sty>
+%% Create:       <2011-11-09 17:12:44 ran9er>
+%% Time-stamp:   <2011-11-09 17:12:45 ran9er>
+
+\newcommand{\hlwd}{``hello world''}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareRobustCommand\TeX{%
+  \leavevmode
+  \smash{%
+    T\kern\xxt@kern@Te
+    \lower\xxt@lower@e\hbox{E}\kern\xxt@kern@eX X}%
+  \spacefactor1000\relax}
+\DeclareRobustCommand{\ConText}{%
+  \leavevmode
+  \smash{%
+  C\kern\xxt@kern@La
+  {\sbox\z@ T%
+    \vbox to\ht\z@{\hbox{\check@mathfonts
+      \fontsize\sf@size\z@
+      \math@fontsfalse\selectfont
+      ON}%
+    \vss}%
+  }%
+  \kern\xxt@kern@aT
+  \TeX
+\kern\xxt@kern@eX T}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

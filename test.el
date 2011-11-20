@@ -30,3 +30,4 @@
 ;;       (if (looking-at (concat "[ \t]*\\(" (regexp-quote comment-start) "+\\)"))
 ;;           (uncomment-region beg end)
 ;;         (comment-region beg end)))))
+;; *

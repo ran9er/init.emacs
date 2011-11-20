@@ -1,0 +1,5 @@
+(mapc '(lambda(ifile)
+         (unless (member (file-name-nondirectory ifile)
+                         '("site-start.el"))
+           (load ifile)))
+      (directory-files init-dir t "^[a-zA-Z0-9].*el$"))

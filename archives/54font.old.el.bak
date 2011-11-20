@@ -1,0 +1,5 @@
+(set-default-font "Dejavu Sans Mono-12")
+(if window-system
+   (set-fontset-font (frame-parameter nil 'font)
+	  'unicode '("Microsoft YaHei" . "unicode-bmp"))
+)
