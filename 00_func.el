@@ -104,14 +104,16 @@ See also `define-key-s'."
 
 ;; * temp file
 (defun find-temp (&optional suffix)
-  (interactive "MExtension: ")
-  (let ((suf (if suffix (concat "." suffix))))
+  (interactive "sExtension: ")
+  (let ((suf (if (and suffix (null (string= suffix "")))
+                 (concat "." suffix))))
     (find-file
      (concat
       (make-temp-name
-      (expand-file-name
-       (format-time-string "%Y%m%d%H%M%S-" (current-time))
-       work-dir)) suf))
+       (expand-file-name
+        (format-time-string "%Y%m%d%H%M%S-" (current-time))
+        work-dir))
+      suf))
     (run-hooks 'find-temp-hook)))
 (defun write-temp (filename &optional confirm)
   (interactive
