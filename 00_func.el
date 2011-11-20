@@ -175,7 +175,7 @@ See also `define-key-s'."
               (substitute-pattern-with-unicode (car x)
                                                (cdr x)))
           patterns))
-
+;; ** lisp symbol
 (defun lisp-symbol ()
   (interactive)
   (substitute-patterns-with-unicode
@@ -184,11 +184,12 @@ See also `define-key-s'."
                 "\\(;;\\ \\)" reference-mark
                 "\\(<-\\)" left-arrow
                 "\\(->\\)" right-arrow
-                "\\(==\\)" identical
-                "\\(/=\\)" not-identical
+                ;; "\\(==\\)" identical
+                ;; "\\(/=\\)" not-identical
                 "\\(>=\\)" greater-than-or-equal-to
                 "\\(<=\\)" less-than-or-equal-to
-                "\\(\\.\\.\\)" horizontal-ellipsis))))
+                ;; "\\(\\.\\.\\)" horizontal-ellipsis
+                ))))
 
 ;; * test
 (defun mklst (n)
