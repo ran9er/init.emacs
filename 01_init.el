@@ -2,6 +2,12 @@
 ;; * autoload
 (mapc 'load (directory-files (expand-file-name "_autoload" init-dir) t "\\.el\\'"))
 
+;; * environment
+(if (eq window-system 'w32)
+    (mapc (lambda (p)(add-exec-path p))
+          (list exec-directory
+                "../../git/bin")))
+
 ;; * working dir
 (setq work-dir (expand-file-name "sandbox/" init-dir))
 (cd work-dir)

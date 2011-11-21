@@ -222,6 +222,12 @@ See also `define-key-s'."
                 ;; "\\(\\.\\.\\)" horizontal-ellipsis
                 ))))
 
+;; * add-exec-path
+(defun add-exec-path (path)
+  (interactive "Dexec-path: ")
+  (setenv "PATH" (concat path ";" (getenv "PATH")))
+  (push path exec-path))
+
 ;; * test
 (defun mklst (n)
   "创建大小为 n 的字符串列表"
