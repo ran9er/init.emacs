@@ -5,8 +5,9 @@
 ;; * environment
 (if (eq window-system 'w32)
     (mapc (lambda (p)(add-exec-path p))
-          (list exec-directory
-                "../../git/bin")))
+          (list
+           (expand-file-name "../../git/bin/" exec-directory)
+           exec-directory)))
 
 ;; * working dir
 (setq work-dir (expand-file-name "sandbox/" init-dir))
