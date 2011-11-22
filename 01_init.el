@@ -3,10 +3,11 @@
 (mapc 'load (directory-files (expand-file-name "_autoload" init-dir) t "\\.el\\'"))
 
 ;; * environment
-(if (eq window-system 'w32)
+(if (eq system-type 'windows-nt)
     (mapc (lambda (p)(add-exec-path p))
           (list
            (expand-file-name "../../git/bin/" exec-directory)
+           (expand-file-name "../other/sdcv/" exec-directory)
            exec-directory)))
 
 ;; * working dir

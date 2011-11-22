@@ -1,6 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 (if (eq system-type 'windows-nt)
-    (setq sdcv-cmd (concat "sdcv " "--data-dir " (expand-file-name "../dict" exec-directory))))
+    (setq sdcv-cmd (concat "sdcv " "--data-dir "
+                           (expand-file-name "../other/sdcv/dict/" exec-directory))))
 
 (global-set-key (kbd "C-c d") 'kid-sdcv-to-buffer)
 (defun kid-sdcv-to-buffer ()
