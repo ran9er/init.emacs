@@ -2949,7 +2949,8 @@ Within the undo-tree visualizer, the following keys are available:
   (use-local-map undo-tree-visualizer-map)
   (setq truncate-lines t)
   (setq cursor-type nil)
-  (setq buffer-read-only t))
+  (setq buffer-read-only t)
+  (run-hooks 'undo-tree-visualizer-mode-hook))
 
 
 

@@ -44,6 +44,7 @@
                       ;; ido-make-buffer-list-hook
                       ;; ido-make-file-list-hook
                       ;; ido-make-dir-list-hook
+                      ;; undo-tree-visualizer-mode-hook
                       ))
         (add-hook hook (lambda () (my-buffer-face-mode))))
 ;; ** mode-line

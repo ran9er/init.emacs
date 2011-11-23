@@ -1,6 +1,5 @@
 ;; -*- encoding: utf-8-unix; -*-
 (define-key-s 0 '(
-    "<C-return>" eshell
     "C-x C-x"   eshell                              ;; exchange-point-and-mark
     "C-x x"     compile
     "C-x m"     compile                             ;; compose-mail
@@ -31,6 +30,8 @@
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
     "C-x f"     find-temp
     "C-x w"     write-temp
+    "<C-return>" temp-func-call
+    "<M-return>" temp-func-add
     ;; "C-x f"     (lambda()                                ;; set-fill-column
     ;;               (interactive)
     ;;               (let ((p (point)))

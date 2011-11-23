@@ -6,6 +6,7 @@
 ;; *========== undo-tree
 (require 'undo-tree)
 (global-undo-tree-mode)
+(add-hook 'undo-tree-visualizer-mode-hook 'buffer-face-mode)
 
 ;; *========== run-current-file-macro
 (autoload 'run-current-file-macro "run-file" "" t)

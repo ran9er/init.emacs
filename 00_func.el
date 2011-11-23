@@ -133,6 +133,26 @@ See also `define-key-s'."
 (add-hook 'find-temp-hook (lambda ()
                             (yank)))
 
+;; * temp func
+(defvar temp-func-list
+  '(
+    (mapc (lambda(x)(insert (prin1-to-string  x ) "\n\n")) temp-func-list)
+    ))
+(defun temp-func-add (beg end)
+  (interactive "r")
+  (let ((x (read (buffer-substring-no-properties beg end))))
+    (if (null (equal x (car temp-func-list)))
+        (push x temp-func-list)))
+  (deactivate-mark))
+(defun temp-func-call (&optional n)
+  (interactive "p")
+  (let ((func (if (eq n 0)
+                  (car (last temp-func-list))
+                (nth (1- n) temp-func-list))))
+    (if (functionp func)
+        (funcall func)
+      (eval func))))
+
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
   "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\
