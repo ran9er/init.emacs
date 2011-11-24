@@ -136,22 +136,29 @@ See also `define-key-s'."
 ;; * temp func
 (defvar temp-func-list
   '(
-    (mapc (lambda(x)(insert (prin1-to-string  x ) "\n\n")) temp-func-list)
+    (mapc (lambda(x)(insert (prin1-to-string  x ) "\n")) (butlast temp-func-list))
     ))
-(defun temp-func-add (beg end)
+(defun temp-func-add (&optional beg end)
   (interactive "r")
-  (let ((x (read (buffer-substring-no-properties beg end))))
+  (let* (b e 
+           (x (if mark-active (read (buffer-substring-no-properties beg end))
+                (up-list)(setq e (point))
+                (backward-list)(setq b (point))
+                (forward-list)
+                (read (buffer-substring-no-properties b e)))))
     (if (null (equal x (car temp-func-list)))
         (push x temp-func-list)))
   (deactivate-mark))
 (defun temp-func-call (&optional n)
   (interactive "p")
-  (let ((func (if (eq n 0)
-                  (car (last temp-func-list))
-                (nth (1- n) temp-func-list))))
-    (if (functionp func)
-        (funcall func)
-      (eval func))))
+  (message
+   (pp-to-string
+    (let ((func (if (eq n 0)
+                    (car (last temp-func-list))
+                  (nth (1- n) temp-func-list))))
+      (if (functionp func)
+          (funcall func)
+        (eval func))))))
 
 ;; * substring-buffer-name
 (defun substring-buffer-name (m n &optional x)
