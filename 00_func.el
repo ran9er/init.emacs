@@ -135,9 +135,12 @@ See also `define-key-s'."
 
 ;; * temp func
 (defvar temp-func-list
-  '(
-    (mapc (lambda(x)(insert (prin1-to-string  x ) "\n")) (butlast temp-func-list))
-    ))
+  '((let ((cnt 0)(acc nil))
+      (mapc (lambda(x) (setq acc (concat acc "\n"
+                    (number-to-string (setq cnt (1+ cnt)))
+                    ": " (prin1-to-string  x ))))
+            (butlast temp-func-list))
+      acc)))
 (defun temp-func-add (&optional beg end)
   (interactive "r")
   (let* (b e 
