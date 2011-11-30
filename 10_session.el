@@ -16,6 +16,7 @@
 (setq desktop-base-file-name
       (concat "emacs-" (nth 2 (split-string (version))) "-desktop"))
 (desktop-save-mode t)
+(desktop-release-lock)
 
 (setq desktop-clear-preserve-buffers
       (cons "\\*eshell\\*.*" desktop-clear-preserve-buffers))
