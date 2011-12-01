@@ -74,25 +74,28 @@ See also `define-key-s'."
     (call-interactively 'backward-kill-word)))
 
 ;; * outside
-(defmacro outside (pre suf m)
+(defmacro outside (o b s)
   "up list N level, append PRE ahead and SUF behind, backward M char"
   `(lambda(&optional n)
      (interactive "P")
      (let ((x (if n (prefix-numeric-value n) 1))
-           p)
-       (up-list x)
-       (setq p (point))
-       (insert ,suf)
-       (goto-char p)
-       (setq p (backward-list))
-       (while (member (char-to-string (get-byte (1- p)))
-                      '("'" "`" "," "#" "@"))
-         (setq p (1- p)))
-       (goto-char p)
-       (insert ,pre)
-       (backward-char ,m)
-       )))
-;(def-key-s 0 "C-9" (outside "()" 1))
+           beg end tmp)
+       (if mark-active
+           (setq beg (region-beginning)
+                 end (region-end))
+         (up-list x)
+         (setq end (point))
+         (setq beg (backward-list))
+         (while (member (char-to-string (get-byte (1- beg)))
+                        '("'" "`" "," "#" "@"))
+           (setq beg (1- beg))))
+       (setq tmp (buffer-substring-no-properties beg end))
+       (delete-region beg end)
+       (insert ,o)
+       (backward-char ,b)
+       (save-excursion
+         (insert ,s tmp)))))
+;(def-key-s 0 "C-9" (outside "( )" 2))
 
 ;; * shell-command-symbol-to-string
 (defmacro shell-command-symbol-to-string (&rest s)
