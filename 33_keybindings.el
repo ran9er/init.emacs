@@ -39,11 +39,17 @@
     ;;                 (goto-char p)))
 ))
 
-(def-key-s 0
-    "C-9"       (outside "()" 1 " ")
-    "C-8"       'down-list
-    "C-7"       '(lambda nil (interactive)(up-list -1))
-    )
+(mapc (lambda(hook)(add-hook hook
+      '(lambda ()
+         (def-key-s 1
+           "C-9"       (outside "()" 1 " ")
+           "C-8"       'down-list
+           "C-7"       '(lambda nil (interactive)(up-list -1))
+           ))))
+      '(lisp-mode-hook
+        lisp-interaction-mode-hook
+        emacs-lisp-mode-hook
+        eshell-mode-hook))
 
 ;;F10 显示/隐藏菜单栏 ;; M-x menu-bar-open
 ;;(global-set-key (kbd "F10") 'menu-bar-mode)
