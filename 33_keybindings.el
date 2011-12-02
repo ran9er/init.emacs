@@ -39,9 +39,9 @@
     ;;                 (goto-char p)))
 ))
 
-(mapc (lambda(name)(add-hook (concat-symbol name '-hook)
+(mapc (lambda(mode)(add-hook (concat-symbol mode '-hook)
       `(lambda()
-         (def-key-s ,(concat-symbol name '-map)
+         (def-key-s ,(concat-symbol mode '-map)
            "C-9"       (outside "()" 1 " ")
            "C-8"       'down-list
            "C-7"       '(lambda nil (interactive)(up-list -1))
