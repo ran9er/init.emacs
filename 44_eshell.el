@@ -3,7 +3,7 @@
 ;+++++++++++++++++++++++++++++++++++++++
 (if t t
 ;+++++++++++++++++++++++++++++++++++++++
-(autoload 'bash-completion-dynamic-complete 
+(autoload 'bash-completion-dynamic-complete
   "bash-completion"
   "BASH completion hook")
 (add-hook 'shell-dynamic-complete-functions
@@ -44,7 +44,7 @@
                  eshell-scroll-show-maximum-output t)
            (add-to-list 'eshell-output-filter-functions
                         'eshell-postoutput-scroll-to-bottom)
-           (def-k-s eshell-mode-map 
+           (def-k-s eshell-mode-map
               ;; "C-p"   'eshell-previous-matching-input-from-input
               ;; "C-n"   'eshell-next-matching-input-from-input
               ;; "M-p"   'previous-line
@@ -140,8 +140,8 @@
           (lambda()(setq last-command-start-time (float-time))))
 (add-hook 'eshell-before-prompt-hook
           (lambda()
-              (message "%s ==> spend %g seconds" 
-                       (cond 
+              (message "%s ==> spend %g seconds"
+                       (cond
                         ((not eshell-last-command-name) "GO!")
                         ((string-match "^#<" eshell-last-command-name)
                          (substring eshell-last-command-name 2 -1))
@@ -209,5 +209,3 @@
     ;; argument causes later arguments to be looked for in that directory,
     ;; not the starting directory
     (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
-
-

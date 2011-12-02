@@ -39,17 +39,17 @@
     ;;                 (goto-char p)))
 ))
 
-(mapc (lambda(hook)(add-hook hook
-      '(lambda ()
-         (def-key-s 1
+(mapc (lambda(name)(add-hook (concat-symbol name '-hook)
+      `(lambda()
+         (def-key-s ,(concat-symbol name '-map)
            "C-9"       (outside "()" 1 " ")
            "C-8"       'down-list
            "C-7"       '(lambda nil (interactive)(up-list -1))
            ))))
-      '(lisp-mode-hook
-        lisp-interaction-mode-hook
-        emacs-lisp-mode-hook
-        eshell-mode-hook))
+      '(lisp-mode
+        lisp-interaction-mode
+        emacs-lisp-mode
+        eshell-mode))
 
 ;;F10 显示/隐藏菜单栏 ;; M-x menu-bar-open
 ;;(global-set-key (kbd "F10") 'menu-bar-mode)

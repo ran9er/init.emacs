@@ -39,7 +39,7 @@
 
 ;; * 应用数据
 (dolist (hook (mapcar
-               (lambda(lst) (read (concat (symbol-name (car lst)) "-hook")))
+               (lambda(lst) (concat-symbol (car lst) '-hook))
                outline-minor-mode-list))
   (add-hook hook 'set-outline-minor-mode-regexp t))
 

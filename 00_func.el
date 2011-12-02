@@ -105,6 +105,10 @@ See also `define-key-s'."
      ',s))))
 (defalias 'ss 'shell-command-symbol-to-string)
 
+;; * concat symbol
+(defun concat-symbol (&rest lst)
+  (read (apply 'concat (mapcar (lambda(x)(symbol-name x)) lst))))
+
 ;; * temp file
 (defun find-temp (&optional suffix)
   (interactive "sExtension: ")
