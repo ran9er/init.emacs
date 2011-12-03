@@ -1,4 +1,41 @@
 ;; -*- encoding: utf-8-unix; -*-
+;; * cons-list
+(defun cons-list (lst)
+  (if lst
+      (cons
+       (cons (car lst)(cadr lst))
+       (cons-list (cddr lst)))))
+
+;; * join-string
+(defun join-string (lst s)
+  (if (caddr lst)
+      (concat (car lst) s (join-string (cdr lst) s))
+    (concat (car lst) s (cadr lst))))
+
+;; * concat symbol
+(defun concat-symbol (&rest lst)
+  (read (apply 'concat (mapcar (lambda(x)(symbol-name x)) lst))))
+
+;; * shell-command-symbol-to-string
+(defmacro shell-command-symbol-to-string (&rest s)
+  `(shell-command-to-string
+    (apply 'concat (mapcar
+     (lambda(x)(concat (symbol-name x) " "))
+     ',s))))
+(defalias 'ss 'shell-command-symbol-to-string)
+
+;; * substring-buffer-name
+(defun substring-buffer-name (m n &optional x)
+  "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\
+防止文件名过短引发错误。m n 参数同`substring'的 from to，可选参数\
+ x 存在时截取带路径的文件名。"
+  (substring (concat
+              (if x
+                  (buffer-file-name)
+                (buffer-name))
+              (make-string n ?*))
+             m n))
+
 ;; * add-to-list-x
 (defun add-to-list-x (LIST-VAR &rest REST)
 "See also `add-to-list-l' `add-to-list-p'
@@ -30,12 +67,6 @@
   `(rq-x ',action ',lst))
 
 ;; * define-key-s
-(defun cons-list (lst)
-  (if lst
-      (cons
-       (cons (car lst)(cadr lst))
-       (cons-list (cddr lst)))))
-
 (defun define-key-s (keymap key-defs &optional group)
   "(define-key-s 0 '(\"key\" def \"key\" def ...))
 \(define-key-s 0 '(\"a\" \"b\" \"c\" ...) 'self-insert-command)
@@ -97,17 +128,6 @@ See also `define-key-s'."
          (insert ,s tmp)))))
 ;(def-key-s 0 "C-9" (outside "( )" 2))
 
-;; * shell-command-symbol-to-string
-(defmacro shell-command-symbol-to-string (&rest s)
-  `(shell-command-to-string
-    (apply 'concat (mapcar
-     (lambda(x)(concat (symbol-name x) " "))
-     ',s))))
-(defalias 'ss 'shell-command-symbol-to-string)
-
-;; * concat symbol
-(defun concat-symbol (&rest lst)
-  (read (apply 'concat (mapcar (lambda(x)(symbol-name x)) lst))))
 
 ;; * temp file
 (defun find-temp (&optional suffix)
@@ -169,18 +189,6 @@ See also `define-key-s'."
       (if (functionp func)
           (funcall func)
         (eval func))))))
-
-;; * substring-buffer-name
-(defun substring-buffer-name (m n &optional x)
-  "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，\
-防止文件名过短引发错误。m n 参数同`substring'的 from to，可选参数\
- x 存在时截取带路径的文件名。"
-  (substring (concat
-              (if x
-                  (buffer-file-name)
-                (buffer-name))
-              (make-string n ?*))
-             m n))
 
 ;; * add-watchwords
 (defun add-watchwords ()
