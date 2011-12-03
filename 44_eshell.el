@@ -68,7 +68,7 @@
       eshell-rm-interactive-query   t
       eshell-mv-overwrite-files     nil
       ;;  aliases file 中不能有多余的空行，否则报正则表达式错误
-      eshell-aliases-file       (expand-file-name "_eshell/eshell-alias" init-dir)
+      eshell-aliases-file       (expand-file-name "_eshell/eshell-alias" *init-dir*)
       eshell-highlight-prompt   t
       ;; 提示符设置，两项必须对应起来，否则报 read-only 且不能补全
       eshell-prompt-regexp      "^[^#$\n]* [#$>]+ "
@@ -109,7 +109,7 @@
   (propertize "Image" (quote display) (create-image (expand-file-name img))))
 
 (defun eshell/ee ()
-  (find-file (expand-file-name "44_eshell.el" init-dir)))
+  (find-file (expand-file-name "44_eshell.el" *init-dir*)))
 
 (defun eshell/aa ()
   (find-file eshell-aliases-file))

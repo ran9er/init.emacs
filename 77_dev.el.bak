@@ -1,4 +1,4 @@
-(add-to-list-p 'load-path (expand-file-name "cedet/" init-dir)
+(add-to-list-p 'load-path (expand-file-name "cedet/" *init-dir*)
 ;              ""
                "common"
                "eieio"

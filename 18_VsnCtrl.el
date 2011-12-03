@@ -1,6 +1,6 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * magit
-(add-to-list 'load-path (expand-file-name "magit/" init-dir))
+(add-to-list 'load-path (expand-file-name "magit/" *init-dir*))
 (autoload 'magit-status "magit" nil t)
 
 (add-hook 'magit-mode-hook '(lambda () (def-k-s magit-mode-map
@@ -27,17 +27,17 @@
  '(magit-log-tag-label ((t (:background "blue violet"))))
 )
 ;; * egit
-;; (add-to-list 'load-path (expand-file-name "egit/" init-dir))
+;; (add-to-list 'load-path (expand-file-name "egit/" *init-dir*))
 ;; (autoload 'egit "egit" "Emacs git history" t)
 ;; (autoload 'egit-file "egit" "Emacs git history file" t)
 ;; (autoload 'egit-dir "egit" "Emacs git history directory" t)
 
 ;; * egg
-;(add-to-list 'load-path (expand-file-name "egg/" init-dir))
+;(add-to-list 'load-path (expand-file-name "egg/" *init-dir*))
 ;(require 'egg)
 
 ;; * git-emacs
-;; (add-to-list 'load-path (expand-file-name "git-emacs/" init-dir))
+;; (add-to-list 'load-path (expand-file-name "git-emacs/" *init-dir*))
 ;; (fmakunbound 'git-status)
 ;; (require 'git-emacs-autoloads)
 

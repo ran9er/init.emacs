@@ -1,4 +1,4 @@
-(load (expand-file-name "haskell-mode/haskell-site-file" init-dir))
+(load (expand-file-name "haskell-mode/haskell-site-file" *init-dir*))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (setq haskell-program-name "C:/Haskell Platform/2011.2.0.1/bin/ghci.exe")

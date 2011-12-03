@@ -1,6 +1,6 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * autoload
-(mapc 'load (directory-files (expand-file-name "_autoload/" init-dir) t "\\.el\\'"))
+(mapc 'load (directory-files (expand-file-name "_autoload/" *init-dir*) t "\\.el\\'"))
 
 ;; * environment
 (if (eq system-type 'windows-nt)
@@ -11,7 +11,7 @@
            exec-directory)))
 
 ;; * working dir
-(setq work-dir (expand-file-name "sandbox/" init-dir))
+(setq work-dir (expand-file-name "sandbox/" *init-dir*))
 (cd work-dir)
 
 ;; * time-stamp-format

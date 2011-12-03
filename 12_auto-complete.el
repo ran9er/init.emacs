@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;---------------------auto complete-------------------
 (add-to-list 'load-path
-         (expand-file-name "auto-complete/" init-dir))
+         (expand-file-name "auto-complete/" *init-dir*))
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
