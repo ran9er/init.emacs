@@ -128,7 +128,7 @@ See also `define-key-s'."
        (backward-char ,b)
        (save-excursion
          (insert delimiter tmp)))))
-;(def-key-s 0 "C-9" (outside "( )" 2))
+;(def-key-s 0 "C-9" (outside "()" 1 " "))
 
 
 ;; * temp file
