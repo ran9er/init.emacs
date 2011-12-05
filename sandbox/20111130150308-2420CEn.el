@@ -1,19 +1,8 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20111130150308-2420CEn.el>
 ;; Create:       <2011-11-30 15:03:08 ran9er>
-;; Time-stamp:   <2011-12-06 00:14:22 ran9er>
+;; Time-stamp:   <2011-12-06 00:18:34 ran9er>
 ;; Mail:         <2999am@gmail.com>
-(defun swap-point()
-  (interactive)
-  (if (or (null (boundp '*last-point*)) (null *last-point*))
-      (progn (make-local-variable '*last-point*)
-             (setq *last-point* (cons (point) (point))))
-    (let ((p (point)))
-      (if (eq p (cdr *last-point*))
-          (progn (goto-char (car *last-point*))
-                 (setq *last-point* (cons (cdr *last-point*)(car *last-point*))))
-        (goto-char (cdr *last-point*))
-        (setq *last-point* (cons p (cdr *last-point*)))))))
 
 (defun jump-point(&optional n)
   (interactive "P")

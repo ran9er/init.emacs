@@ -131,6 +131,18 @@ See also `define-key-s'."
          (insert delimiter tmp)))))
 ;(def-key-s 0 "C-9" (outside "()" 1 " "))
 
+;; * swap-point
+(defun swap-point()
+  (interactive)
+  (if (or (null (boundp '*last-point*)) (null *last-point*))
+      (progn (make-local-variable '*last-point*)
+             (setq *last-point* (cons (point) (point))))
+    (let ((p (point)))
+      (if (eq p (cdr *last-point*))
+          (progn (goto-char (car *last-point*))
+                 (setq *last-point* (cons (cdr *last-point*)(car *last-point*))))
+        (goto-char (cdr *last-point*))
+        (setq *last-point* (cons p (cdr *last-point*)))))))
 
 ;; * temp file
 (defun find-temp (&optional suffix)
