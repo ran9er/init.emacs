@@ -110,10 +110,12 @@ See also `define-key-s'."
   `(lambda(&optional n)
      (interactive "P")
      (let ((x (if n (prefix-numeric-value n) 1))
-           beg end tmp)
+           beg end tmp delimiter)
        (if mark-active
-           (setq beg (region-beginning)
+           (setq delimiter ""
+                 beg (region-beginning)
                  end (region-end))
+         (setq delimiter ,s)
          (up-list x)
          (setq end (point))
          (setq beg (backward-list))
@@ -125,7 +127,7 @@ See also `define-key-s'."
        (insert ,o)
        (backward-char ,b)
        (save-excursion
-         (insert ,s tmp)))))
+         (insert delimiter tmp)))))
 ;(def-key-s 0 "C-9" (outside "( )" 2))
 
 
