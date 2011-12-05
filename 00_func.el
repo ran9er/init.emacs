@@ -8,6 +8,7 @@
 
 ;; * join-string
 (defun join-string (lst s)
+ "(mapconcat 'concat lst s)"
   (if (caddr lst)
       (concat (car lst) s (join-string (cdr lst) s))
     (concat (car lst) s (cadr lst))))

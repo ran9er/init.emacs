@@ -35,7 +35,7 @@
           '(lambda()
              (if (and (eolp)
                       (equal (char-before) 32))
-                 (progn 
+                 (progn
                    ;; (del-tail-spc)
                    (delete-trailing-whitespace)
                    (untabify (point-min) (point-max))))
@@ -85,4 +85,3 @@
 
 ;; * 开启服务器模式
 ;(server-start)
-
