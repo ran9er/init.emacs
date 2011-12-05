@@ -2,9 +2,9 @@
 ;; * gui
 (if window-system
     ((lambda ()
-       (tool-bar-mode 0)                    ;;禁用工具栏
+       (tool-bar-mode 0)                    ;; 禁用工具栏
 
-       ;;鼠标指针规避光标
+       ;; 鼠标指针规避光标
        (mouse-avoidance-mode 'exile)
        (setq mouse-avoidance-threshold 10) ;光标靠近该范围,指针规避
        ;; (defun mouse-avoidance-banish-destination()
@@ -25,18 +25,16 @@
            fname))
 
        (setq
-        ;;设置窗口位置 大小
-        initial-frame-alist '((top . 10)(left . 40)(width . 90)(height . 30))
-        ;;设置标题栏显示文件的完整路径名
-        frame-title-format             
-                        '(:eval (concat (user-login-name) "@" (system-name) "[Emacs" 
+        ;; 设置标题栏显示文件的完整路径名
+        frame-title-format
+                        '(:eval (concat (user-login-name) "@" (system-name) "[Emacs"
                          (nth 2 (split-string (version))) "]  " (fname-title-string)))
 
         ;; fringe 配置
         default-indicate-buffer-boundaries '((top . left) (t . left))
 
-        x-select-enable-clipboard t		;;使用X剪贴板
-        x-stretch-cursor t			;;Tab字符使用大光标
+        x-select-enable-clipboard t     ;; 使用X剪贴板
+        x-stretch-cursor t              ;; Tab字符使用大光标
         )
 )))
 

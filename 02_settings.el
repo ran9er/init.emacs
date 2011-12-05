@@ -7,7 +7,7 @@
 (transient-mark-mode t)              ;;高亮显示区域选择
 
 ;; * date
-(setq 	system-time-locale "C"
+(setq   system-time-locale "C"
         display-time-format "%Y-%m-%d %a %H:%M:%S"
         ;; display-time-day-and-date t
         ;; display-time-24hr-format t
@@ -36,9 +36,9 @@
 (setq-default make-backup-files nil)
 
 ;; * misc
-(setq 
+(setq
       default-major-mode 'text-mode  ;;缺省模式 text-mode
-      default-fill-column 80         ;;页宽 
+      default-fill-column 80         ;;页宽
 ;     require-final-newline t        ;;以空行结束
       ;;页面上下预留行数，光标进入此范围卷动页面
       scroll-margin 1
@@ -54,16 +54,13 @@
       column-number-mode t              ;;显示列号
 ;     resize-mini-windows nil           ;;锁定行高
       enable-recursive-minibuffers nil  ;;递归 minibuffer
-      echo-keystrokes 0.1	            ;;按键序列显示延迟，默认 1
+      echo-keystrokes 0.1               ;;按键序列显示延迟，默认 1
       ;; 当使用 M-x COMMAND 后，过 1 秒钟显示该 COMMAND 绑定的键。
       ;suggest-key-bindings 1
-
-      ;;设定行距
-      default-line-spacing 0
 )
 
 ;; * 缩进
-(setq-default                   ; 使用空格缩进 
+(setq-default                   ; 使用空格缩进
         indent-tabs-mode nil    ; t 使用 TAB 作格式化字符  nil 使用空格作格式化字符
         tab-always-indent nil
         tab-width 4)
