@@ -21,6 +21,7 @@
     "C-w"       backward-kill-word-or-kill-region   ;; (kill-region)
     "C-x C-q"   view-mode                           ;; 切换 view-mode
     "M-q"       toggle-read-only                    ;; fill-paragraph
+    "M-t"       swap-point                          ;; transpose-words
 ;   "C-x C-j"   execute-extended-command            ;; 执行命令
     "C-x c"     my-clean-buffer                     ;;
     "C-x C"     desktop-clear                       ;;
