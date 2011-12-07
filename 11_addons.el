@@ -14,6 +14,9 @@
 (global-set-key (kbd "<f5>") (run-current-file-macro compile))
 (global-set-key (kbd "<f6>") (run-current-file-macro shell-command))
 
+;; *========== anything
+(require 'anything)
+
 ;; *========== org-mode	
 (setq org-hide-leading-stars t)
  (define-key global-map "\C-ca" 'org-agenda)

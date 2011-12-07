@@ -7,7 +7,7 @@
     "C-c C-j"   execute-extended-command            ;; 执行命令
     "C-o"       set-mark-command                    ;; (open-line) 设置标记
     "C-z"       set-mark-command                    ;; (suspend-frame) 设置标记
-;   "C-x b"     electric-buffer-list                ;; (switch-to-buffer)
+    "C-x b"     anything                            ;; (switch-to-buffer)
     "C-x C-b"   ibuffer                             ;; (list-buffers)
     "M-4"       delete-window                       ;; 关闭当前缓冲区 Alt+4  ;; C-x 0;
     "M-1"       delete-other-windows                ;; 关闭其它缓冲区 Alt+1  ;; C-x 1;
