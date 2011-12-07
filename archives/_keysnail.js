@@ -514,11 +514,11 @@ ext.add("next-page", function () {
     }
 }, "Next page");
 
-key.setViewKey(['[', '['], function(ev, arg) {
+key.setViewKey([']', ']'], function(ev, arg) {
     ext.exec("previous-page", arg, ev);
 }, "Previous page");
 
-key.setViewKey([']', ']'], function(ev, arg) {
+key.setViewKey(['[', '['], function(ev, arg) {
     ext.exec("next-page", arg, ev);
 }, "Next page");
 
