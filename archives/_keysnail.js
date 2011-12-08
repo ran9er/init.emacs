@@ -307,11 +307,11 @@ key.setEditKey(['C-x', 'r', 'y'], function (ev) {
     command.yankRectangle(ev.originalTarget, command.kill.buffer);
 }, 'Yank the last killed rectangle with upper left corner at point', true);
 
-key.setEditKey([['C-SPC'], ['C-@']], function (ev) {
+key.setEditKey([['C-o'], ['C-SPC'], ['C-@']], function (ev) {
     command.setMark(ev);
 }, 'Set the mark', true);
 
-key.setEditKey('C-o', function (ev) {
+key.setEditKey('C-j', function (ev) {
     command.openLine(ev);
 }, 'Open line');
 
@@ -493,7 +493,7 @@ key.setCaretKey('z', function (ev) {
     command.recenter(ev);
 }, 'Scroll to the cursor position');
 
-key.setCaretKey([['C-SPC'], ['C-@']], function (ev) {
+key.setCaretKey([['C-o'], ['C-SPC'], ['C-@']], function (ev) {
     command.setMark(ev);
 }, 'Set the mark', true);
 
@@ -593,6 +593,10 @@ key.setGlobalKey(['C-o', 'O'], function (ev, arg) {
 key.setCaretKey('v', function (ev, arg) {
 content.document.documentElement.ksMarked = !content.document.documentElement.ksMarked;
 }, 'Toggle visual mode');
+
+// key.setViewKey('v', function (ev, arg) {
+// content.document.documentElement.ksMarked = !content.document.documentElement.ksMarked;
+// }, 'Toggle visual mode');
 
 //
 key.setViewKey('M-<down>', function(ev, arg) {
