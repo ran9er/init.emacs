@@ -4,7 +4,55 @@
 // Put all your code except special key, set*key, hook, blacklist.
 // ========================================================================= //
 //{{%PRESERVE%
-// Put your codes here
+//
+ext.add("previous-page", function () {
+    var document = window._content.document;
+    var links = document.links;
+    for(i = 0; i < links.length; i++) {
+        if (   (links[i].text == '上一页')   || (links[i].text == '<上一页')
+            || (links[i].text == 'Previous') || (links[i].text == 'Prev')
+            || (links[i].text == '<')        || (links[i].text == '<<'))
+        document.location = links[i].href;
+    }
+}, "Previous page");
+
+ext.add("next-page", function () {
+    var document = window._content.document;
+    var links = document.links;
+    for(i = 0; i < links.length; i++) {
+    if (   (links[i].text == '下一页')  || (links[i].text == '下一页>')
+        || (links[i].text == 'Next')    || (links[i].text == 'next')
+        || (links[i].text == '>')       || (links[i].text == '>>'))
+        document.location = links[i].href;
+    }
+}, "Next page");
+
+//
+ext.add("paste-and-go", function() {
+    var url = command.getClipboardText();
+    if (url.indexOf("://") != -1)
+    {
+    window._content.location = url;
+    }
+    else
+    {
+    //url = util.format("http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8", encodeURIComponent(url));
+    BrowserSearch.loadSearch(url, false);
+    }
+}, "Paste the URL or keyword from clipboard and Go");
+
+ext.add("paste-to-tab-and-go", function() {
+    var url = command.getClipboardText();
+    if (url.indexOf("://") != -1)
+    gBrowser.loadOneTab(url, null, null, null, false);
+    else
+    {
+    //url = util.format("http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8", encodeURIComponent(url));
+    BrowserSearch.loadSearch(url, true);
+    }
+}, "Paste the URL or keyword from clipboard to a new tab and Go");
+
+
 //}}%PRESERVE%
 // ========================================================================= //
 
@@ -198,15 +246,19 @@ key.setViewKey(':', function (ev, arg) {
     shell.input(null, arg);
 }, 'List and execute commands', true);
 
+key.setViewKey('r', function (ev) {
+    BrowserReload();
+}, 'Reload the page', true);
+
 key.setViewKey('R', function (ev) {
     BrowserReload();
 }, 'Reload the page', true);
 
-key.setViewKey('B', function (ev) {
+key.setViewKey('p', function (ev) {
     BrowserBack();
 }, 'Back');
 
-key.setViewKey('F', function (ev) {
+key.setViewKey('n', function (ev) {
     BrowserForward();
 }, 'Forward');
 
@@ -214,7 +266,7 @@ key.setViewKey(['C-x', 'h'], function (ev) {
     goDoCommand("cmd_selectAll");
 }, 'Select all', true);
 
-key.setViewKey('f', function (ev) {
+key.setViewKey('i', function (ev) {
     command.focusElement(command.elementsRetrieverTextarea, 0);
 }, 'Focus to the first textarea', true);
 
@@ -483,36 +535,17 @@ key.setViewKey('t', function (ev) {
     BrowserOpenTab();
 }, 'Open the new tab');
 
-key.setViewKey(';', function (ev, arg) {
+key.setViewKey('F', function (ev, arg) {
     ext.exec("hok-start-background-mode", arg, ev);
 }, 'Start Hit a Hint background mode', true);
+
+key.setViewKey(';', function (ev, arg) {
+    ext.exec("hok-start-extended-mode", arg, ev);
+}, 'Start Hit a Hint extended mode', true);
 
 key.setViewKey('f', function (ev, arg) {
     ext.exec("hok-start-foreground-mode", arg, ev);
 }, 'Start Hit a Hint foreground mode', true);
-
-//
-ext.add("previous-page", function () {
-    var document = window._content.document;
-    var links = document.links;
-    for(i = 0; i < links.length; i++) {
-        if (   (links[i].text == '上一页')   || (links[i].text == '<上一页')
-            || (links[i].text == 'Previous') || (links[i].text == 'Prev')
-            || (links[i].text == '<')        || (links[i].text == '<<'))
-        document.location = links[i].href;
-    }
-}, "Previous page");
-
-ext.add("next-page", function () {
-    var document = window._content.document;
-    var links = document.links;
-    for(i = 0; i < links.length; i++) {
-    if (   (links[i].text == '下一页')  || (links[i].text == '下一页>')
-        || (links[i].text == 'Next')    || (links[i].text == 'next')
-        || (links[i].text == '>')       || (links[i].text == '>>'))
-        document.location = links[i].href;
-    }
-}, "Next page");
 
 key.setViewKey([']', ']'], function(ev, arg) {
     ext.exec("previous-page", arg, ev);
@@ -566,31 +599,6 @@ key.setViewKey('M-<down>', function(ev, arg) {
   var backForwardMenu = document.getElementById("backForwardMenu");
   backForwardMenu.openPopupAtScreen(document.width / 2, document.height / 2, true);
 }, 'Show page history menu');
-
-//
-ext.add("paste-and-go", function() {
-    var url = command.getClipboardText();
-    if (url.indexOf("://") != -1)
-    {
-    window._content.location = url;
-    }
-    else
-    {
-    //url = util.format("http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8", encodeURIComponent(url));
-    BrowserSearch.loadSearch(url, false);
-    }
-}, "Paste the URL or keyword from clipboard and Go");
-
-ext.add("paste-to-tab-and-go", function() {
-    var url = command.getClipboardText();
-    if (url.indexOf("://") != -1)
-    gBrowser.loadOneTab(url, null, null, null, false);
-    else
-    {
-    //url = util.format("http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8", encodeURIComponent(url));
-    BrowserSearch.loadSearch(url, true);
-    }
-}, "Paste the URL or keyword from clipboard to a new tab and Go");
 
 //tanything
 key.setGlobalKey(['C-x', 'b'], function (ev, arg) {
