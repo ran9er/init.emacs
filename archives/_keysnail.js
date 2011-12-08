@@ -604,3 +604,26 @@ key.setViewKey('M-<down>', function(ev, arg) {
 key.setGlobalKey(['C-x', 'b'], function (ev, arg) {
     ext.exec('tanything', arg, ev);
 }, 'view all tabs ', true);
+
+//
+key.setViewKey(['C-c', 'C-a'], function (ev, arg) {
+    var pattern = /(.*?)([0]*)([0-9]+)([^0-9]*)$/;
+    var url = content.location.href;
+    var digit = url.match(pattern);
+    if (digit[1] && digit[3]) {
+        let len = digit[3].length;
+        let next = +digit[3] + (arg ? arg : 1);
+        content.location.href = digit[1] + (digit[2] || "").slice(next.toString().length - len) + next + (digit[4] || "");
+    }
+}, 'Increment last digit in the URL');
+ 
+key.setViewKey(['C-c', 'C-d'], function (ev, arg) {
+    var pattern = /(.*?)([0]*)([0-9]+)([^0-9]*)$/;
+    var url = content.location.href;
+    var digit = url.match(pattern);
+    if (digit[1] && digit[3]) {
+        let len = digit[3].length;
+        let next = +digit[3] - (arg ? arg : 1);
+        content.location.href = digit[1] + (digit[2] || "").slice(next.toString().length - len) + next + (digit[4] || "");
+    }
+}, 'Decrement last digit in the URL');
