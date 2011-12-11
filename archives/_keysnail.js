@@ -4,6 +4,7 @@
 // Put all your code except special key, set*key, hook, blacklist.
 // ========================================================================= //
 //{{%PRESERVE%
+plugins.options["hok.hint_keys"] = "fjdkslgharueiwoqpty";
 //
 ext.add("previous-page", function () {
     var document = window._content.document;
