@@ -4,7 +4,10 @@
 // Put all your code except special key, set*key, hook, blacklist.
 // ========================================================================= //
 //{{%PRESERVE%
-plugins.options["hok.hint_keys"] = "fjdkslgharueiwoqpty";
+//
+//plugins.options["hok.hint_keys"] = "fjdkslgharueiwoqpty";
+plugins.options["hok.hint_keys"] = "fdsagrewqtvcxz";
+
 //
 ext.add("previous-page", function () {
     var document = window._content.document;
@@ -621,7 +624,7 @@ key.setViewKey(['C-c', 'C-a'], function (ev, arg) {
         content.location.href = digit[1] + (digit[2] || "").slice(next.toString().length - len) + next + (digit[4] || "");
     }
 }, 'Increment last digit in the URL');
- 
+
 key.setViewKey(['C-c', 'C-d'], function (ev, arg) {
     var pattern = /(.*?)([0]*)([0-9]+)([^0-9]*)$/;
     var url = content.location.href;
