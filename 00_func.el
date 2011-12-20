@@ -123,8 +123,7 @@ See also `define-key-s'."
          (while (member (char-to-string (get-byte (1- beg)))
                         '("'" "`" "," "#" "@"))
            (setq beg (1- beg))))
-       (setq tmp (buffer-substring-no-properties beg end))
-       (delete-region beg end)
+       (setq tmp (delete-and-extract-region beg end))
        (insert ,o)
        (backward-char ,b)
        (save-excursion
