@@ -175,8 +175,7 @@ See also `define-key-s'."
     (goto-char start-position)
     (insert p)
     (mirror-region (buffer-substring-no-properties start-position (1- end-marker))
-                   (1- end-marker) marker-list)
-    (goto-char start-position)
+                   start-position marker-list)
     (setq y nil)
     (while (null (eq (setq x (read-char "mirror edit")) 13))
       (if y nil
