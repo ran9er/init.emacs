@@ -141,6 +141,52 @@ See also `define-key-s'."
       (call-interactively 'kill-region)
     (call-interactively 'backward-kill-word)))
 
+;; * parallel-edit
+(defun insert-char-from-read(c)
+  (cond
+   ((eq c 13)
+    (newline))
+   ((eq c 127)
+    (delete-backward-char 1))
+   ((eq c 23)
+    (backward-kill-word 1))
+   (t
+    (insert-char c 1))))
+(defun mirror-region (str psn mkr-lst)
+  "mirror region in mkr-lst, with str, and goto psn"
+  (mapcar
+   (lambda(x)
+     (delete-region (car x)(1- (cdr x)))
+     (goto-char (car x))
+     (insert str))
+   mkr-lst)
+  (goto-char psn))
+(defun parallel-edit (position-list &optional prt)
+  (interactive)
+  (let ((p (or prt (char-to-string 30)))
+        (start-position (point-marker))
+        end-position mirror y x
+        (end-marker (progn (forward-char 1)(point-marker)))
+        (marker-list (mapcar (lambda (x)
+                               (cons
+                                (progn (goto-char x)(point-marker))
+                                (progn (forward-char 1)(point-marker))))
+                             position-list)))
+    (goto-char start-position)
+    (insert p)
+    (mirror-region (buffer-substring-no-properties start-position (1- end-marker))
+                   (1- end-marker) marker-list)
+    (goto-char start-position)
+    (setq y nil)
+    (while (null (eq (setq x (read-char "mirror edit")) 13))
+      (if y nil
+        (delete-region start-position (1- end-marker)))
+      (insert-char-from-read x)
+      (setq end-position (1- end-marker)
+            mirror (buffer-substring-no-properties start-position end-position)
+            y t)
+      (mirror-region mirror end-position marker-list))))
+
 ;; * outside
 (defmacro outside (o b s)
   "up list N level, append PRE ahead and SUF behind, backward M char"
