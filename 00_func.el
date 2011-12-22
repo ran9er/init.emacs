@@ -1,10 +1,46 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * cons-list
 (defun cons-list (lst)
+  "(cons-list '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
   (if lst
       (cons
        (cons (car lst)(cadr lst))
        (cons-list (cddr lst)))))
+
+(defun cons-list-l (lst)
+  "(cons-list-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
+  (let* ((lst (if (eq (logand (length lst) 1) 1) `(,@lst nil) lst))
+         (l (length lst))
+         (new-list (cons (cons (nth (- l 2) lst)(nth (- l 1) lst)) nil))
+         (cnt (1- (/ l 2))))
+    (while (> cnt 0)
+      (setq new-list (cons
+                      (cons (nth (- l 4) lst)
+                            (nth (- l 3) lst))
+                      new-list)
+            cnt (- cnt 1) l (- l 2)))
+    new-list))
+
+;; * zip-lists
+(defun zip-lists (a b)
+  "(zip-lists '(1 3 5) '(2 4 6)) => ((1 . 2) (3 . 4) (5 . 6))"
+  (if (and a b)
+      (cons
+       (cons (car a)(car b))
+       (zip-lists (cdr a)(cdr b)))))
+
+;; * merge-lists
+(defun merge-lists (&rest lists)
+  "(merge-lists '(1 2) '(3 4) '(5 6)) => ((1 3 5) (2 4 6))"
+  (let* ((l (length (car (last lists))))
+         (m (1- (length lists)))
+         (new-lists (zip-lists (car (last lists))(make-list l nil)))
+         (lists (butlast lists)))
+    (while (> m 0)
+      (setq new-lists (zip-lists (car (last lists)) new-lists)
+            lists (butlast lists)
+            m (1- m)))
+    new-lists))
 
 ;; * join-string
 (defun join-string (lst s)
