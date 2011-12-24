@@ -51,7 +51,7 @@
 
 ;; * concat symbol
 (defun concat-symbol (&rest lst)
-  (read (apply 'concat (mapcar (lambda(x)(symbol-name x)) lst))))
+  (read (apply 'concat (mapcar (lambda(x)(if (symbolp x) (symbol-name x) x)) lst))))
 
 ;; * shell-command-symbol-to-string
 (defmacro shell-command-symbol-to-string (&rest s)
@@ -152,39 +152,36 @@ See also `define-key-s'."
     (backward-kill-word 1))
    (t
     (insert-char c 1))))
-(defun mirror-region (str psn mkr-lst)
+(defun mirror-region (src psn mkr-lst)
   "mirror region in mkr-lst, with str, and goto psn"
-  (mapcar
-   (lambda(x)
-     (delete-region (car x)(1- (cdr x)))
-     (goto-char (car x))
-     (insert str))
-   mkr-lst)
+  (let ((str (buffer-substring-no-properties (car src)(cdr src))))
+    (mapcar
+     (lambda(x)
+       (delete-region (car x)(1- (cdr x)))
+       (goto-char (car x))
+       (insert str))
+     mkr-lst))
   (goto-char psn))
 (defun parallel-edit (position-list &optional prt)
   (interactive)
-  (let ((p (or prt (char-to-string 30)))
-        (start-position (point-marker))
-        end-position mirror y x
-        (end-marker (progn (forward-char 1)(point-marker)))
-        (marker-list (mapcar (lambda (x)
-                               (cons
-                                (progn (goto-char x)(point-marker))
-                                (progn (forward-char 1)(point-marker))))
-                             position-list)))
+  (let* ((p (or prt 0))
+         (start-position (point-marker))
+         end-position y x
+         (end-marker (progn (forward-char (1+ p))(point-marker)))
+         (marker-list (mapcar (lambda (x)
+                                (cons
+                                 (progn (goto-char x)(point-marker))
+                                 (progn (forward-char (1+ p))(point-marker))))
+                              position-list)))
     (goto-char start-position)
-    (insert p)
-    (mirror-region (buffer-substring-no-properties start-position (1- end-marker))
-                   start-position marker-list)
     (setq y nil)
-    (while (null (eq (setq x (read-char "mirror edit")) 13))
+    (while (null (eq (setq x (read-char "parallel-edit")) 13))
       (if y nil
         (delete-region start-position (1- end-marker)))
       (insert-char-from-read x)
       (setq end-position (1- end-marker)
-            mirror (buffer-substring-no-properties start-position end-position)
             y t)
-      (mirror-region mirror end-position marker-list))))
+      (mirror-region (cons start-position end-position) end-position marker-list))))
 
 ;; * outside
 (defmacro outside (o b s)
@@ -204,7 +201,8 @@ See also `define-key-s'."
          (while (member (char-to-string (get-byte (1- beg)))
                         '("'" "`" "," "#" "@"))
            (setq beg (1- beg))))
-       (setq tmp (delete-and-extract-region beg end))
+       (setq tmp (buffer-substring-no-properties beg end))
+       (delete-region beg end)
        (insert ,o)
        (backward-char ,b)
        (save-excursion
@@ -367,6 +365,17 @@ See also `define-key-s'."
   (interactive "Dexec-path: ")
   (setenv "PATH" (concat path ";" (getenv "PATH")))
   (push path exec-path))
+
+;; * load-once
+(defmacro load-once (&rest s)
+  (let* ((name (file-name-sans-extension
+                (file-name-nondirectory
+                 (or load-file-name (buffer-file-name)))))
+         (a (concat-symbol "*load-once--" name "*")))
+    `(if (boundp ',a)
+         nil
+       ,@s
+       (setq ,a t))))
 
 ;; * test
 (defun mklst (n)

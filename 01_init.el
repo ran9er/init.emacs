@@ -2,6 +2,17 @@
 ;; * autoload
 (mapc 'load (directory-files (expand-file-name "_autoload/" *init-dir*) t "\\.el\\'"))
 
+;; * auto-hooks
+(let (name
+      (dir (expand-file-name "_major-mode/" *init-dir*)))
+  (mapcar
+   (lambda(x)
+     (setq name
+           (file-name-sans-extension (file-name-nondirectory x)))
+     (add-hook  (concat-symbol name "-mode-hook")
+               `(lambda()(load ,x))))
+   (directory-files dir t "\\.el\\'")))
+
 ;; * environment
 (if (eq system-type 'windows-nt)
     (mapc (lambda (p)(add-exec-path p))
