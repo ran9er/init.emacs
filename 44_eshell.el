@@ -33,6 +33,7 @@
 (add-hook 'eshell-mode-hook (lambda()
            (outline-minor-mode 1)
            (eldoc-mode)
+;           (lisp-symbol)
            (my-auto-pair)
            (enable-theme 'eshell)
            (eshell-scroll-conservatively)
@@ -44,15 +45,17 @@
                  eshell-scroll-show-maximum-output t)
            (add-to-list 'eshell-output-filter-functions
                         'eshell-postoutput-scroll-to-bottom)
-           (def-k-s eshell-mode-map
+            (def-key-s eshell-mode-map
               ;; "C-p"   'eshell-previous-matching-input-from-input
               ;; "C-n"   'eshell-next-matching-input-from-input
               ;; "M-p"   'previous-line
               ;; "M-n"   'next-line
-              "<up>"     eshell-previous-matching-input-from-input
-              "<down>"   eshell-next-matching-input-from-input
+              "<up>"    'eshell-previous-matching-input-from-input
+              "<down>"  'eshell-next-matching-input-from-input
+              "C-9"     (outside "()" 1 " ")
+              "C-8"     'down-list
+              "C-7"     '(lambda nil (interactive)(up-list -1))
               )
-
 ;          (buffer-face-set 'eshell-custom-face)
 ))
 

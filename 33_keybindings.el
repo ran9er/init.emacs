@@ -40,18 +40,6 @@
     ;;                 (goto-char p)))
 ))
 
-(mapc (lambda(mode)(add-hook (concat-symbol mode '-hook)
-      `(lambda()
-         (def-key-s ,(concat-symbol mode '-map)
-           "C-9"       (outside "()" 1 " ")
-           "C-8"       'down-list
-           "C-7"       '(lambda nil (interactive)(up-list -1))
-           ))))
-      '(lisp-mode
-        lisp-interaction-mode
-        emacs-lisp-mode
-        eshell-mode))
-
 ;;F10 显示/隐藏菜单栏 ;; M-x menu-bar-open
 ;;(global-set-key (kbd "F10") 'menu-bar-mode)
 

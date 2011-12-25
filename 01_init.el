@@ -3,15 +3,37 @@
 (mapc 'load (directory-files (expand-file-name "_autoload/" *init-dir*) t "\\.el\\'"))
 
 ;; * auto-hooks
-(let (name
-      (dir (expand-file-name "_major-mode/" *init-dir*)))
-  (mapcar
-   (lambda(x)
-     (setq name
-           (file-name-sans-extension (file-name-nondirectory x)))
-     (add-hook  (concat-symbol name "-mode-hook")
-               `(lambda()(load ,x))))
-   (directory-files dir t "\\.el\\'")))
+(setq major-mode-list
+      (let (y)
+        (delete-dups
+         (mapcar
+          (lambda(x)
+            (setq y (symbol-name (if (symbolp (cdr x))(cdr x)(car (last x)))))
+            (substring (if (string-match "mode" y) y (concat y "-mode")) 0 -5))
+          auto-mode-alist))))
+
+(let* ((dir (expand-file-name "_extensions/" *init-dir*))
+       (ext (mapcar
+             (lambda(x)(cons (file-name-sans-extension (file-name-nondirectory x)) x))
+             (directory-files dir t "\\.el\\'"))))
+  (if nil ;; if t ;; if t t
+      ;; ** by major-mode
+      (mapcar
+       (lambda(x)
+         (add-hook  (concat-symbol (car x) "-mode-hook")
+                    `(lambda()(load ,(cdr x)))))
+       ext)
+    ;; ** by extension
+    (add-hook 'find-file-hook
+              `(lambda ()
+                 (load (or
+                        (cdr (assoc (or (file-name-extension (buffer-name))
+                                        (and (string-equal "*" (substring (buffer-name) 0 1))
+                                             (substring (buffer-name) 1 -1)))
+                                    ',ext))
+                        (make-temp-name ""))
+                       t)))
+    ))
 
 ;; * environment
 (if (eq system-type 'windows-nt)
@@ -53,8 +75,20 @@
              (time-stamp)))
 
 ;; * lisp mode
-(add-hook 'emacs-lisp-mode-hook 'lisp-symbol)
-;(add-hook 'eshell-mode-hook 'pretty-lambdas)
+(mapc (lambda (mode)
+        (add-hook
+         (concat-symbol mode '-hook)
+         `(lambda ()
+            (lisp-symbol)
+            (eldoc-mode)
+            (def-key-s ,(concat-symbol mode '-map)
+              "C-9"       (outside "()" 1 " ")
+              "C-8"       'down-list
+              "C-7"       '(lambda nil (interactive)(up-list -1))
+              ))))
+      '(lisp-mode
+        lisp-interaction-mode
+        emacs-lisp-mode))
 
 ;; * max
 (setq max-lisp-eval-depth   1000        ;lisp最大执行深度   500
