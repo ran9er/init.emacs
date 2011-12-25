@@ -9,7 +9,7 @@
          (mapcar
           (lambda(x)
             (setq y (symbol-name (if (symbolp (cdr x))(cdr x)(car (last x)))))
-            (substring (if (string-match "mode" y) y (concat y "-mode")) 0 -5))
+            (substring (if (string-match "mode$" y) y (concat y "-mode")) 0 -5))
           auto-mode-alist))))
 
 (let* ((dir (expand-file-name "_extensions/" *init-dir*))
