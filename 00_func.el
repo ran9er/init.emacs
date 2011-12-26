@@ -42,6 +42,21 @@
             m (1- m)))
     new-lists))
 
+;; * hash-table
+(defun cons2hash (lst)
+  (let ((h (make-hash-table :test 'equal)))
+    (mapc (lambda(x)(puthash (car x)(cdr x) h)) lst)
+    h))
+(defun build-hash-table (&rest lst)
+  (cons2hash (cons-list-l lst)))
+
+(defun list-hash (hash-table &optional with-value)
+  (let (lst)
+    (if with-value
+        (maphash (lambda(x y)(setq lst (cons (cons x y) lst))) hash-table)
+      (maphash (lambda(x y)(setq lst (cons x lst))) hash-table))
+    (reverse lst)))
+
 ;; * join-string
 (defun join-string (lst s)
  "(mapconcat 'concat lst s)"

@@ -3,37 +3,26 @@
 (mapc 'load (directory-files (expand-file-name "_autoload/" *init-dir*) t "\\.el\\'"))
 
 ;; * auto-hooks
-(setq major-mode-list
-      (let (y)
-        (delete-dups
-         (mapcar
-          (lambda(x)
-            (setq y (symbol-name (if (symbolp (cdr x))(cdr x)(car (last x)))))
-            (substring (if (string-match "mode$" y) y (concat y "-mode")) 0 -5))
-          auto-mode-alist))))
-
 (let* ((dir (expand-file-name "_extensions/" *init-dir*))
        (ext (mapcar
              (lambda(x)(cons (file-name-sans-extension (file-name-nondirectory x)) x))
              (directory-files dir t "\\.el\\'"))))
-  (if nil ;; if t ;; if t t
-      ;; ** by major-mode
-      (mapcar
-       (lambda(x)
-         (add-hook  (concat-symbol (car x) "-mode-hook")
-                    `(lambda()(load ,(cdr x)))))
-       ext)
-    ;; ** by extension
-    (add-hook 'find-file-hook
-              `(lambda ()
+  (add-hook 'find-file-hook
+            `(lambda ()
+               (let (mode)
+                 (mapcar (lambda(x)
+                           (and
+                            (string-match (car x)(buffer-name))
+                            (setq mode (cdr x))))
+                         auto-mode-alist)
+                 (setq mode
+                       (or mode
+                           (and (string-equal "*" (substring (buffer-name) 0 1))
+                                (substring (buffer-name) 1 -1))))
                  (load (or
-                        (cdr (assoc (or (file-name-extension (buffer-name))
-                                        (and (string-equal "*" (substring (buffer-name) 0 1))
-                                             (substring (buffer-name) 1 -1)))
-                                    ',ext))
+                        (cdr (assoc (symbol-name mode) ',ext))
                         (make-temp-name ""))
-                       t)))
-    ))
+                       t)))))
 
 ;; * environment
 (if (eq system-type 'windows-nt)

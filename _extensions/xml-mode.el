@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <nxml.el>
 ;; Create:       <2011-12-24 14:21:54 ran9er>
-;; Time-stamp:   <2011-12-24 15:49:51 ran9er>
+;; Time-stamp:   <2011-12-26 17:50:01 ran9er>
 ;; Mail:         <2999am@gmail.com>
 (load-once
  (defun nxml-outside (&optional n)
@@ -25,8 +25,11 @@
      (backward-char 4)
      (parallel-edit (list (- end 5)) 3)))
 
+(add-hook
+ 'nxml-mode-hook
  (def-k-s nxml-mode-map
    "C-j"    nxml-balanced-close-start-tag-inline
    "M-j"    nxml-balanced-close-start-tag-block
-   "C-9"    nxml-outside)
-)
+   "C-9"    nxml-outside))
+ )
+
