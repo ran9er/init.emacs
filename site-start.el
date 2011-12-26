@@ -1,6 +1,5 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(unless (boundp '*init-dir*);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(unless (boundp '*init-dir*)
+
   (let* (init-time
          (init-name-match "init.*emacs\\|emacs.*init")
          (base-dir
@@ -25,17 +24,17 @@
       ;; export *init-dir*
       (setq *init-dir* init-dir)
 
-      ;; delete elc without el
-      (mapc (lambda(f)(or (file-exists-p (substring f 0 -1))
-                      (delete-file f)))
-            (directory-files init-dir t "\\.elc\\'"))
+      (when nil
+        ;; delete elc without el
+        (mapc (lambda(f)(or (file-exists-p (substring f 0 -1))
+                        (delete-file f)))
+              (directory-files init-dir t "\\.elc\\'"))
+        ;; recompile
+        (eval-when-compile (require 'bytecomp))
+        (mapc (lambda(f) (byte-recompile-file f nil 0))
+              (directory-files init-dir t "\\.el\\'")))
 
-      ;; recompile
-      (eval-when-compile (require 'bytecomp))
-      (mapc (lambda(f) (byte-recompile-file f nil 0))
-            (directory-files init-dir t "\\.el\\'"))
-
-      (setq init-time (cons (float-time)()))
+      (setq init-time (list (float-time)))
 
       ;; add init-dir & dir "^_" to load-path
       (mapc (lambda (p)
@@ -55,7 +54,4 @@
           (message "load %d init file , spend %g seconds ; startup spend %g seconds"
                    ,(length init-files)
                    ,(- (cdr init-time) (car init-time))
-                   (- (float-time) ,(car init-time)))))))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  );;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                   (- (float-time) ,(car init-time))))))))
