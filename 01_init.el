@@ -13,14 +13,14 @@
                  (mapcar (lambda(x)
                            (and
                             (string-match (car x)(buffer-name))
-                            (setq mode (cdr x))))
+                            (setq mode (symbol-name (cdr x)))))
                          auto-mode-alist)
                  (setq mode
                        (or mode
                            (and (string-equal "*" (substring (buffer-name) 0 1))
                                 (substring (buffer-name) 1 -1))))
                  (load (or
-                        (cdr (assoc (symbol-name mode) ',ext))
+                        (cdr (assoc mode ',ext))
                         (make-temp-name ""))
                        t)))))
 
