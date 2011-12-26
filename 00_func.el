@@ -149,12 +149,37 @@ See also `define-key-s'."
 See also `define-key-s'."
   (define-key-s keymap key-defs))
 
+;; * insert-time
+(defun insert-time (&optional format)
+  (interactive )
+  (insert
+   (format-time-string
+    (or format "%Y-%m-%d {%u} %H:%M:%S")
+    (current-time))))
+
 ;; * backward-kill-word-or-kill-region
 (defun backward-kill-word-or-kill-region ()
   (interactive)
   (if mark-active
       (call-interactively 'kill-region)
     (call-interactively 'backward-kill-word)))
+
+;; * resize-horizontal-space
+(defun resize-horizontal-space (&optional backward-only)
+  (interactive "*P")
+  (let (fwd-pos eol-pos bwd-pos bol-pos
+        (orig-pos (point)))
+    (setq
+     fwd-pos (progn (skip-chars-forward " \t") (point))
+     bwd-pos (progn (skip-chars-backward " \t") (point))
+     eol-pos (progn (end-of-line) (point))
+     bol-pos (progn (beginning-of-line) (point)))
+    (goto-char orig-pos)
+    (if (or (eq fwd-pos eol-pos)
+            (eq bwd-pos bol-pos))
+        (delete-horizontal-space backward-only)
+      (delete-horizontal-space backward-only)
+      (insert " "))))
 
 ;; * parallel-edit
 (defun insert-char-from-read(c)
