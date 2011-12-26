@@ -167,16 +167,13 @@ See also `define-key-s'."
 ;; * resize-horizontal-space
 (defun resize-horizontal-space (&optional backward-only)
   (interactive "*P")
-  (let (fwd-pos eol-pos bwd-pos bol-pos
+  (let (fwd-pos bwd-pos
         (orig-pos (point)))
     (setq
-     fwd-pos (progn (skip-chars-forward " \t") (point))
-     bwd-pos (progn (skip-chars-backward " \t") (point))
-     eol-pos (progn (end-of-line) (point))
-     bol-pos (progn (beginning-of-line) (point)))
+     fwd-pos (progn (skip-chars-forward " \t") (eolp))
+     bwd-pos (progn (skip-chars-backward " \t") (bolp)))
     (goto-char orig-pos)
-    (if (or (eq fwd-pos eol-pos)
-            (eq bwd-pos bol-pos))
+    (if (or fwd-pos bwd-pos)
         (delete-horizontal-space backward-only)
       (delete-horizontal-space backward-only)
       (insert " "))))
