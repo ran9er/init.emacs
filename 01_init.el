@@ -1,7 +1,4 @@
 ;; -*- encoding: utf-8-unix; -*-
-;; * autoload
-(mapc 'load (directory-files (expand-file-name "_autoload/" *init-dir*) t "\\.el\\'"))
-
 ;; * auto-hooks
 (let* ((dir (expand-file-name "_extensions/" *init-dir*))
        (ext (mapcar

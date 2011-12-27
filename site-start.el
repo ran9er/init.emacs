@@ -24,6 +24,22 @@
       ;; export *init-dir*
       (setq *init-dir* init-dir)
 
+      ;; autoload
+      (defun autoload-directory (dir &optional force loaddefs basedir)
+        (let* ((path
+                (expand-file-name dir (or basedir *init-dir*)))
+               (ldfs
+                (or loaddefs (expand-file-name "_loaddefs" path))))
+          (mapcar
+           (lambda(f)
+             (if (or force
+                     (null (file-newer-than-file-p ldfs f)))
+                 (update-file-autoloads f t ldfs)))
+           (directory-files path t "\\.el\\'"))
+          (load ldfs)))
+
+      (autoload-directory "_autoload/")
+
       (when nil
         ;; delete elc without el
         (mapc (lambda(f)(or (file-exists-p (substring f 0 -1))

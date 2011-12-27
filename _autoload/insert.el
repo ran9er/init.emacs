@@ -1,9 +1,25 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2011-11-11 15:34:35 ran9er>
+;; Time-stamp:   <2011-12-27 21:12:44 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
+;;;###autoload
+(defun insert-autoload ()
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (insert ";;;###autoload\n")))
+
+;;;###autoload
+(defun insert-time (&optional format)
+  (interactive )
+  (insert
+   (format-time-string
+    (or format "%Y-%m-%d {%u} %H:%M:%S")
+    (current-time))))
+
+;;;###autoload
 (defun insert-doc-head ()
   (interactive)
   (let* (beg
@@ -30,6 +46,7 @@
     (insert v)
     (comment-region beg (point))
     ))
+
 
 (setq head-alist '(
 ;                     (c-mode . ,common-head)
