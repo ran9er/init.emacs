@@ -14,14 +14,9 @@
 
 ;;;***
 
-;;;### (autoloads (parallel-edit resize-horizontal-space swap-point
-;;;;;;  outside) "edit" "edit.el" (20217 54991))
+;;;### (autoloads (parallel-edit resize-horizontal-space swap-point)
+;;;;;;  "edit" "edit.el" (20217 58120))
 ;;; Generated autoloads from edit.el
-
-(autoload 'outside "edit" "\
-up list N level, append PRE ahead and SUF behind, backward M char
-
-\(fn O B S)" nil (quote macro))
 
 (autoload 'swap-point "edit" "\
 
@@ -110,17 +105,6 @@ up list N level, append PRE ahead and SUF behind, backward M char
 \(fn &optional FORMAT)" t nil)
 
 (autoload 'insert-doc-head "insert" "\
-
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (insert-doc-head) "insert-head" "insert-head.el"
-;;;;;;  (20217 48582))
-;;; Generated autoloads from insert-head.el
-
-(autoload 'insert-doc-head "insert-head" "\
 
 
 \(fn)" t nil)
