@@ -22,7 +22,7 @@
       (cons "\\*eshell\\*.*" desktop-clear-preserve-buffers))
 
 (defalias 'clear 'desktop-clear)
-(autoload 'my-clean-buffer "my-clean-buffer" t)
+;(autoload 'my-clean-buffer "my-clean-buffer" t)
 (defalias 'clean 'my-clean-buffer)
 
 ;; * recentf

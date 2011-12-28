@@ -14,4 +14,4 @@
 
 (defun force-update-my-autoload()
   (interactive)
-  (autoload-directory "_autoload/" t))
+  (autoload-directory "_autoload_/" t))

@@ -9,7 +9,7 @@
 (add-hook 'undo-tree-visualizer-mode-hook 'buffer-face-mode)
 
 ;; *========== run-current-file-macro
-(autoload 'run-current-file-macro "run-file" "" t)
+;(autoload 'run-current-file-macro "run-file" "" t)
 
 (global-set-key (kbd "<f5>") (run-current-file-macro compile))
 (global-set-key (kbd "<f6>") (run-current-file-macro shell-command))

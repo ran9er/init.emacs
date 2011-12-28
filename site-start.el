@@ -38,7 +38,7 @@
            (directory-files path t "\\.el\\'"))
           (load ldfs)))
 
-      (autoload-directory "_autoload/")
+      (autoload-directory "_autoload_/")
 
       (when nil
         ;; delete elc without el
@@ -52,11 +52,11 @@
 
       (setq init-time (list (float-time)))
 
-      ;; add init-dir & dir "^_" to load-path
+      ;; add init-dir & dir "_xxx_" to load-path
       (mapc (lambda (p)
               (if (file-directory-p p)
                   (add-to-list 'load-path p)))
-            (cons init-dir (directory-files init-dir t "^_")))
+            (cons init-dir (directory-files init-dir t "^_.*_\\'")))
 
       ;; load *.elc || *.el in init-dir
       (mapc (lambda (f) (load (file-name-sans-extension f))) init-files)

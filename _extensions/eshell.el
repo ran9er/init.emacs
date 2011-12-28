@@ -1,4 +1,5 @@
 ;; -*- encoding: utf-8-unix; -*-
+;; don't need load-once, because eshell-load-hook load only once
 ;; * bash-completion
 ;+++++++++++++++++++++++++++++++++++++++
 (if t t
@@ -112,7 +113,7 @@
   (propertize "Image" (quote display) (create-image (expand-file-name img))))
 
 (defun eshell/ee ()
-  (find-file (expand-file-name "44_eshell.el" *init-dir*)))
+  (find-file (expand-file-name "_extensions/eshell.el" *init-dir*)))
 
 (defun eshell/aa ()
   (find-file eshell-aliases-file))

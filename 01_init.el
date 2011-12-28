@@ -19,7 +19,10 @@
                  (load (or
                         (cdr (assoc mode ',ext))
                         (make-temp-name ""))
-                       t)))))
+                       t))))
+  (add-hook 'eshell-load-hook
+            `(lambda ()
+               (load ,(cdr (assoc "eshell" ext))))))
 
 ;; * environment
 (if (eq system-type 'windows-nt)
