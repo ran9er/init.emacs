@@ -183,6 +183,15 @@ See also `add-to-list-x'
 
 ;;;***
 
+;;;### (autoloads nil "patch" "patch.el" (20218 33650))
+;;; Generated autoloads from patch.el
+
+(autoload 'dired-update-file-line "dired-aux" "\
+Not documented
+\(fn FILE)" t nil)
+
+;;;***
+
 ;;;### (autoloads (shell-command-symbol-to-string join-string) "string"
 ;;;;;;  "string.el" (20217 52683))
 ;;; Generated autoloads from string.el
