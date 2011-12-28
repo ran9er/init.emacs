@@ -12,17 +12,18 @@
                             (string-match (car x)(buffer-name))
                             (setq mode (symbol-name (cdr x)))))
                          auto-mode-alist)
-                 (setq mode
-                       (or mode
-                           (and (string-equal "*" (substring (buffer-name) 0 1))
-                                (substring (buffer-name) 1 -1))))
+                 ;; (setq mode
+                 ;;       (or mode
+                 ;;           (and (string-equal "*" (substring (buffer-name) 0 1))
+                 ;;                (substring (buffer-name) 1 -1))))
                  (load (or
                         (cdr (assoc mode ',ext))
                         (make-temp-name ""))
                        t))))
   (add-hook 'eshell-load-hook
             `(lambda ()
-               (load ,(cdr (assoc "eshell" ext))))))
+               (load ,(cdr (assoc "eshell" ext)))))
+  )
 
 ;; * environment
 (if (eq system-type 'windows-nt)

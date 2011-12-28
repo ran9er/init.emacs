@@ -1,5 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; don't need load-once, because eshell-load-hook load only once
+(defvar eacc 0)
+(setq eacc (1+ eacc))
 ;; * bash-completion
 ;+++++++++++++++++++++++++++++++++++++++
 (if t t

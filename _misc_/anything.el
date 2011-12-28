@@ -470,6 +470,8 @@
       . (lambda ()
           (remove-if (lambda (name)
                        (or (equal name anything-buffer)
+                           ;; ran9er
+                           (equal name (buffer-name (cadr (buffer-list))))
                            (eq ?\  (aref name 0))))
                      (mapcar 'buffer-name (buffer-list)))))
      (type . buffer))
