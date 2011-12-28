@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2011-12-28 09:41:02 ran9er>
+;; Time-stamp:   <2011-12-28 23:00:34 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -18,6 +18,21 @@
    (format-time-string
     (or format "%Y-%m-%d {%u} %H:%M:%S")
     (current-time))))
+
+;;;###autoload
+(defun insert-delimit-line (&optional n)
+  (interactive "P")
+  (let* ((n (if (and n (> n 35)) n 35))
+         (x (/ (- n 35) 2))
+         (y (- n x 35)))
+    (insert
+     ">"
+     (make-string x ?-)
+     (format-time-string
+      "--|%Y-%m-%d|--|%u|--|%H:%M:%S|--"
+      (current-time))
+     (make-string y ?-)
+     "<")))
 
 ;;;###autoload
 (defun insert-doc-head ()
