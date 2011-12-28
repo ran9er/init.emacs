@@ -205,6 +205,16 @@ See also `add-to-list-x'
 
 ;;;***
 
+;;;### (autoloads (sdcv-to-buffer) "+sdcv" "+sdcv.el" (20219 15030))
+;;; Generated autoloads from +sdcv.el
+
+(autoload 'sdcv-to-buffer "+sdcv" "\
+
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (shell-command-symbol-to-string join-string) "+string"
 ;;;;;;  "+string.el" (20219 6038))
 ;;; Generated autoloads from +string.el
