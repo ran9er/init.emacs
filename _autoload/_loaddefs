@@ -3,42 +3,33 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "_patch" "_patch.el" (20218 33650))
-;;; Generated autoloads from _patch.el
-
-(autoload 'dired-update-file-line "dired-aux" "\
-Not documented
-\(fn FILE)" t nil)
-
-;;;***
-
-;;;### (autoloads (my-auto-pair) "auto-pair" "auto-pair.el" (20217
+;;;### (autoloads (my-auto-pair) "auto-pair_" "auto-pair_.el" (20217
 ;;;;;;  52226))
-;;; Generated autoloads from auto-pair.el
+;;; Generated autoloads from auto-pair_.el
 
-(autoload 'my-auto-pair "auto-pair" "\
+(autoload 'my-auto-pair "auto-pair_" "\
 
 
 \(fn)" t nil)
 
 ;;;***
 
-;;;### (autoloads (substring-buffer-name) "buffer" "buffer.el" (20218
-;;;;;;  31490))
-;;; Generated autoloads from buffer.el
+;;;### (autoloads (substring-buffer-name) "buffer_" "buffer_.el"
+;;;;;;  (20218 31490))
+;;; Generated autoloads from buffer_.el
 
-(autoload 'substring-buffer-name "buffer" "\
+(autoload 'substring-buffer-name "buffer_" "\
 使用 substring 截取文件名时，在 buffer-name 后面加几个字符，防止文件名过短引发错误。m n 参数同`substring'的 from to，可选参数 x 存在时截取带路径的文件名。
 
 \(fn M N &optional X)" nil nil)
 
 ;;;***
 
-;;;### (autoloads (rename-file-specify-extension) "dired" "dired.el"
+;;;### (autoloads (rename-file-specify-extension) "dired_" "dired_.el"
 ;;;;;;  (20217 52226))
-;;; Generated autoloads from dired.el
+;;; Generated autoloads from dired_.el
 
-(autoload 'rename-file-specify-extension "dired" "\
+(autoload 'rename-file-specify-extension "dired_" "\
 
 
 \(fn)" t nil)
@@ -46,41 +37,41 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (parallel-edit resize-horizontal-space swap-point)
-;;;;;;  "edit" "edit.el" (20217 58120))
-;;; Generated autoloads from edit.el
+;;;;;;  "edit_" "edit_.el" (20217 58120))
+;;; Generated autoloads from edit_.el
 
-(autoload 'swap-point "edit" "\
+(autoload 'swap-point "edit_" "\
 
 
 \(fn)" t nil)
 
-(autoload 'resize-horizontal-space "edit" "\
+(autoload 'resize-horizontal-space "edit_" "\
 
 
 \(fn &optional BACKWARD-ONLY)" t nil)
 
-(autoload 'parallel-edit "edit" "\
+(autoload 'parallel-edit "edit_" "\
 
 
 \(fn POSITION-LIST &optional PRT)" t nil)
 
 ;;;***
 
-;;;### (autoloads (run-current-file-macro write-temp find-temp) "file"
-;;;;;;  "file.el" (20218 31501))
-;;; Generated autoloads from file.el
+;;;### (autoloads (run-current-file-macro write-temp find-temp) "file_"
+;;;;;;  "file_.el" (20218 31501))
+;;; Generated autoloads from file_.el
 
-(autoload 'find-temp "file" "\
+(autoload 'find-temp "file_" "\
 
 
 \(fn &optional SUFFIX)" t nil)
 
-(autoload 'write-temp "file" "\
+(autoload 'write-temp "file_" "\
 
 
 \(fn FILENAME &optional CONFIRM)" t nil)
 
-(autoload 'run-current-file-macro "file" "\
+(autoload 'run-current-file-macro "file_" "\
 Execute or compile the current file.
 For example, if the current buffer is the file x.pl,
 then it'll call “perl x.pl” in a shell.
@@ -91,39 +82,39 @@ File suffix is used to determine what program to run.
 
 ;;;***
 
-;;;### (autoloads (temp-func-call temp-func-add) "function" "function.el"
+;;;### (autoloads (temp-func-call temp-func-add) "function_" "function_.el"
 ;;;;;;  (20217 52226))
-;;; Generated autoloads from function.el
+;;; Generated autoloads from function_.el
 
 (defvar temp-func-list '((let ((cnt 0) (acc nil)) (mapc (lambda (x) (setq acc (concat acc "\n" (number-to-string (setq cnt (1+ cnt))) ": " (prin1-to-string x)))) (butlast temp-func-list)) acc)))
 
-(autoload 'temp-func-add "function" "\
+(autoload 'temp-func-add "function_" "\
 
 
 \(fn &optional BEG END)" t nil)
 
-(autoload 'temp-func-call "function" "\
+(autoload 'temp-func-call "function_" "\
 
 
 \(fn &optional N)" t nil)
 
 ;;;***
 
-;;;### (autoloads (list-hash build-hash-table cons2hash) "hash" "hash.el"
-;;;;;;  (20217 52226))
-;;; Generated autoloads from hash.el
+;;;### (autoloads (list-hash build-hash-table cons2hash) "hash_"
+;;;;;;  "hash_.el" (20217 52226))
+;;; Generated autoloads from hash_.el
 
-(autoload 'cons2hash "hash" "\
+(autoload 'cons2hash "hash_" "\
 
 
 \(fn LST)" nil nil)
 
-(autoload 'build-hash-table "hash" "\
+(autoload 'build-hash-table "hash_" "\
 
 
 \(fn &rest LST)" nil nil)
 
-(autoload 'list-hash "hash" "\
+(autoload 'list-hash "hash_" "\
 
 
 \(fn HASH-TABLE &optional WITH-VALUE)" nil nil)
@@ -131,20 +122,20 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (insert-doc-head insert-time insert-autoload-magic-comment)
-;;;;;;  "insert" "insert.el" (20218 29614))
-;;; Generated autoloads from insert.el
+;;;;;;  "insert_" "insert_.el" (20218 29614))
+;;; Generated autoloads from insert_.el
 
-(autoload 'insert-autoload-magic-comment "insert" "\
+(autoload 'insert-autoload-magic-comment "insert_" "\
 
 
 \(fn)" t nil)
 
-(autoload 'insert-time "insert" "\
+(autoload 'insert-time "insert_" "\
 
 
 \(fn &optional FORMAT)" t nil)
 
-(autoload 'insert-doc-head "insert" "\
+(autoload 'insert-doc-head "insert_" "\
 
 
 \(fn)" t nil)
@@ -152,25 +143,25 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (add-to-list-p add-to-list-l add-to-list-x merge-lists
-;;;;;;  zip-lists cons-list-l) "list" "list.el" (20217 52226))
-;;; Generated autoloads from list.el
+;;;;;;  zip-lists cons-list-l) "list_" "list_.el" (20217 52226))
+;;; Generated autoloads from list_.el
 
-(autoload 'cons-list-l "list" "\
+(autoload 'cons-list-l "list_" "\
 (cons-list-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))
 
 \(fn LST)" nil nil)
 
-(autoload 'zip-lists "list" "\
+(autoload 'zip-lists "list_" "\
 (zip-lists '(1 3 5) '(2 4 6)) => ((1 . 2) (3 . 4) (5 . 6))
 
 \(fn A B)" nil nil)
 
-(autoload 'merge-lists "list" "\
+(autoload 'merge-lists "list_" "\
 (merge-lists '(1 2) '(3 4) '(5 6)) => ((1 3 5) (2 4 6))
 
 \(fn &rest LISTS)" nil nil)
 
-(autoload 'add-to-list-x "list" "\
+(autoload 'add-to-list-x "list_" "\
 See also `add-to-list-l' `add-to-list-p'
 
 \(add-to-list-x 'load-path
@@ -180,28 +171,28 @@ See also `add-to-list-l' `add-to-list-p'
 
 \(fn LIST-VAR &rest REST)" nil nil)
 
-(autoload 'add-to-list-l "list" "\
+(autoload 'add-to-list-l "list_" "\
 See also `add-to-list-x'
 
 \(fn LIST-VAR LIST)" nil nil)
 
-(autoload 'add-to-list-p "list" "\
+(autoload 'add-to-list-p "list_" "\
 See also `add-to-list-x'
 
 \(fn LIST-VAR &optional BASE &rest REST)" nil nil)
 
 ;;;***
 
-;;;### (autoloads (shell-command-symbol-to-string join-string) "string"
-;;;;;;  "string.el" (20217 52683))
-;;; Generated autoloads from string.el
+;;;### (autoloads (shell-command-symbol-to-string join-string) "string_"
+;;;;;;  "string_.el" (20217 52683))
+;;; Generated autoloads from string_.el
 
-(autoload 'join-string "string" "\
+(autoload 'join-string "string_" "\
 (mapconcat 'concat lst s)
 
 \(fn LST S)" nil nil)
 
-(autoload 'shell-command-symbol-to-string "string" "\
+(autoload 'shell-command-symbol-to-string "string_" "\
 
 
 \(fn &rest S)" nil (quote macro))
@@ -210,36 +201,37 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (test-times test-list eval-buffer-time mklst) "test"
-;;;;;;  "test.el" (20217 52226))
-;;; Generated autoloads from test.el
+;;;### (autoloads (test-times test-list eval-buffer-time mklst) "test_"
+;;;;;;  "test_.el" (20217 52226))
+;;; Generated autoloads from test_.el
 
-(autoload 'mklst "test" "\
+(autoload 'mklst "test_" "\
 创建大小为 n 的字符串列表
 
 \(fn N)" nil nil)
 
-(autoload 'eval-buffer-time "test" "\
+(autoload 'eval-buffer-time "test_" "\
 
 
 \(fn)" t nil)
 
-(autoload 'test-list "test" "\
+(autoload 'test-list "test_" "\
 用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)
 
 \(fn N &rest FN)" nil (quote macro))
 
-(autoload 'test-times "test" "\
+(autoload 'test-times "test_" "\
 计算 body 运行 n 次所需时间
 
 \(fn N &rest BODY)" nil (quote macro))
 
 ;;;***
 
-;;;### (autoloads (wordpress) "wordpress" "wordpress.el" (20217 52226))
-;;; Generated autoloads from wordpress.el
+;;;### (autoloads (wordpress) "wordpress_" "wordpress_.el" (20217
+;;;;;;  52226))
+;;; Generated autoloads from wordpress_.el
 
-(autoload 'wordpress "wordpress" "\
+(autoload 'wordpress "wordpress_" "\
 
 
 \(fn BEG END)" t nil)
