@@ -137,8 +137,9 @@ File suffix is used to determine what program to run.
 
 ;;;***
 
-;;;### (autoloads (insert-doc-head insert-time insert-autoload-magic-comment)
-;;;;;;  "+insert" "+insert.el" (20219 6038))
+;;;### (autoloads (insert-doc-head insert-delimit-line insert-time
+;;;;;;  insert-autoload-magic-comment) "+insert" "+insert.el" (20219
+;;;;;;  12050))
 ;;; Generated autoloads from +insert.el
 
 (autoload 'insert-autoload-magic-comment "+insert" "\
@@ -150,6 +151,11 @@ File suffix is used to determine what program to run.
 
 
 \(fn &optional FORMAT)" t nil)
+
+(autoload 'insert-delimit-line "+insert" "\
+
+
+\(fn &optional N)" t nil)
 
 (autoload 'insert-doc-head "+insert" "\
 
