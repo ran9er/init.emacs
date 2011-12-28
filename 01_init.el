@@ -64,22 +64,6 @@
                    (untabify (point-min) (point-max))))
              (time-stamp)))
 
-;; * lisp mode
-(mapc (lambda (mode)
-        (add-hook
-         (concat-symbol mode '-hook)
-         `(lambda ()
-            (lisp-symbol)
-            (eldoc-mode)
-            (def-key-s ,(concat-symbol mode '-map)
-              "C-9"       (outside "()" 1 " ")
-              "C-8"       'down-list
-              "C-7"       '(lambda nil (interactive)(up-list -1))
-              ))))
-      '(lisp-mode
-        lisp-interaction-mode
-        emacs-lisp-mode))
-
 ;; * max
 (setq max-lisp-eval-depth   1000        ;lisp最大执行深度   500
       max-specpdl-size      10000       ;最大容量           1000

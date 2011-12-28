@@ -55,7 +55,7 @@
               ;; "M-n"   'next-line
               "<up>"    'eshell-previous-matching-input-from-input
               "<down>"  'eshell-next-matching-input-from-input
-              "C-9"     (outside "()" 1 " ")
+              "C-9"     (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
               "C-8"     'down-list
               "C-7"     '(lambda nil (interactive)(up-list -1))
               )

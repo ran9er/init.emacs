@@ -91,3 +91,19 @@
 ;      (require 'xxx) )
 ;  (error
 ;   (message "Can't load xxx-mode %s" (cdr err))))
+
+;; * lisp mode
+(mapc (lambda (mode)
+        (add-hook
+         (concat-symbol mode '-hook)
+         `(lambda ()
+            (lisp-symbol)
+            (eldoc-mode)
+            (def-key-s ,(concat-symbol mode '-map)
+              "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
+              "C-8"       'down-list
+              "C-7"       '(lambda nil (interactive)(up-list -1))
+              ))))
+      '(lisp-mode
+        lisp-interaction-mode
+        emacs-lisp-mode))

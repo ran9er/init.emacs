@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2011-12-28 12:37:12 ran9er>
+;; Time-stamp:   <2011-12-28 21:34:56 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -31,32 +31,6 @@
         (delete-horizontal-space backward-only)
       (delete-horizontal-space backward-only)
       (insert " "))))
-
-;; outside
-;;;###autoload
-(defmacro outside (o b s)
-  "up list N level, append PRE ahead and SUF behind, backward M char"
-  `(lambda(&optional n)
-     (interactive "P")
-     (let ((x (if n (prefix-numeric-value n) 1))
-           beg end tmp delimiter)
-       (if mark-active
-           (setq delimiter ""
-                 beg (region-beginning)
-                 end (region-end))
-         (setq delimiter ,s)
-         (up-list x)
-         (setq end (point))
-         (setq beg (backward-list))
-         (while (member (char-to-string (get-byte (1- beg)))
-                        '("'" "`" "," "#" "@"))
-           (setq beg (1- beg))))
-       (setq tmp (buffer-substring-no-properties beg end))
-       (delete-region beg end)
-       (insert ,o)
-       (backward-char ,b)
-       (save-excursion
-         (insert delimiter tmp)))))
 
 ;; parallel-edit
 (defun insert-char-from-read(c)
@@ -103,3 +77,27 @@
             y t)
       (mirror-region (cons start-position end-position) end-position marker-list))))
 
+;; outside
+;;;###autoload
+(defun outside (o b s &optional n)
+  "up list N level, append PRE ahead and SUF behind, backward M char"
+  (interactive "P")
+  (let ((x (if n (prefix-numeric-value n) 1))
+        beg end tmp delimiter)
+    (if mark-active
+        (setq delimiter ""
+              beg (region-beginning)
+              end (region-end))
+      (setq delimiter s)
+      (up-list x)
+      (setq end (point))
+      (setq beg (backward-list))
+      (while (member (char-to-string (get-byte (1- beg)))
+                     '("'" "`" "," "#" "@"))
+        (setq beg (1- beg))))
+    (setq tmp (buffer-substring-no-properties beg end))
+    (delete-region beg end)
+    (insert o)
+    (backward-char b)
+    (save-excursion
+      (insert delimiter tmp))))

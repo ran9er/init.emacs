@@ -30,6 +30,7 @@
                 (expand-file-name dir (or basedir *init-dir*)))
                (ldfs
                 (or loaddefs (expand-file-name "_loaddefs" path))))
+          (if force (delete-file ldfs))
           (mapcar
            (lambda(f)
              (if (or force
