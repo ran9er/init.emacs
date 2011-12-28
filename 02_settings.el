@@ -80,6 +80,7 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
 (setq auto-mode-alist
       (remove '("\\.js\\'" . javascript-generic-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("_loaddefs\\'" . emacs-lisp-mode))
 
 ;; * 让 Emacs 可以直接打开和显示图片。
 ;(auto-image-file-mode)

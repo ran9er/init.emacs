@@ -1,5 +1,4 @@
 ;; -*- encoding: utf-8-unix; -*-
-(autoload 'rename-file-specify-extension "rename-specify-extension" "" t)
 
 (add-hook 'dired-mode-hook (lambda ()
   (interactive)

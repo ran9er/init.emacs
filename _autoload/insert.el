@@ -1,11 +1,11 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2011-12-27 21:12:44 ran9er>
+;; Time-stamp:   <2011-12-28 09:41:02 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
-(defun insert-autoload ()
+(defun insert-autoload-magic-comment ()
   (interactive)
   (save-excursion
     (beginning-of-line)
