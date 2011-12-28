@@ -3,6 +3,15 @@
 ;;; Code:
 
 
+;;;### (autoloads nil "_patch" "_patch.el" (20218 33650))
+;;; Generated autoloads from _patch.el
+
+(autoload 'dired-update-file-line "dired-aux" "\
+Not documented
+\(fn FILE)" t nil)
+
+;;;***
+
 ;;;### (autoloads (my-auto-pair) "auto-pair" "auto-pair.el" (20217
 ;;;;;;  52226))
 ;;; Generated autoloads from auto-pair.el
@@ -180,15 +189,6 @@ See also `add-to-list-x'
 See also `add-to-list-x'
 
 \(fn LIST-VAR &optional BASE &rest REST)" nil nil)
-
-;;;***
-
-;;;### (autoloads nil "patch" "patch.el" (20218 33650))
-;;; Generated autoloads from patch.el
-
-(autoload 'dired-update-file-line "dired-aux" "\
-Not documented
-\(fn FILE)" t nil)
 
 ;;;***
 
