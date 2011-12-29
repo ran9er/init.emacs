@@ -33,17 +33,29 @@
             (directory-files init-dir t "^_.*_\\'"))
 
       ;; autoload
-      (defun autoload-directory (dir &optional force loaddefs basedir)
+      (defun autoload-directory (dir &optional f loaddefs basedir)
         (let* ((path
                 (expand-file-name dir (or basedir *init-dir*)))
                (ldfs
-                (or loaddefs (expand-file-name "_loaddefs" path))))
+                (or loaddefs (expand-file-name "_loaddefs" path)))
+               index force)
+          (let (i p)
+            (with-temp-buffer
+              (insert-file-contents ldfs)
+              (setq index nil
+                    p (point-max))
+              (while (setq i (search-forward-regexp ";;; Generated autoloads from " p t))
+                (setq index (cons
+                             (buffer-substring-no-properties i (line-end-position))
+                             index)))))
+          (setq force (or f (null (equal (reverse index)
+                                         (directory-files path nil "\\.el\\'")))))
           (if force (delete-file ldfs))
           (mapcar
-           (lambda (f)
+           (lambda (fl)
              (if (or force
-                     (null (file-newer-than-file-p ldfs f)))
-                 (update-file-autoloads f t ldfs)))
+                     (null (file-newer-than-file-p ldfs fl)))
+                 (update-file-autoloads fl t ldfs)))
            (directory-files path t "\\.el\\'"))
           (load ldfs)))
 
