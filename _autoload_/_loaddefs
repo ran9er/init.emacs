@@ -37,7 +37,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (rename-file-specify-extension) "+dired" "+dired.el"
-;;;;;;  (20219 6038))
+;;;;;;  (20220 26149))
 ;;; Generated autoloads from +dired.el
 
 (autoload 'rename-file-specify-extension "+dired" "\

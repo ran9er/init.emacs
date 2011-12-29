@@ -1,9 +1,5 @@
 ;; -*- encoding: utf-8-unix; -*-
 
-;; (autoload 'dired-update-file-line "dired-aux" "\
-;; Not documented
-;; \(fn FILE)" t nil)
-
 ;;;###autoload
 (defun rename-file-specify-extension ()
   (interactive)
