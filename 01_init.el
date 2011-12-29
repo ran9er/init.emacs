@@ -1,29 +1,12 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * auto-hooks
-(let* ((dir (expand-file-name "_extensions/" *init-dir*))
-       (ext (mapcar
-             (lambda(x)(cons (file-name-sans-extension (file-name-nondirectory x)) x))
-             (directory-files dir t "\\.el\\'"))))
-  (add-hook 'find-file-hook
-            `(lambda ()
-               (let (mode)
-                 (mapcar (lambda(x)
-                           (and
-                            (string-match (car x)(buffer-name))
-                            (setq mode (symbol-name (cdr x)))))
-                         auto-mode-alist)
-                 ;; (setq mode
-                 ;;       (or mode
-                 ;;           (and (string-equal "*" (substring (buffer-name) 0 1))
-                 ;;                (substring (buffer-name) 1 -1))))
-                 (load (or
-                        (cdr (assoc mode ',ext))
-                        (make-temp-name ""))
-                       t))))
-  (add-hook 'eshell-load-hook
-            `(lambda ()
-               (load ,(cdr (assoc "eshell" ext)))))
-  )
+(add-hook 'eshell-load-hook
+          `(lambda ()
+             (load ,(cdr (assoc "+eshell" auto-hook-alist)))))
+
+(add-hook 'dired-mode-hook
+          `(lambda ()
+             (load ,(cdr (assoc "+dired" auto-hook-alist)))))
 
 ;; * environment
 (if (eq system-type 'windows-nt)

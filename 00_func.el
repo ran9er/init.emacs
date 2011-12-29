@@ -142,15 +142,15 @@ See also `define-key-s'."
                                                (cdr x)))
           patterns))
 
-;; lisp symbol
+;; ** lisp symbol
 (defun lisp-symbol ()
   (interactive)
   (substitute-patterns-with-unicode
    (cons-list '("(?\\(lambda\\>\\)" lambda
                 ;; "\\<\\(lambda\\)\\>" lambda
                 "\\(;;\\ \\)" reference-mark
-                "\\(<-\\)" left-arrow
-                "\\(->\\)" right-arrow
+                ;; "\\(<-\\)" left-arrow
+                ;; "\\(->\\)" right-arrow
                 ;; "\\(==\\)" identical
                 ;; "\\(/=\\)" not-identical
                 "\\(>=\\)" greater-than-or-equal-to
