@@ -33,33 +33,35 @@
             (directory-files init-dir t "^_.*_\\'"))
 
       ;; autoload
-      (defun autoload-directory (dir &optional f loaddefs basedir)
-        (let* ((path
-                (expand-file-name dir (or basedir *init-dir*)))
-               (ldfs
-                (or loaddefs (expand-file-name "_loaddefs" path)))
-               index force)
-          (let (i p)
-            (with-temp-buffer
-              (insert-file-contents ldfs)
-              (setq index nil
-                    p (point-max))
-              (while (setq i (search-forward-regexp ";;; Generated autoloads from " p t))
-                (setq index (cons
-                             (buffer-substring-no-properties i (line-end-position))
-                             index)))))
-          (setq force (or f (null (equal (reverse index)
-                                         (directory-files path nil "\\.el\\'")))))
-          (if force (delete-file ldfs))
-          (mapcar
-           (lambda (fl)
-             (if (or force
-                     (null (file-newer-than-file-p ldfs fl)))
-                 (update-file-autoloads fl t ldfs)))
-           (directory-files path t "\\.el\\'"))
-          (load ldfs)))
-
-      (autoload-directory "_autoload_/")
+      (funcall
+       (lambda (dir &optional f loaddefs basedir)
+         (let* ((path
+                 (expand-file-name dir (or basedir *init-dir*)))
+                (ldfs
+                 (or loaddefs (expand-file-name "_loaddefs" path)))
+                index force)
+           (setq index
+                 (funcall
+                  (lambda (dir)
+                    (let (out i p)
+                      (with-temp-buffer
+                        (insert-file-contents dir)
+                        (setq p (point-max))
+                        (while (setq i (search-forward-regexp ";;; Generated autoloads from " p t))
+                          (setq out (cons (buffer-substring-no-properties i (line-end-position))
+                                          out)))) out))
+                  ldfs))
+           (setq force (or f (null (equal (reverse index)
+                                          (directory-files path nil "\\.el\\'")))))
+           (if force (delete-file ldfs))
+           (mapcar
+            (lambda (fl)
+              (if (or force
+                      (null (file-newer-than-file-p ldfs fl)))
+                  (update-file-autoloads fl t ldfs)))
+            (directory-files path t "\\.el\\'"))
+           (load ldfs)))
+       "_autoload_/")
 
       ;; auto-hook-alist
       (defvar auto-hook-alist
