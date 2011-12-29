@@ -12,7 +12,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq acc 0)
 
-(defun force-update-my-autoload()
-  (interactive)
-  (autoload-directory "_autoload_/" t))
-
+(-
+(cdar *init-time*)
+(apply '+ (mapcar 'cdr (cdr *init-time*)))
+)

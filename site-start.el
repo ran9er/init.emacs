@@ -17,7 +17,9 @@
               'file-newer-than-file-p))
             (make-temp-name ""))))
          (init-files
-          (directory-files init-dir t "\\.el\\'")))
+          (mapcar
+           (lambda (f) (file-name-sans-extension f))
+           (directory-files init-dir t "\\.el\\'"))))
 
     (when (file-exists-p init-dir)
 
@@ -99,15 +101,34 @@
               (directory-files init-dir t "\\.el\\'")))
 
       ;; load *.elc || *.el in init-dir
-      (mapc (lambda (f) (load (file-name-sans-extension f))) init-files)
+      (defvar *init-time* nil)
+      (let (tm)
+        (mapc
+         (lambda (f)
+           (setq tm (float-time))
+           (load f)
+           (setq *init-time*
+                 (cons
+                  (cons
+                   (file-name-nondirectory f)
+                   (- (float-time) tm))
+                  *init-time*)))
+         init-files))
 
       (setcdr init-time (float-time))
+
+      (setq *init-time*
+            (cons
+             (cons "Total"
+                   (- (cdr init-time)
+                      (car init-time)))
+             *init-time*))
 
       ;; when init finished, echo some info
       (add-hook
        'emacs-startup-hook
        `(lambda ()
           (message "load %d init file , spend %g seconds ; startup spend %g seconds"
-                   ,(length init-files)
-                   ,(- (cdr init-time) (car init-time))
+                   (1- (length *init-time*))
+                   (cdar *init-time*)
                    (- (float-time) ,(car init-time))))))))
