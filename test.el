@@ -16,3 +16,7 @@
 (cdar *init-time*)
 (apply '+ (mapcar 'cdr (cdr *init-time*)))
 )
+
+;; (hash-table-size *auto-hook-hash*)
+;; (test-times 100
+;;  (puthash (make-temp-name "") nil *auto-hook-hash*))

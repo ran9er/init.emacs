@@ -1,14 +1,14 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * load-once
+(defvar *load-once* nil)
 (defmacro load-once (&rest s)
-  (let* ((name (file-name-sans-extension
-                (file-name-nondirectory
-                 (or load-file-name (buffer-file-name)))))
-         (a (concat-symbol "*load-once--" name "*")))
-    `(if (boundp ',a)
+  (let* ((name (file-name-nondirectory
+                (or load-file-name (buffer-file-name)))))
+    ;; (a (concat-symbol "*load-once--" name "*"))
+    `(if (member ,name *load-once*)
          nil
        ,@s
-       (setq ,a t))))
+       (add-to-list '*load-once* ,name))))
 
 ;; * cons-list
 (defun cons-list (lst)

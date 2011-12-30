@@ -1,12 +1,16 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * auto-hooks
 (add-hook 'eshell-load-hook
-          `(lambda ()
-             (load ,(cdr (assoc "+eshell" auto-hook-alist)))))
+          '(lambda ()
+             (load (gethash "+eshell" *auto-hook-hash*
+                            (make-temp-name ""))
+                   t)))
 
 (add-hook 'dired-mode-hook
-          `(lambda ()
-             (load ,(cdr (assoc "+dired" auto-hook-alist)))))
+          '(lambda ()
+             (load (gethash "+dired" *auto-hook-hash*
+                            (make-temp-name ""))
+                   t)))
 
 ;; * environment
 (if (eq system-type 'windows-nt)

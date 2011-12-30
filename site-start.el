@@ -65,29 +65,34 @@
            (load ldfs)))
        "_autoload_/")
 
-      ;; auto-hook-alist
-      (defvar auto-hook-alist
-        (mapcar
-         (lambda (x)
-           (cons (file-name-sans-extension (file-name-nondirectory x)) x))
-         (directory-files (expand-file-name "_extensions/" init-dir) t "\\.el\\'")))
+      ;; *auto-hook-hash*
+      (defvar *auto-hook-hash* (make-hash-table :test 'equal :size 30))
+      (mapc
+       (lambda (x)
+         (puthash
+          (file-name-sans-extension (file-name-nondirectory x)) x
+          *auto-hook-hash*))
+       (directory-files (expand-file-name "_extensions/" init-dir) t "\\.el\\'"))
 
       (add-hook 'find-file-hook
                 '(lambda ()
-                   (let (mode)
-                     (mapcar (lambda (x)
-                               (and
-                                (string-match (car x)(buffer-name))
-                                (setq mode (symbol-name (cdr x)))))
-                             auto-mode-alist)
+                   (let* ((bf (buffer-name))
+                          (mode
+                           (catch 'md
+                             (mapcar
+                              (lambda (x)
+                                (and
+                                 (string-match (car x) bf)
+                                 (throw 'md (symbol-name (cdr x)))))
+                              auto-mode-alist))))
                      ;; (setq mode
                      ;;       (or mode
-                     ;;           (and (string-equal "*" (substring (buffer-name) 0 1))
-                     ;;                (substring (buffer-name) 1 -1))))
-                     (load (or
-                            (cdr (assoc mode auto-hook-alist))
-                            (make-temp-name ""))
-                           t))))
+                     ;;           (and (string-equal "*" (substring bf 0 1))
+                     ;;                (substring bf 1 -1))))
+                     (load 
+                      (gethash mode *auto-hook-hash*
+                               (make-temp-name ""))
+                      t))))
 
       ;; byte-compile
       (when nil
