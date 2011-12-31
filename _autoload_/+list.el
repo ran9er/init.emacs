@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <list.el>
 ;; Create:       <2011-12-27 21:24:57 ran9er>
-;; Time-stamp:   <2011-12-27 21:28:09 ran9er>
+;; Time-stamp:   <2011-12-31 20:42:16 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -40,20 +40,20 @@
             m (1- m)))
     new-lists))
 
-;;;###autoload
-(defun add-to-list-x (LIST-VAR &rest REST)
-"See also `add-to-list-l' `add-to-list-p'
+;; ;;;###autoload
+;; (defun add-to-list-x (LIST-VAR &rest REST)
+;; "See also `add-to-list-l' `add-to-list-p'
 
-\(add-to-list-x 'load-path
-               init-dir
-               (expand-file-name \"_misc/\" init-dir)
-               )"
-  (mapc (lambda(ELEMENT) (add-to-list LIST-VAR ELEMENT)) REST))
+;; \(add-to-list-x 'load-path
+;;                init-dir
+;;                (expand-file-name \"_misc/\" init-dir)
+;;                )"
+;;   (mapc (lambda(ELEMENT) (add-to-list LIST-VAR ELEMENT)) REST))
 
-;;;###autoload
-(defun add-to-list-l (LIST-VAR LIST)
-"See also `add-to-list-x'"
-  (apply 'add-to-list-x LIST-VAR LIST))
+;; ;;;###autoload
+;; (defun add-to-list-l (LIST-VAR LIST)
+;; "See also `add-to-list-x'"
+;;   (apply 'add-to-list-x LIST-VAR LIST))
 
 ;;;###autoload
 (defun add-to-list-p (LIST-VAR &optional BASE &rest REST)
