@@ -49,7 +49,7 @@
                       (with-temp-buffer
                         (insert-file-contents dir)
                         (setq p (point-max))
-                        (while (setq i (search-forward-regexp ";;; Generated autoloads from " p t))
+                        (while (setq i (search-forward-regexp "^;;; Generated autoloads from " p t))
                           (setq out (cons (buffer-substring-no-properties i (line-end-position))
                                           out)))) out))
                   ldfs))
