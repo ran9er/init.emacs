@@ -56,12 +56,15 @@
            (setq force (or f (null (equal (reverse index)
                                           (directory-files path nil "\\.el\\'")))))
            (if force (delete-file ldfs))
-           (mapcar
-            (lambda (fl)
-              (if (or force
-                      (null (file-newer-than-file-p ldfs fl)))
-                  (update-file-autoloads fl t ldfs)))
-            (directory-files path t "\\.el\\'"))
+           (let ((generated-autoload-file ldfs))
+             (mapcar
+              (lambda (fl)
+                (if (or force
+                        (null (file-newer-than-file-p ldfs fl)))
+                    ;; if (>= emacs-major-version 24)
+                    ;; (update-file-autoloads fl t ldfs)
+                    (update-file-autoloads fl t)))
+              (directory-files path t "\\.el\\'")))
            (load ldfs)))
        "_autoload_/")
 
@@ -89,7 +92,7 @@
                      ;;       (or mode
                      ;;           (and (string-equal "*" (substring bf 0 1))
                      ;;                (substring bf 1 -1))))
-                     (load 
+                     (load
                       (gethash mode *auto-hook-hash*
                                (make-temp-name ""))
                       t))))
