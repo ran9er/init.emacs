@@ -60,7 +60,7 @@
              (mapcar
               (lambda (fl)
                 (if (or force
-                        (null (file-newer-than-file-p ldfs fl)))
+                        (null (file-newer-than-file-p generated-autoload-file fl)))
                     ;; if (>= emacs-major-version 24)
                     ;; (update-file-autoloads fl t ldfs)
                     (update-file-autoloads fl t)))
