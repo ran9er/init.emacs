@@ -37,7 +37,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (rename-file-specify-extension) "+dired" "+dired.el"
-;;;;;;  (20220 26149))
+;;;;;;  (20223 24177))
 ;;; Generated autoloads from +dired.el
 
 (autoload 'rename-file-specify-extension "+dired" "\
@@ -190,7 +190,17 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (sdcv-to-buffer) "+sdcv" "+sdcv.el" (20219 15030))
+;;;### (autoloads (wordpress) "+parse" "+parse.el" (20219 6038))
+;;; Generated autoloads from +parse.el
+
+(autoload 'wordpress "+parse" "\
+
+
+\(fn BEG END)" t nil)
+
+;;;***
+
+;;;### (autoloads (sdcv-to-buffer) "+sdcv" "+sdcv.el" (20223 21640))
 ;;; Generated autoloads from +sdcv.el
 
 (autoload 'sdcv-to-buffer "+sdcv" "\
@@ -241,17 +251,6 @@ See also `add-to-list-x'
 计算 body 运行 n 次所需时间
 
 \(fn N &rest BODY)" nil (quote macro))
-
-;;;***
-
-;;;### (autoloads (wordpress) "+wordpress" "+wordpress.el" (20219
-;;;;;;  6038))
-;;; Generated autoloads from +wordpress.el
-
-(autoload 'wordpress "+wordpress" "\
-
-
-\(fn BEG END)" t nil)
 
 ;;;***
 

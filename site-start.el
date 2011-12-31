@@ -39,9 +39,12 @@
        (lambda (dir &optional loaddefs basedir)
          (let* ((path
                  (expand-file-name dir (or basedir *init-dir*)))
+                (ldfs
+                 (or loaddefs "_loaddefs"))
                 (generated-autoload-file
-                 (expand-file-name (or loaddefs "_loaddefs") path)))
+                 (expand-file-name ldfs path)))
            (update-directory-autoloads path)
+           (kill-buffer ldfs)
            (load generated-autoload-file)))
        "_autoload_/")
 

@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <+sdcv.el>
 ;; Create:       <2011-12-28 23:49:57 ran9er>
-;; Time-stamp:   <2011-12-28 23:50:14 ran9er>
+;; Time-stamp:   <2012-01-01 02:29:27 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -44,4 +44,3 @@
                                             (delete-window)
                                           (progn (bury-buffer) (other-window 1))))))
            (goto-char (point-min))))))))
-

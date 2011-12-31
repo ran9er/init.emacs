@@ -13,6 +13,4 @@
     (if (file-exists-p  new-file)
         (delete-file new-file))
     (rename-file from-file new-file)
-    (revert-buffer)
-    ))
-
+    (revert-buffer)))
