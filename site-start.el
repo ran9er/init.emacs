@@ -36,36 +36,13 @@
 
       ;; autoload
       (funcall
-       (lambda (dir &optional f loaddefs basedir)
+       (lambda (dir &optional loaddefs basedir)
          (let* ((path
                  (expand-file-name dir (or basedir *init-dir*)))
-                (ldfs
-                 (or loaddefs (expand-file-name "_loaddefs" path)))
-                index force)
-           (setq index
-                 (funcall
-                  (lambda (dir)
-                    (let (out i p)
-                      (with-temp-buffer
-                        (insert-file-contents dir)
-                        (setq p (point-max))
-                        (while (setq i (search-forward-regexp "^;;; Generated autoloads from " p t))
-                          (setq out (cons (buffer-substring-no-properties i (line-end-position))
-                                          out)))) out))
-                  ldfs))
-           (setq force (or f (null (equal (reverse index)
-                                          (directory-files path nil "\\.el\\'")))))
-           (if force (delete-file ldfs))
-           (let ((generated-autoload-file ldfs))
-             (mapcar
-              (lambda (fl)
-                (if (or force
-                        (null (file-newer-than-file-p generated-autoload-file fl)))
-                    ;; if (>= emacs-major-version 24)
-                    ;; (update-file-autoloads fl t ldfs)
-                    (update-file-autoloads fl t)))
-              (directory-files path t "\\.el\\'")))
-           (load ldfs)))
+                (generated-autoload-file
+                 (expand-file-name (or loaddefs "_loaddefs") path)))
+           (update-directory-autoloads path)
+           (load generated-autoload-file)))
        "_autoload_/")
 
       ;; *auto-hook-hash*

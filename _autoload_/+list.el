@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <list.el>
 ;; Create:       <2011-12-27 21:24:57 ran9er>
-;; Time-stamp:   <2011-12-31 20:42:16 ran9er>
+;; Time-stamp:   <2011-12-31 23:53:10 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -59,4 +59,3 @@
 (defun add-to-list-p (LIST-VAR &optional BASE &rest REST)
 "See also `add-to-list-x'"
   (mapc (lambda(ELEMENT) (add-to-list LIST-VAR (expand-file-name ELEMENT BASE))) REST))
-
