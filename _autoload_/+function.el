@@ -2,7 +2,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <function.el>
 ;; Create:       <2011-12-27 21:33:05 ran9er>
-;; Time-stamp:   <2012-01-01 12:04:08 ran9er>
+;; Time-stamp:   <2012-01-01 13:07:39 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -42,12 +42,14 @@
 ;;;###autoload
 (defun set-local-variable(&optional v)
   (interactive "P")
-  (let ((n (read
-           (if mark-active
-               (buffer-substring-no-properties
-                (region-beginning) (region-end))
-             (current-word t))))
-        (v (read-input "give a value: ")))
-   (make-local-variable n)
-   (set n v)
-   (message "set %s to %s" n v)))
+  (let* ((n (if mark-active
+                (buffer-substring-no-properties
+                 (region-beginning) (region-end))
+              (current-word t)))
+         (v (eval
+             (read
+              (read-input (concat "set " n "'s value: ")))))
+         (n (read n)))
+    (make-local-variable n)
+    (set n v)
+    (message "set %s to %s" n v)))

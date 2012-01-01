@@ -99,7 +99,7 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (set-local-variable temp-func-call temp-func-add)
-;;;;;;  "+function" "+function.el" (20223 56200))
+;;;;;;  "+function" "+function.el" (20223 59931))
 ;;; Generated autoloads from +function.el
 
 (defvar temp-func-list '((let ((cnt 0) (acc nil)) (mapc (lambda (x) (setq acc (concat acc "\n" (number-to-string (setq cnt (1+ cnt))) ": " (prin1-to-string x)))) (butlast temp-func-list)) acc)))
