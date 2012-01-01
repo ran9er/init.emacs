@@ -48,7 +48,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (outside parallel-edit resize-horizontal-space
-;;;;;;  swap-point) "+edit" "+edit.el" (20219 6912))
+;;;;;;  swap-point) "+edit" "+edit.el" (20223 58259))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
@@ -98,8 +98,8 @@ File suffix is used to determine what program to run.
 
 ;;;***
 
-;;;### (autoloads (temp-func-call temp-func-add) "+function" "+function.el"
-;;;;;;  (20219 6038))
+;;;### (autoloads (set-local-variable temp-func-call temp-func-add)
+;;;;;;  "+function" "+function.el" (20223 56200))
 ;;; Generated autoloads from +function.el
 
 (defvar temp-func-list '((let ((cnt 0) (acc nil)) (mapc (lambda (x) (setq acc (concat acc "\n" (number-to-string (setq cnt (1+ cnt))) ": " (prin1-to-string x)))) (butlast temp-func-list)) acc)))
@@ -113,6 +113,11 @@ File suffix is used to determine what program to run.
 
 
 \(fn &optional N)" t nil)
+
+(autoload 'set-local-variable "+function" "\
+
+
+\(fn &optional V)" t nil)
 
 ;;;***
 

@@ -29,7 +29,7 @@
    (if mark-active
        (buffer-substring-no-properties
         (region-beginning) (region-end))
-     (current-word nil t)))
+     (current-word nil nil)))
   (deactivate-mark))
 
 ;; * comment-or-uncomment-region

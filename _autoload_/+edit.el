@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2011-12-28 21:34:56 ran9er>
+;; Time-stamp:   <2012-01-01 12:39:47 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -22,10 +22,16 @@
 (defun resize-horizontal-space (&optional backward-only)
   (interactive "*P")
   (let (fwd-pos bwd-pos
-        (orig-pos (point)))
+        (orig-pos (point))
+        (skip-chars (if (member major-mode '(lisp-mode
+                                             lisp-interaction-mode
+                                             emacs-lisp-mode
+                                             eshell-mode))
+                        " \t()"
+                      " \t")))
     (setq
-     fwd-pos (progn (skip-chars-forward " \t") (eolp))
-     bwd-pos (progn (skip-chars-backward " \t") (bolp)))
+     fwd-pos (progn (skip-chars-forward skip-chars) (eolp))
+     bwd-pos (progn (skip-chars-backward skip-chars) (bolp)))
     (goto-char orig-pos)
     (if (or fwd-pos bwd-pos)
         (delete-horizontal-space backward-only)
