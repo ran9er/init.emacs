@@ -18,6 +18,26 @@
        (cons (car lst)(cadr lst))
        (cons-list (cddr lst)))))
 
+;; * make hash-table
+(defun mkht (size &rest rest)
+  (let* ((size (or size 12))
+         (x `[,@rest])
+         (lst (if (eq (logand (length x) 1) 1) `[,@x nil] x))
+         (l (length lst))
+         (new-list (cons (cons (aref lst (- l 2))(aref lst (- l 1))) nil))
+         (cnt (1- (/ l 2)))
+         (h (make-hash-table :test 'equal :size size)))
+    (while (> cnt 0)
+      (setq new-list (cons
+                      (cons (aref lst (- l 4))
+                            (aref lst (- l 3)))
+                      new-list)
+            cnt (- cnt 1) l (- l 2)))
+    (mapc (lambda(x)(puthash (car x)(cdr x) h)) new-list)
+    h))
+(defmacro mmkht (size &rest rest)
+  `(apply 'mkht ,size '(,@rest)))
+
 ;; * concat symbol
 (defun concat-symbol (&rest lst)
   (read (apply 'concat (mapcar (lambda(x)(if (symbolp x) (symbol-name x) x)) lst))))

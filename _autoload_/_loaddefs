@@ -169,14 +169,19 @@ File suffix is used to determine what program to run.
 
 ;;;***
 
-;;;### (autoloads (add-to-list-p merge-lists zip-lists cons-list-l)
-;;;;;;  "+list" "+list.el" (20223 12262))
+;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal cons-list-l)
+;;;;;;  "+list" "+list.el" (20224 41938))
 ;;; Generated autoloads from +list.el
 
 (autoload 'cons-list-l "+list" "\
 (cons-list-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))
 
 \(fn LST)" nil nil)
+
+(autoload 'mkal "+list" "\
+
+
+\(fn &rest REST)" nil (quote macro))
 
 (autoload 'zip-lists "+list" "\
 (zip-lists '(1 3 5) '(2 4 6)) => ((1 . 2) (3 . 4) (5 . 6))

@@ -1,47 +1,56 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * 定义函数
-(defun set-outline-minor-mode-regexp ()
-  ""
+(defun set-outline-minor-mode ()
   (outline-minor-mode 1)
-  (let ((regexp-list (append outline-minor-mode-list nil))
-    (find-regexp
-     (lambda (lst)
-       ""
-       (let ((innerList (car lst)))
-         (if innerList
-         (if (string= (car innerList) major-mode)
-             (car (cdr innerList))
-           (progn (pop lst)
-              (funcall find-regexp lst))))
-         ))))
-    (make-local-variable 'outline-regexp)
-    (setq outline-regexp (funcall find-regexp regexp-list)))
-
-;  (define-key-bindings 1 `(
-;            ("C-c C-t" hide-body)
-;            ("C-c C-a" show-all)
-;            ("C-c C-e" show-entry)
-;            ))
-
-  (hide-body)
-  )
+  (make-local-variable 'outline-regexp)
+  (setq outline-regexp
+        (or
+         (car (gethash major-mode *outline-minor-mode-hash*))
+         outline-regexp))
+  (make-local-variable 'outline-heading-alist)
+  (setq outline-heading-alist
+        (or 
+         (cadr (gethash major-mode *outline-minor-mode-hash*))
+         outline-heading-alist))
+  (hide-body))
 
 ;; * 定义数据
-(setq outline-minor-mode-list
-      (list
-       '(lisp-interaction-mode "(")
-       '(emacs-lisp-mode ";;\\ \\*+")
-       '(shell-mode ".*[bB]ash.*[#\$] \\|^.:\.*>")
-       '(sh-mode "function")
-       '(eshell-mode ".*[#\$]\\|^.:\.*>")
-       )
-      )
+;; (defvar *outline-minor-mode-hash* (make-hash-table :test 'equal :size 30))
+;; (mapc (lambda (x)
+;;         (puthash (car x)(cdr x)
+;;                  *outline-minor-mode-hash*))
+;;       (cons-list '(
+;; lisp-interaction-mode        ";;;\\(;* [^ 	\n]\\|###autoload\\)\\|("
+;; ;emacs-lisp-mode              ";;\\ \\*+\\|;;;\\(;* [^ 	\n]\\|###autoload\\)\\|("
+;; emacs-lisp-mode              ";;\\ \\*+"
+;; shell-mode                   ".*[bB]ash.*[#\$] \\|^.:\.*>"
+;; sh-mode                      "function"
+;; eshell-mode                  ".*[#\$]\\|^.:\.*>"
+;; )))
+
+(defvar *outline-minor-mode-hash*
+  (mmkht ()
+   lisp-interaction-mode
+   (";;;\\(;* [^ 	\n]\\|###autoload\\)\\|(")
+   emacs-lisp-mode
+   (";;\\ \\*+\\|;;;\\(;* [^ 	\n]\\|###autoload\\)\\|("    ((";;\\ \\*+" . 1)))
+   shell-mode
+   (".*[bB]ash.*[#\$] \\|^.:\.*>")
+   sh-mode
+   ("function")
+   eshell-mode
+   (".*[#\$]\\|^.:\.*>")
+   ))
 
 ;; * 应用数据
-(dolist (hook (mapcar
-               (lambda(lst) (concat-symbol (car lst) '-hook))
-               outline-minor-mode-list))
-  (add-hook hook 'set-outline-minor-mode-regexp t))
+(mapc
+ (lambda(h)
+   (add-hook h 'set-outline-minor-mode t))
+ (let (z)
+   (maphash
+    (lambda(x y)(setq z (cons (concat-symbol x "-hook") z)))
+    *outline-minor-mode-hash*)
+   z))
 
 ;; * 定义键位
 (setq outline-minor-mode-prefix [(control t)])
