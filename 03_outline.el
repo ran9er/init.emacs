@@ -33,7 +33,7 @@
        '(emacs-lisp-mode ";;\\ \\*+")
        '(shell-mode ".*[bB]ash.*[#\$] \\|^.:\.*>")
        '(sh-mode "function")
-;      '(eshell-mode ".*[#\$]\\|^.:\.*>")
+       '(eshell-mode ".*[#\$]\\|^.:\.*>")
        )
       )
 

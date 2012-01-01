@@ -30,15 +30,15 @@
 ;; * 打开文件
 (add-hook 'find-file-hook
           '(lambda ()
-             (if (file-exists-p (buffer-file-name))             ; 已存在文件
+             (if (file-exists-p (buffer-file-name))                 ; 已存在文件
                  (if (member (file-name-extension (buffer-name))
-                             '("el" "bak" "txt"))               ; 匹配扩展名
-                     (view-mode))                               ; 启用 view-mode
-               ;; (insert "-*- encoding: utf-8-unix; -*-")         ; 插入文件变量
-               ;; (comment-region 0 (point-max))
-               ;; (end-of-line)(newline)
-               (insert-doc-head)
-             )))
+                             '("el" "bak" "txt"))                   ; 匹配扩展名
+                     (progn
+                       (if buffer-read-only
+                           (toggle-read-only))
+                       (if (null view-mode)
+                           (view-mode))))                           ; 启用 view-mode
+               (insert-doc-head))))
 
 ;; * 保存文件
 (add-hook 'before-save-hook
