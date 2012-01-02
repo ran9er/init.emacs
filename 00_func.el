@@ -19,24 +19,20 @@
        (cons-list (cddr lst)))))
 
 ;; * make hash-table
-(defun mkht (size &rest rest)
-  (let* ((size (or size 12))
-         (x `[,@rest])
-         (lst (if (eq (logand (length x) 1) 1) `[,@x nil] x))
-         (l (length lst))
-         (new-list (cons (cons (aref lst (- l 2))(aref lst (- l 1))) nil))
-         (cnt (1- (/ l 2)))
+(defun mkhtb (&rest rest)
+  (let* ((lst (if (eq (logand (length rest) 1) 1)
+                  `[,@rest nil]
+                `[,@rest]))
+         (cnt (/ (length lst) 2))
+         (size (+ cnt 2 (/ cnt 5)))
          (h (make-hash-table :test 'equal :size size)))
     (while (> cnt 0)
-      (setq new-list (cons
-                      (cons (aref lst (- l 4))
-                            (aref lst (- l 3)))
-                      new-list)
-            cnt (- cnt 1) l (- l 2)))
-    (mapc (lambda(x)(puthash (car x)(cdr x) h)) new-list)
+      (puthash
+       (aref lst (- (* cnt 2) 2)) (aref lst (- (* cnt 2) 1)) h)
+      (setq cnt (1- cnt)))
     h))
-(defmacro mmkht (size &rest rest)
-  `(apply 'mkht ,size '(,@rest)))
+(defmacro mkht (&rest rest)
+  `(apply 'mkhtb '(,@rest)))
 
 ;; * concat symbol
 (defun concat-symbol (&rest lst)

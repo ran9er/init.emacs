@@ -29,7 +29,7 @@
 ;; )))
 
 (defvar *outline-minor-mode-hash*
-  (mmkht ()
+  (mkht
    lisp-interaction-mode
    (";;;\\(;* [^ 	\n]\\|###autoload\\)\\|(")
    emacs-lisp-mode

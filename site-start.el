@@ -49,7 +49,7 @@
        "_autoload_/")
 
       ;; *auto-hook-hash*
-      (defvar *auto-hook-hash* (make-hash-table :test 'equal :size 30))
+      (defvar *auto-hook-hash* (make-hash-table :test 'equal :size 20))
       (mapc
        (lambda (x)
          (puthash
