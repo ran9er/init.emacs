@@ -170,7 +170,7 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal cons-list-l)
-;;;;;;  "+list" "+list.el" (20224 41938))
+;;;;;;  "+list" "+list.el" (20225 11837))
 ;;; Generated autoloads from +list.el
 
 (autoload 'cons-list-l "+list" "\
@@ -200,7 +200,7 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (wordpress) "+parse" "+parse.el" (20219 6038))
+;;;### (autoloads (wordpress) "+parse" "+parse.el" (20225 12418))
 ;;; Generated autoloads from +parse.el
 
 (autoload 'wordpress "+parse" "\

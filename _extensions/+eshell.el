@@ -90,9 +90,9 @@
 (defun eshell-scroll-conservatively ()
   "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
   (mapc (lambda(x)(set (make-local-variable (car x))(cdr x)))
-        (cons-list '(scroll-margin            0
-                     scroll-conservatively    10
-                     scroll-step              1))))
+        (alist '(scroll-margin            0
+                 scroll-conservatively    10
+                 scroll-step              1))))
 
 ;; * exntension
 (rqx 0

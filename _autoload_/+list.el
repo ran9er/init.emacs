@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <list.el>
 ;; Create:       <2011-12-27 21:24:57 ran9er>
-;; Time-stamp:   <2012-01-02 02:20:02 ran9er>
+;; Time-stamp:   <2012-01-02 12:10:37 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -21,8 +21,7 @@
 
 ;;;###autoload
 (defmacro mkal (&rest rest)
-  (let* ((x `[,@rest])
-         (lst (if (eq (logand (length x) 1) 1) `[,@x nil] x))
+  (let* ((lst (if (eq (logand (length rest) 1) 1) `[,@rest nil] `[,@rest]))
          (l (length lst))
          (new-list (cons (cons (aref lst (- l 2))(aref lst (- l 1))) nil))
          (cnt (1- (/ l 2))))

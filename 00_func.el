@@ -10,13 +10,13 @@
        ,@s
        (add-to-list '*load-once* ,name))))
 
-;; * cons-list
-(defun cons-list (lst)
-  "(cons-list '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
+;; * make alist
+(defun alist (lst)
+  "(alist '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
   (if lst
       (cons
        (cons (car lst)(cadr lst))
-       (cons-list (cddr lst)))))
+       (alist (cddr lst)))))
 
 ;; * make hash-table
 (defun mkhtb (&rest rest)
@@ -63,7 +63,7 @@ See also `def-key-s'."
               ((eq keymap 1) (current-local-map))
               (t keymap)))
         (defs (if (null group)
-                  (cons-list key-defs)
+                  (alist key-defs)
                 (mapcar (lambda (k) (cons k group)) key-defs))))
     (mapc
      (lambda (d) (define-key map (eval `(kbd ,(car d))) (cdr d)))
@@ -162,7 +162,7 @@ See also `define-key-s'."
 (defun lisp-symbol ()
   (interactive)
   (substitute-patterns-with-unicode
-   (cons-list '("(?\\(lambda\\>\\)" lambda
+   (alist '("(?\\(lambda\\>\\)" lambda
                 ;; "\\<\\(lambda\\)\\>" lambda
                 "\\(;;\\ \\)" reference-mark
                 ;; "\\(<-\\)" left-arrow
