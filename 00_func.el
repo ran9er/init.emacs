@@ -1,14 +1,17 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * load-once
-(defvar *load-once* nil)
+(defvar *load-once* (make-hash-table :test 'equal :size 20))
 (defmacro load-once (&rest s)
-  (let* ((name (file-name-nondirectory
-                (or load-file-name (buffer-file-name)))))
-    ;; (a (concat-symbol "*load-once--" name "*"))
-    `(if (member ,name *load-once*)
-         nil
+  (let* ((hash *load-once*)
+         (name
+          (or load-file-name (buffer-file-name))))
+    `(if (gethash ,name ,hash)
+         (puthash
+          ,name
+          (1+ (gethash ,name ,hash))
+          ,hash)
        ,@s
-       (add-to-list '*load-once* ,name))))
+       (puthash ,name 1 ,hash))))
 
 ;; * make alist
 (defun alist (lst)
