@@ -215,6 +215,12 @@
     (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
 
 ;; * export loaded times
-(let ((var (read (concat "*load--" load-file-name))))
+;; * export loaded times
+(let ((var (read
+            (concat
+             "*load--"
+             (or
+              load-file-name
+              (buffer-file-name))))))
   (eval `(defvar ,var 0))
   (eval `(setq ,var (1+ ,var))))
