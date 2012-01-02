@@ -20,3 +20,8 @@
 ;; (hash-table-size *auto-hook-hash*)
 ;; (test-times 100
 ;;  (puthash (make-temp-name "") nil *auto-hook-hash*))
+
+;; * export loaded times
+(let ((var (read (concat "*load--" load-file-name))))
+  (eval `(defvar ,var 0))
+  (eval `(setq ,var (1+ ,var))))

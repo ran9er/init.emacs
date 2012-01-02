@@ -213,3 +213,8 @@
     ;; argument causes later arguments to be looked for in that directory,
     ;; not the starting directory
     (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
+
+;; * export loaded times
+(let ((var (read (concat "*load--" load-file-name))))
+  (eval `(defvar ,var 0))
+  (eval `(setq ,var (1+ ,var))))

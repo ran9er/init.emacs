@@ -5,6 +5,8 @@
              (load (gethash "+eshell" *auto-hook-hash*
                             (make-temp-name ""))
                    t)))
+;; (eval-after-load "eshell"
+;;   (load (gethash "+eshell" *auto-hook-hash* (make-temp-name "")) t))
 
 (add-hook 'dired-mode-hook
           '(lambda ()
