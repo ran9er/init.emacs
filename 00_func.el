@@ -105,7 +105,7 @@ See also `define-key-s'."
 
 ;; * pretty symbol
 (defvar *unicode-symbol*
-  (mkht 
+  (mkht
    left-arrow 8592
    up-arrow 8593
    right-arrow 8594
@@ -151,6 +151,7 @@ See also `define-key-s'."
       nil `((,(car x)
              (0 (progn
                   (compose-region (match-beginning 1) (match-end 1)
+                                  ;; ,(decode-char 'ucs (cdr (assoc (cdr x) *unicode-symbol*)))
                                   ,(decode-char 'ucs (gethash (cdr x) *unicode-symbol*))
                                   'decompose-region)
                   nil))))))
@@ -170,5 +171,7 @@ See also `define-key-s'."
             "\\(>=\\)" greater-than-or-equal-to
             "\\(<=\\)" less-than-or-equal-to
             ;; "\\(\\.\\.\\)" horizontal-ellipsis
+            ;; "\\(()\\)" 'nil
+            ;; "\\(!!\\)" double-exclamation
             ))))
 

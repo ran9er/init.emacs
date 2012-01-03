@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (my-auto-pair) "+auto-pair" "+auto-pair.el" (20219
-;;;;;;  6038))
+;;;;;;  6040))
 ;;; Generated autoloads from +auto-pair.el
 
 (autoload 'my-auto-pair "+auto-pair" "\
@@ -15,7 +15,7 @@
 ;;;***
 
 ;;;### (autoloads (my-clean-buffer substring-buffer-name) "+buffer"
-;;;;;;  "+buffer.el" (20219 6038))
+;;;;;;  "+buffer.el" (20219 6040))
 ;;; Generated autoloads from +buffer.el
 
 (autoload 'substring-buffer-name "+buffer" "\
@@ -37,7 +37,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (rename-file-specify-extension) "+dired" "+dired.el"
-;;;;;;  (20223 24177))
+;;;;;;  (20223 24178))
 ;;; Generated autoloads from +dired.el
 
 (autoload 'rename-file-specify-extension "+dired" "\
@@ -48,7 +48,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (outside parallel-edit resize-horizontal-space
-;;;;;;  swap-point) "+edit" "+edit.el" (20223 58259))
+;;;;;;  swap-point) "+edit" "+edit.el" (20223 58260))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
@@ -74,7 +74,7 @@ up list N level, append PRE ahead and SUF behind, backward M char
 ;;;***
 
 ;;;### (autoloads (run-current-file-macro write-temp find-temp) "+file"
-;;;;;;  "+file.el" (20219 6038))
+;;;;;;  "+file.el" (20219 6040))
 ;;; Generated autoloads from +file.el
 
 (autoload 'find-temp "+file" "\
@@ -99,7 +99,7 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (set-local-variable temp-func-call temp-func-add)
-;;;;;;  "+function" "+function.el" (20223 59931))
+;;;;;;  "+function" "+function.el" (20223 59932))
 ;;; Generated autoloads from +function.el
 
 (defvar temp-func-list '((let ((cnt 0) (acc nil)) (mapc (lambda (x) (setq acc (concat acc "\n" (number-to-string (setq cnt (1+ cnt))) ": " (prin1-to-string x)))) (butlast temp-func-list)) acc)))
@@ -122,7 +122,7 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (list-hash build-hash-table cons2hash) "+hash"
-;;;;;;  "+hash.el" (20219 6038))
+;;;;;;  "+hash.el" (20219 6040))
 ;;; Generated autoloads from +hash.el
 
 (autoload 'cons2hash "+hash" "\
@@ -144,7 +144,7 @@ File suffix is used to determine what program to run.
 
 ;;;### (autoloads (insert-doc-head insert-delimit-line insert-time
 ;;;;;;  insert-autoload-magic-comment) "+insert" "+insert.el" (20220
-;;;;;;  31150))
+;;;;;;  31152))
 ;;; Generated autoloads from +insert.el
 
 (autoload 'insert-autoload-magic-comment "+insert" "\
@@ -170,7 +170,7 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal cons-list-l)
-;;;;;;  "+list" "+list.el" (20225 11837))
+;;;;;;  "+list" "+list.el" (20225 11838))
 ;;; Generated autoloads from +list.el
 
 (autoload 'cons-list-l "+list" "\
@@ -200,7 +200,7 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (wordpress) "+parse" "+parse.el" (20225 12418))
+;;;### (autoloads (wordpress) "+parse" "+parse.el" (20225 12420))
 ;;; Generated autoloads from +parse.el
 
 (autoload 'wordpress "+parse" "\
@@ -210,7 +210,7 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (sdcv-to-buffer) "+sdcv" "+sdcv.el" (20223 21640))
+;;;### (autoloads (sdcv-to-buffer) "+sdcv" "+sdcv.el" (20223 21642))
 ;;; Generated autoloads from +sdcv.el
 
 (autoload 'sdcv-to-buffer "+sdcv" "\
@@ -221,7 +221,7 @@ See also `add-to-list-x'
 ;;;***
 
 ;;;### (autoloads (shell-command-symbol-to-string join-string) "+string"
-;;;;;;  "+string.el" (20219 6038))
+;;;;;;  "+string.el" (20219 6040))
 ;;; Generated autoloads from +string.el
 
 (autoload 'join-string "+string" "\
@@ -239,7 +239,7 @@ See also `add-to-list-x'
 ;;;***
 
 ;;;### (autoloads (test-times test-list eval-buffer-time mklst) "+test"
-;;;;;;  "+test.el" (20219 6038))
+;;;;;;  "+test.el" (20219 6040))
 ;;; Generated autoloads from +test.el
 
 (autoload 'mklst "+test" "\
