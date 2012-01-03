@@ -45,31 +45,31 @@
 
 ;; * misc
 (setq
-      default-major-mode    'text-mode  ;; 缺省模式 text-mode
-      default-fill-column   80          ;; 页宽
-;     require-final-newline t           ;; 以空行结束
+ default-major-mode    'text-mode  ;; 缺省模式 text-mode
+ default-fill-column   80          ;; 页宽
+ ;; require-final-newline t           ;; 以空行结束
+ scroll-margin         1           ;; 页面上下预留行数，光标进入此范围卷动页面
+ scroll-conservatively 10000       ;; 页面平滑卷动，值越大越平滑
 
-      scroll-margin         1           ;; 页面上下预留行数，光标进入此范围卷动页面
-      scroll-conservatively 10000       ;; 页面平滑卷动，值越大越平滑
+ mouse-yank-at-point   t           ;; 粘贴于光标处，而不是鼠标指针处
+ font-lock-maximum-decoration t    ;; 只渲染当前屏幕语法高亮，加快显示速度
 
-      mouse-yank-at-point   t           ;; 粘贴于光标处，而不是鼠标指针处
-      font-lock-maximum-decoration t    ;; 只渲染当前屏幕语法高亮，加快显示速度
-
-      ring-bell-function    'ignore     ;; 关闭烦人的出错时的提示声
-      visible-bell          t           ;; 闪屏报警
-      column-number-mode    t           ;; 显示列号
-;     resize-mini-windows   nil         ;; 锁定行高
-      enable-recursive-minibuffers nil  ;; 递归 minibuffer
-      echo-keystrokes       0.1         ;; 按键序列显示延迟，默认 1
-      ;; 当使用 M-x COMMAND 后，过 1 秒钟显示该 COMMAND 绑定的键。
-      ;suggest-key-bindings 1
-)
+ ring-bell-function    'ignore     ;; 关闭烦人的出错时的提示声
+ visible-bell          t           ;; 闪屏报警
+ column-number-mode    t           ;; 显示列号
+ ;; resize-mini-windows   nil         ;; 锁定行高
+ enable-recursive-minibuffers nil  ;; 递归 minibuffer
+ echo-keystrokes       0.1         ;; 按键序列显示延迟，默认 1
+ ;; 当使用 M-x COMMAND 后，过 1 秒钟显示该 COMMAND 绑定的键。
+ ;; suggest-key-bindings 1
+ save-abbrevs          nil
+ )
 
 ;; * 缩进
-(setq-default                           ;; 使用空格缩进
-        indent-tabs-mode    nil         ;; t 使用 TAB 作格式化字符  nil 使用空格作格式化字符
-        tab-always-indent   nil
-        tab-width           4)
+(setq-default            ;; 使用空格缩进
+ indent-tabs-mode    nil ;; t 使用 TAB 作格式化字符  nil 使用空格作格式化字符
+ tab-always-indent   nil
+ tab-width           4)
 
 ;; * 作为单词的一部分
 (modify-syntax-entry ?_ "w")
@@ -83,14 +83,14 @@
 (add-to-list 'auto-mode-alist '("_loaddefs\\'" . emacs-lisp-mode))
 
 ;; * 让 Emacs 可以直接打开和显示图片。
-;(auto-image-file-mode)
+;; (auto-image-file-mode)
 
 ;; * 将错误信息显示在回显区
-;(condition-case err
-;    (progn
-;      (require 'xxx) )
-;  (error
-;   (message "Can't load xxx-mode %s" (cdr err))))
+;; (condition-case err
+;;    (progn
+;;      (require 'xxx) )
+;;  (error
+;;   (message "Can't load xxx-mode %s" (cdr err))))
 
 ;; * lisp mode
 (mapc (lambda (mode)

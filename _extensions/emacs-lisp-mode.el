@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <emacs-lisp.el>
 ;; Create:       <2011-12-24 00:02:38 ran9er>
-;; Time-stamp:   <2012-01-03 16:18:54 ran9er>
+;; Time-stamp:   <2012-01-03 17:09:32 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (load-once
@@ -18,7 +18,7 @@
   ("let*" . "$>(let* (($${args}))\n$>($.))$>")
   ("progn" . "$>(progn\n$>($.))$>")
   ("if" . "$>(if ($${cond})\n$>($${true})\n$>$.)$>")
-  ("mapc" . "$>(mapc\n$>$${fn}\n$>$.\n$>)")
+  ("mapc" . "$>(mapc\n$>$${fn}\n$>$.$>)")
   )
 
  ;; (add-hook 'emacs-lisp-mode-hook
