@@ -13,6 +13,14 @@
        ,@s
        (puthash ,name 1 ,hash))))
 
+(defun load1 (file)
+  (let ((hash *load-times*)
+        (name (expand-file-name file)))
+    (if (gethash name hash)
+        (puthash name (1+ (gethash name hash)) hash)
+      (load file)
+      (puthash name 1 hash))))
+
 ;; * make alist
 (defun alist (lst)
   "(alist '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
