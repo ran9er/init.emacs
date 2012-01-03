@@ -105,18 +105,23 @@
 
       (setcdr init-time (float-time))
 
-      (setq *init-time*
-            (cons
-             (cons "Total"
-                   (- (cdr init-time)
-                      (car init-time)))
-             *init-time*))
+      (let ((total (- (cdr init-time) (car init-time))))
+        (setq *init-time*
+              (append
+               (list
+                (cons 'Total
+                      total)
+                (cons 'other
+                      (- total
+                         (apply '+ (mapcar 'cdr *init-time*))))
+                '---------------------------------------------)
+               *init-time*)))
 
       ;; when init finished, echo some info
       (add-hook
        'emacs-startup-hook
        `(lambda ()
           (message "load %d init file , spend %g seconds ; startup spend %g seconds"
-                   (1- (length *init-time*))
+                   (- (length *init-time*) 3)
                    (cdar *init-time*)
                    (- (float-time) ,(car init-time))))))))

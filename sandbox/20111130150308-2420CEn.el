@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20111130150308-2420CEn.el>
 ;; Create:       <2011-11-30 15:03:08 ran9er>
-;; Time-stamp:   <2011-12-06 00:18:34 ran9er>
+;; Time-stamp:   <2012-01-03 15:27:29 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defun jump-point(&optional n)
@@ -22,5 +22,4 @@
 
 (setq *recent-point* nil)
 (jump-point)
-
-
+ 

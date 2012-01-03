@@ -8,20 +8,12 @@
 (global-undo-tree-mode)
 (add-hook 'undo-tree-visualizer-mode-hook 'buffer-face-mode)
 
-;; *========== run-current-file-macro
-;(autoload 'run-current-file-macro "run-file" "" t)
-
-(global-set-key (kbd "<f5>") (run-current-file-macro compile))
-(global-set-key (kbd "<f6>") (run-current-file-macro shell-command))
+;; *========== run-current-file
+(global-set-key (kbd "<f5>") 'run-current-file)
+(global-set-key (kbd "<f6>") 'run-current-file)
 
 ;; *========== anything
 (require 'anything)
-
-;; *========== org-mode	
-(setq org-hide-leading-stars t)
- (define-key global-map "\C-ca" 'org-agenda)
- (setq org-log-done 'time)
-
 
 ;; *========== browse-kill-ring
 (require 'browse-kill-ring) 

@@ -1,8 +1,8 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * load-once
-(defvar *load-once* (make-hash-table :test 'equal :size 20))
+(defvar *load-times* (make-hash-table :test 'equal :size 20))
 (defmacro load-once (&rest s)
-  (let* ((hash *load-once*)
+  (let* ((hash *load-times*)
          (name
           (or load-file-name (buffer-file-name))))
     `(if (gethash ,name ,hash)

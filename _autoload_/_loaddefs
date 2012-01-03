@@ -73,8 +73,8 @@ up list N level, append PRE ahead and SUF behind, backward M char
 
 ;;;***
 
-;;;### (autoloads (run-current-file-macro write-temp find-temp) "+file"
-;;;;;;  "+file.el" (20219 6040))
+;;;### (autoloads (run-current-file write-temp find-temp) "+file"
+;;;;;;  "+file.el" (20226 39455))
 ;;; Generated autoloads from +file.el
 
 (autoload 'find-temp "+file" "\
@@ -87,14 +87,14 @@ up list N level, append PRE ahead and SUF behind, backward M char
 
 \(fn FILENAME &optional CONFIRM)" t nil)
 
-(autoload 'run-current-file-macro "+file" "\
+(autoload 'run-current-file "+file" "\
 Execute or compile the current file.
 For example, if the current buffer is the file x.pl,
 then it'll call “perl x.pl” in a shell.
 The file can be php, perl, python, bash, java.
 File suffix is used to determine what program to run.
 
-\(fn OUTPUTF)" nil (quote macro))
+\(fn)" t nil)
 
 ;;;***
 
