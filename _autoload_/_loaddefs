@@ -73,9 +73,14 @@ up list N level, append PRE ahead and SUF behind, backward M char
 
 ;;;***
 
-;;;### (autoloads (run-current-file write-temp find-temp) "+file"
-;;;;;;  "+file.el" (20226 39455))
+;;;### (autoloads (run-current-file write-temp find-temp read-lines)
+;;;;;;  "+file" "+file.el" (20226 54301))
 ;;; Generated autoloads from +file.el
+
+(autoload 'read-lines "+file" "\
+Return a list of lines in FILEPATH.
+
+\(fn FILEPATH)" nil nil)
 
 (autoload 'find-temp "+file" "\
 

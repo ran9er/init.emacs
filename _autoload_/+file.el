@@ -1,8 +1,16 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <file.el>
 ;; Create:       <2011-12-27 21:32:02 ran9er>
-;; Time-stamp:   <2012-01-03 14:03:11 ran9er>
+;; Time-stamp:   <2012-01-03 18:10:35 ran9er>
 ;; Mail:         <2999am@gmail.com>
+
+;;;###autoload
+(defun read-lines (filePath)
+  "Return a list of lines in FILEPATH."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (split-string
+     (buffer-string) "\n" t)))
 
 ;;;###autoload
 (defun find-temp (&optional suffix)

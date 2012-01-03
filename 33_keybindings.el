@@ -32,6 +32,8 @@
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
     "C-x i"     expand-abbrev                       ;; ido-insert-file
     "C-x TAB"   expand-abbrev                       ;; indent-rigidly
+    "<f5>"      run-current-file
+    "<f6>"      run-current-file
     "C-x f"     find-temp
     "C-x w"     write-temp
     "<C-return>" temp-func-call
