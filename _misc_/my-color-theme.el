@@ -1,4 +1,31 @@
 ;; -*- encoding: utf-8-unix; -*-
+(deftheme desert "")
+(custom-theme-set-faces
+ 'desert
+ '(default ((t (:background "grey20" :foreground "#eeeeec"))))
+ '(cursor ((t (:background "#fce94f" :foreground"khaki" ))))
+ '(region ((t (:background "dark olive green"))))
+ '(mode-line ((t (:foreground "#eeeeec" :background "#555753"))))
+ '(fringe ((t (:foreground "gray20" :background "gray40"))))
+ '(minibuffer-prompt ((t (:foreground "khaki" :bold t))))
+ '(font-lock-builtin-face ((t (:foreground "steelblue"))))
+ '(font-lock-comment-face ((t (:foreground "LightSkyBlue3"))))
+ '(font-lock-constant-face ((t (:foreground "#ffa0a0"))))
+ '(font-lock-function-name-face ((t (:foreground "PaleGreen3"))))
+ '(font-lock-keyword-face ((t (:foreground "khaki"))))
+ '(font-lock-string-face ((t (:foreground "#ffa0a0"))))
+ '(font-lock-type-face ((t (:foreground "PaleGreen4"))))
+ '(font-lock-variable-name-face ((t (:foreground "cyan3"))))
+ '(font-lock-warning-face ((t (:foreground "goldenrod" :bold t))))
+ '(isearch ((t (:background "#cd00cd" :foreground "#b0e2ff"))))
+ '(lazy-highlight ((t (:background "#afeeee"))))
+ '(link ((t (:foreground "#0000ff" :underline t))))
+ '(link-visited ((t (:foreground "#8b008b" :underline t))))
+ '(button ((t (:underline t))))
+; '(mode-line-inactive ((t (:background "gray15" :foreground "#333333"))))
+ '(header-line ((t (:background "gray15" :foreground "#999999")))))
+(provide-theme 'desert)
+
 (deftheme turquoise "")
 (custom-theme-set-faces
  'turquoise

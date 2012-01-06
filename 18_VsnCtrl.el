@@ -22,7 +22,7 @@
 (custom-set-faces
  '(magit-diff-add ((t (:foreground "lime green"))))
  '(magit-diff-del ((t (:foreground "tomato"))))
- '(magit-item-highlight ((t (:background "#123a26"))))
+ '(magit-item-highlight ((t (:background "gray25"))))
  '(magit-log-head-label-patches ((t (:background "DarkGoldenrod1" :foreground "DarkOrange4" :box 1))))
  '(magit-log-tag-label ((t (:background "blue violet"))))
 )
