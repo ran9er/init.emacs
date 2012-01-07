@@ -47,7 +47,7 @@
 
 ;; * concat symbol
 (defun concat-symbol (&rest lst)
-  (read (apply 'concat (mapcar (lambda(x)(if (symbolp x) (symbol-name x) x)) lst))))
+  (intern (apply 'concat (mapcar (lambda(x)(if (symbolp x) (symbol-name x) x)) lst))))
 
 ;; * rq-x
 (defun rq-x (action lst)
