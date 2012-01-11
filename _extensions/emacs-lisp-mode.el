@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <emacs-lisp.el>
 ;; Create:       <2011-12-24 00:02:38 ran9er>
-;; Time-stamp:   <2012-01-03 17:09:32 ran9er>
+;; Time-stamp:   <2012-01-11 15:32:03 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (load-once
@@ -29,5 +29,5 @@
  ;;             ;; the example mode in said documentation)
  ;;             (setq local-abbrev-table emacs-lisp-mode-abbrev-table)))
  )
-(abbrev-mode 1)
+;; (abbrev-mode 1)
 (setq local-abbrev-table emacs-lisp-mode-abbrev-table)

@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2012-01-01 12:39:47 ran9er>
+;; Time-stamp:   <2012-01-11 22:16:55 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -21,22 +21,41 @@
 ;;;###autoload
 (defun resize-horizontal-space (&optional backward-only)
   (interactive "*P")
-  (let (fwd-pos bwd-pos
-        (orig-pos (point))
-        (skip-chars (if (member major-mode '(lisp-mode
-                                             lisp-interaction-mode
-                                             emacs-lisp-mode
-                                             eshell-mode))
-                        " \t()"
-                      " \t")))
+  (let ((orig-pos (point))
+        (skip-chars " \t")
+        (delimit-char
+         (mapcar (lambda (x) (string-to-char x))
+                 '("(" ")")))
+        fwd-pos fwd-p bwd-pos bwd-p)
     (setq
-     fwd-pos (progn (skip-chars-forward skip-chars) (eolp))
-     bwd-pos (progn (skip-chars-backward skip-chars) (bolp)))
+     fwd-pos (progn (skip-chars-forward skip-chars)(eolp))
+     fwd-p  (memq (following-char) delimit-char)
+     bwd-pos (progn (skip-chars-backward skip-chars)(bolp))
+     bwd-p  (memq (preceding-char) delimit-char))
     (goto-char orig-pos)
-    (if (or fwd-pos bwd-pos)
+    (if (or fwd-pos bwd-pos (and fwd-p bwd-p))
         (delete-horizontal-space backward-only)
       (delete-horizontal-space backward-only)
-      (insert " "))))
+      (insert " ")
+      (if bwd-p (backward-char 1)))))
+
+;;;###autoload
+(defun indent-vline ()
+  (interactive)
+  (funcall
+   (lambda (x z)
+     (font-lock-add-keywords
+      nil `((,x
+             (0 (if (save-excursion
+                      (skip-chars-backward " ")
+                      (bolp))
+                    (let* ((p2 (point)) (p1 (1- p2)))
+                      (if (overlays-at p1)
+                          nil ;; (move-overlay (car (overlays-at p1)) p1 p2)
+                        (overlay-put
+                         (make-overlay p1 p2) 'face ',z))
+                      nil)))))))
+   "   \\( \\)"  '(:background "gray30")))
 
 ;; parallel-edit
 (defun insert-char-from-read(c)

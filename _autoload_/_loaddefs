@@ -47,8 +47,8 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 ;;;***
 
-;;;### (autoloads (outside parallel-edit resize-horizontal-space
-;;;;;;  swap-point) "+edit" "+edit.el" (20223 58260))
+;;;### (autoloads (outside parallel-edit indent-vline resize-horizontal-space
+;;;;;;  swap-point) "+edit" "+edit.el" (20237 39383))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
@@ -60,6 +60,11 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 
 \(fn &optional BACKWARD-ONLY)" t nil)
+
+(autoload 'indent-vline "+edit" "\
+
+
+\(fn)" t nil)
 
 (autoload 'parallel-edit "+edit" "\
 
