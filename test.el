@@ -72,7 +72,7 @@ s1 ",\n" s2 "};"
   (defadvice delete-char (after indent-vline activate compile)
     (save-excursion
       (let* ((p (point))
-             (x (progn (skip-chars-backward " ")(bolp)))
-             (q (skip-chars-forward " ")))
+             (q (skip-chars-forward " "))
+             (x (progn (skip-chars-backward " ")(bolp))))
         (if x
             (remove-text-properties p (+ p q) '(display)))))))
