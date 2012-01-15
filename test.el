@@ -5,7 +5,7 @@
   (custom-set-faces
    '(default ((t (:stipple nil :background ((image :type jpeg :file "/Path/to/your/image.png") :origin display) :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 101 :width normal :family "misc-fixed")))))
 
-(setq acc 0)
+  (setq acc 0)
 
   )
 
@@ -24,7 +24,7 @@
                                       'decompose-region)
                       ',z)))))))
    "   \\( \\)" #X007C '((t (:foreground "gray30")))))
-   
+
 (setq dot-vline-xpm
       (funcall
        (lambda (width height color)
@@ -57,14 +57,22 @@ s1 ",\n" s2 "};"
                            (p1 (1- p2)))
                       (if (get-text-property p1 'display)
                           nil ;; (remove-text-properties p1 p2 '(display))
-                        (set-text-properties p1 p2 `(display (image :type xpm :data ,dot-vline-xpm :pointer arrow :ascent center :mask (heuristic t)) rear-nonsticky (display) fontified t))
-                      nil))))))))
-   "   \\( \\)"))
-
-(defadvice delete-char (after indent-vline activate compile)
-  (save-excursion
-    (let* ((p (point))
-           (x (progn (skip-chars-backward " ")(bolp)))
-           (q (skip-chars-forward " ")))
-      (if x
-          (remove-text-properties p (+ p q) '(display))))))
+                        (set-text-properties
+                         p1 p2
+                         `(display (image 
+                                    :type xpm 
+                                    :data ,dot-vline-xpm 
+                                    :pointer arrow 
+                                    :ascent center 
+                                    :mask (heuristic t))
+                                   rear-nonsticky (display)
+                                   fontified t))
+                        nil))))))))
+   "   \\( \\)")
+  (defadvice delete-char (after indent-vline activate compile)
+    (save-excursion
+      (let* ((p (point))
+             (x (progn (skip-chars-backward " ")(bolp)))
+             (q (skip-chars-forward " ")))
+        (if x
+            (remove-text-properties p (+ p q) '(display)))))))
