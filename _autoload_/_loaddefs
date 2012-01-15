@@ -3,8 +3,8 @@
 ;;; Code:
 
 
-;;;### (autoloads (my-auto-pair) "+auto-pair" "+auto-pair.el" (20219
-;;;;;;  6040))
+;;;### (autoloads (my-auto-pair) "+auto-pair" "+auto-pair.el" (20242
+;;;;;;  39187))
 ;;; Generated autoloads from +auto-pair.el
 
 (autoload 'my-auto-pair "+auto-pair" "\

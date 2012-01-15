@@ -42,7 +42,7 @@ static char * dot_vline_xpm[] = {
           (make-list (1- (/ h 2)) 0))
 s1 ",\n" s2 "};"
 ))))
-       10 22 "#4D4D4D"))
+       9 22 "#4D4D4D"))
 
 (defun indent-vline-x ()
   (interactive)
@@ -56,8 +56,15 @@ s1 ",\n" s2 "};"
                     (let* ((p2 (point))
                            (p1 (1- p2)))
                       (if (get-text-property p1 'display)
-                          (remove-text-properties p1 p2 'display)
+                          nil ;; (remove-text-properties p1 p2 '(display))
                         (set-text-properties p1 p2 `(display (image :type xpm :data ,dot-vline-xpm :pointer arrow :ascent center :mask (heuristic t)) rear-nonsticky (display) fontified t))
                       nil))))))))
    "   \\( \\)"))
 
+(defadvice delete-char (after indent-vline activate compile)
+  (save-excursion
+    (let* ((p (point))
+           (x (progn (skip-chars-backward " ")(bolp)))
+           (q (skip-chars-forward " ")))
+      (if x
+          (remove-text-properties p (+ p q) '(display))))))
