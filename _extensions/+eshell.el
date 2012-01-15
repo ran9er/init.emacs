@@ -2,7 +2,7 @@
 ;; don't need load-once, because eshell-load-hook load only once
 ;; * bash-completion
 ;+++++++++++++++++++++++++++++++++++++++
-(if t t
+(when nil
 ;+++++++++++++++++++++++++++++++++++++++
 (autoload 'bash-completion-dynamic-complete
   "bash-completion"
@@ -17,7 +17,7 @@
 
 ;; * em-smart
 ;+++++++++++++++++++++++++++++++++++++++
-(if t t
+(when nil
 ;+++++++++++++++++++++++++++++++++++++++
 (require 'eshell)
 (require 'em-smart)
@@ -154,7 +154,7 @@
 
 ;; * ac-mode
 ;+++++++++++++++++++++++++++++++++++++++
-(if t t
+(when nil
 ;+++++++++++++++++++++++++++++++++++++++
 (defvar ac-source-eshell-pcomplete
   '((candidates . (pcomplete-completions))))

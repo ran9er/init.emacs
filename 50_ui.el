@@ -40,7 +40,7 @@
 
 ;; * filter annoying messages
 ;+++++++++++++++++++++++++++++++++++++++
-(if t t
+(when nil
 ;+++++++++++++++++++++++++++++++++++++++
 (defvar message-filter-regexp-list '("^Starting new Ispell process \\[.+\\] \\.\\.\\.$"
                                      "^Ispell process killed$")
