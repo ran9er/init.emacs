@@ -48,7 +48,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (outside parallel-edit smart-backward-kill resize-horizontal-space
-;;;;;;  swap-point) "+edit" "+edit.el" (20243 37884))
+;;;;;;  swap-point) "+edit" "+edit.el" (20244 20257))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\

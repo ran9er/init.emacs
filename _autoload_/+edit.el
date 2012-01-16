@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2012-01-16 11:05:32 ran9er>
+;; Time-stamp:   <2012-01-17 00:24:01 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
