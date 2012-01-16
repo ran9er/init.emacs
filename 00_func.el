@@ -49,18 +49,6 @@
 (defun concat-symbol (&rest lst)
   (intern (apply 'concat (mapcar (lambda(x)(if (symbolp x) (symbol-name x) x)) lst))))
 
-;; * rq-x
-(defun rq-x (action lst)
-  "(rq-x 'require
-        '(aaa bbb ccc ...))"
-  (let ((action (cond ((eq action 0) 'require)(t action))))
-    (mapcar (lambda(ext) (funcall action ext)) lst)))
-
-(defmacro rqx (action &rest lst)
-  "(rqx 0 aaa bbb ccc)"
-  ;; (list 'rq-x `',action `',lst))
-  `(rq-x ',action ',lst))
-
 ;; * define-key-s
 (defun define-key-s (keymap key-defs &optional group)
   "(define-key-s 0 '(\"key\" def \"key\" def ...))

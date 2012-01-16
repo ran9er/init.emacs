@@ -7,16 +7,16 @@
                "ede"
 )
 
-(rq-x 'require
-        '(
-          cedet
-          eieio
-          semantic
-          srecode
-          ede
-          speedbar
-;         ecb
-))
+(mapc 'require
+      '(
+        cedet
+        eieio
+        semantic
+        srecode
+        ede
+        speedbar
+        ;; ecb
+        ))
 
 (global-ede-mode t)
 (semantic-load-enable-code-helpers)

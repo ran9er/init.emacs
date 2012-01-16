@@ -95,11 +95,12 @@
                  scroll-step              1))))
 
 ;; * exntension
-(rqx 0
-     ;eshell-ls
-     eshell-user-key
-     eshell-cmpl
-     eshell-bmk)
+(mapcar
+ 'require
+ '(;eshell-ls
+   eshell-user-key
+   eshell-cmpl
+   eshell-bmk))
 
 ;; * face
 ;(make-face 'eshell-custom-face)

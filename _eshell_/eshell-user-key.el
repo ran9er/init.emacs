@@ -63,7 +63,7 @@
         (progn
           (insert-string "..")
           (eshell-send-input))
-        (backward-kill-word-or-kill-region)
+        (smart-backward-kill)
         )))
 
 ;; * define-key-s
