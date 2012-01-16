@@ -18,7 +18,7 @@
 ;   "C-w"       backward-kill-word                  ;; (kill-region)
 ;   "C-x C-k"   kill-region
 ;   "C-c C-k"   kill-region
-    "C-w"       backward-kill-word-or-kill-region   ;; (kill-region)
+    "C-w"       smart-backward-kill                 ;; (kill-region)
     "M-\\"      resize-horizontal-space             ;; delete-horizontal-space
     "C-x C-q"   view-mode                           ;; 切换 view-mode
     "M-q"       toggle-read-only                    ;; fill-paragraph

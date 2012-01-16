@@ -32,14 +32,6 @@
      (current-word nil nil)))
   (deactivate-mark))
 
-;; * comment-or-uncomment-region
-(defadvice comment-or-uncomment-region (before slickcomment activate compile)
-  "When called interactively with no active region, toggle comment on current line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
-
 ;; * 不保留备份文件
 (setq-default make-backup-files nil)
 

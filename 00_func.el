@@ -92,13 +92,6 @@ See also `define-key-s'."
 See also `define-key-s'."
   (define-key-s keymap key-defs))
 
-;; * backward-kill-word-or-kill-region
-(defun backward-kill-word-or-kill-region ()
-  (interactive)
-  (if mark-active
-      (call-interactively 'kill-region)
-    (call-interactively 'backward-kill-word)))
-
 ;; * add-exec-path
 (defun add-exec-path (path)
   (interactive "Dexec-path: ")
@@ -176,8 +169,8 @@ See also `define-key-s'."
             ;; "\\(->\\)" right-arrow
             ;; "\\(==\\)" identical
             ;; "\\(/=\\)" not-identical
-            "\\(>=\\)" greater-than-or-equal-to
-            "\\(<=\\)" less-than-or-equal-to
+            ;; "\\(>=\\)" greater-than-or-equal-to
+            ;; "\\(<=\\)" less-than-or-equal-to
             ;; "\\(\\.\\.\\)" horizontal-ellipsis
             ;; "\\(()\\)" 'nil
             ;; "\\(!!\\)" double-exclamation
