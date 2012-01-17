@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <emacs-lisp.el>
 ;; Create:       <2011-12-24 00:02:38 ran9er>
-;; Time-stamp:   <2012-01-17 00:50:59 ran9er>
+;; Time-stamp:   <2012-01-17 10:19:07 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (load-once
@@ -46,5 +46,5 @@
     (progn
       (make-local-variable 'indent-column-list)
       (defvar indent-column-list '(0))
-      (indent-vline-s))
+      (indent-vline-lisp))
   (indent-vline))
