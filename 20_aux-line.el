@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-18 00:53:13 ran9er>
+;; Time-stamp:   <2012-01-18 01:57:53 ran9er>
 ;; Mail:         <2999am@gmail.com>
 (defun make-vline-xpm (width height color &optional in-right)
   (let* ((w width)
@@ -21,14 +21,14 @@ static char * dot_vline_xpm[] = {
 s1 ",\n" s2 "};"
 ))))
 
+(defvar indent-vline-img (make-vline-xpm 9 22 "#4D4D4D"))
 (defun draw-indent-tab (beg end &optional color)
-  (let ((img (make-vline-xpm 9 22 (or color "#4D4D4D"))))
-   (if window-system
+  (if window-system
       (set-text-properties
        beg end
        `(display (image
                   :type xpm
-                  :data ,img
+                  :data ,indent-vline-img
                   :pointer text
                   :ascent center
                   :mask (heuristic t))
@@ -37,8 +37,8 @@ s1 ",\n" s2 "};"
     (compose-region
      beg end
      (prog1 "|"
-       (set-text-properties beg end `(font-lock-face (:foreground ,(or color "#4D4D4D")))))
-     'decompose-region))))
+       (set-text-properties beg end '(font-lock-face (:foreground "#4D4D4D"))))
+     'decompose-region)))
 
 (defun draw-indent-vline ()
   (interactive)
