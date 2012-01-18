@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-18 01:57:53 ran9er>
+;; Time-stamp:   <2012-01-18 23:36:19 ran9er>
 ;; Mail:         <2999am@gmail.com>
 (defun make-vline-xpm (width height color &optional in-right)
   (let* ((w width)
@@ -21,7 +21,7 @@ static char * dot_vline_xpm[] = {
 s1 ",\n" s2 "};"
 ))))
 
-(defvar indent-vline-img (make-vline-xpm 9 22 "#4D4D4D"))
+(defvar indent-vline-img (make-vline-xpm 9 20 "#4D4D4D"))
 (defun draw-indent-tab (beg end &optional color)
   (if window-system
       (set-text-properties
@@ -66,7 +66,7 @@ s1 ",\n" s2 "};"
      (font-lock-add-keywords
       nil `((,x
              (0 (draw-indent-vline))))))
-   "^[ \t]*[,`'(]")
+   "^[ \t]*[,`#'(]")
   (defadvice delete-char (after indent-vline activate compile)
     (save-excursion
       (let* ((p (point))
