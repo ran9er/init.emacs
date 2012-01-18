@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-19 00:43:01 ran9er>
+;; Time-stamp:   <2012-01-19 00:58:45 ran9er>
 ;; Mail:         <2999am@gmail.com>
 (defun make-vline-xpm (width height color &optional lor)
   (let* ((w width)
@@ -13,8 +13,8 @@
               ((eq lor 1)
                (concat "\"" (make-string (1- w) (string-to-char " ")) ".\""))
               ((null lor)
-               (concat "\"" (make-string (/ (1- w) 2)(string-to-char " ")) "."
-                       (make-string (- (1- w)(/ (1- w) 2))(string-to-char " ")) "\""))))
+               (concat "\"" (make-string (- (1- w)(/ (1- w) 2))(string-to-char " "))
+                       "." (make-string (/ (1- w) 2)(string-to-char " ")) "\""))))
          (sa (concat s1 ",\n" s2 ",\n")))
     (eval `(concat "/* XPM */
 static char * dot_vline_xpm[] = {
