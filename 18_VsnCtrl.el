@@ -38,12 +38,12 @@
 
 ;; * diff mode hook
 (add-hook 'diff-mode-hook
-          (function (lambda ()
-                      (setq outline-regexp "diff\\|@@\\|*\\{10,\\}")
-                      (setq outline-heading-alist
-                            '(("diff" . 1) ("@@" . 2) ("*\\{10,\\}" . 2))
-                            )
-                      (outline-minor-mode)
-                                        ;             (hide-body)
-                      (view-mode)
-                      )))
+          (lambda ()
+            (setq outline-regexp "diff\\|@@\\|*\\{10,\\}")
+            (setq outline-heading-alist
+                  '(("diff" . 1) ("@@" . 2) ("*\\{10,\\}" . 2))
+                  )
+            (outline-minor-mode)
+            ;; (hide-body)
+            (view-mode)
+            ))
