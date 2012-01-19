@@ -47,8 +47,9 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 ;;;***
 
-;;;### (autoloads (outside parallel-edit smart-backward-kill resize-horizontal-space
-;;;;;;  swap-point) "+edit" "+edit.el" (20244 20257))
+;;;### (autoloads (outside-kill outside parallel-edit smart-backward-kill
+;;;;;;  resize-horizontal-space swap-point) "+edit" "+edit.el" (20248
+;;;;;;  4497))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
@@ -75,6 +76,11 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 up list N level, append PRE ahead and SUF behind, backward M char
 
 \(fn O B S &optional N)" t nil)
+
+(autoload 'outside-kill "+edit" "\
+up list N level, append PRE ahead and SUF behind, backward M char
+
+\(fn &optional N)" t nil)
 
 ;;;***
 

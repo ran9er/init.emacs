@@ -93,7 +93,8 @@
             (eldoc-mode)
             (def-key-s ,(concat-symbol mode '-map)
               "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
-              "C-8"       'down-list
+              "C-8"       'outside-kill
+              "C-6"       'down-list
               "C-7"       '(lambda nil (interactive)(up-list -1))
               ))))
       '(lisp-mode
