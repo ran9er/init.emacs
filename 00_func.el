@@ -21,13 +21,13 @@
       (load file)
       (puthash name 1 hash))))
 
-;; * make alist
-(defun alist (lst)
-  "(alist '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
+;; * list-to-alist
+(defun to-alist (lst)
+  "(to-alist '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
   (if lst
       (cons
        (cons (car lst)(cadr lst))
-       (alist (cddr lst)))))
+       (to-alist (cddr lst)))))
 
 ;; * make hash-table
 (defun mkhtb (&rest rest)
@@ -62,7 +62,7 @@ See also `def-key-s'."
               ((eq keymap 1) (current-local-map))
               (t keymap)))
         (defs (if (null group)
-                  (alist key-defs)
+                  (to-alist key-defs)
                 (mapcar (lambda (k) (cons k group)) key-defs))))
     (mapc
      (lambda (d) (define-key map (eval `(kbd ,(car d))) (cdr d)))
@@ -150,17 +150,17 @@ See also `define-key-s'."
 (defun lisp-symbol ()
   (interactive)
   (substitute-patterns-with-unicode
-   (alist '("(?\\(lambda\\>\\)" lambda
-            ;; "\\<\\(lambda\\)\\>" lambda
-            "\\(;;\\ \\)" reference-mark
-            ;; "\\(<-\\)" left-arrow
-            ;; "\\(->\\)" right-arrow
-            ;; "\\(==\\)" identical
-            ;; "\\(/=\\)" not-identical
-            ;; "\\(>=\\)" greater-than-or-equal-to
-            ;; "\\(<=\\)" less-than-or-equal-to
-            ;; "\\(\\.\\.\\)" horizontal-ellipsis
-            ;; "\\(()\\)" 'nil
-            ;; "\\(!!\\)" double-exclamation
-            ))))
+   (to-alist '("(?\\(lambda\\>\\)" lambda
+               ;; "\\<\\(lambda\\)\\>" lambda
+               "\\(;;\\ \\)" reference-mark
+               ;; "\\(<-\\)" left-arrow
+               ;; "\\(->\\)" right-arrow
+               ;; "\\(==\\)" identical
+               ;; "\\(/=\\)" not-identical
+               ;; "\\(>=\\)" greater-than-or-equal-to
+               ;; "\\(<=\\)" less-than-or-equal-to
+               ;; "\\(\\.\\.\\)" horizontal-ellipsis
+               ;; "\\(()\\)" 'nil
+               ;; "\\(!!\\)" double-exclamation
+               ))))
 

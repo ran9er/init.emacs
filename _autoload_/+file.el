@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <file.el>
 ;; Create:       <2011-12-27 21:32:02 ran9er>
-;; Time-stamp:   <2012-01-03 18:10:35 ran9er>
+;; Time-stamp:   <2012-01-19 10:48:40 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -57,7 +57,7 @@ File suffix is used to determine what program to run."
   (let (ext-map file-name file-ext prog-name cmd-str
                 outputf status)
     (setq ext-map
-          (alist
+          (to-alist
            '(
              "py"       "python"
              "rb"       "ruby"

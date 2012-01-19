@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-19 00:58:45 ran9er>
+;; Time-stamp:   <2012-01-19 09:59:27 ran9er>
 ;; Mail:         <2999am@gmail.com>
 (defun make-vline-xpm (width height color &optional lor)
   (let* ((w width)

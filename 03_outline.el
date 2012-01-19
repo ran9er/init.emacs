@@ -19,7 +19,7 @@
 ;; (mapc (lambda (x)
 ;;         (puthash (car x)(cdr x)
 ;;                  *outline-minor-mode-hash*))
-;;       (alist '(
+;;       (to-alist '(
 ;; lisp-interaction-mode        ";;;\\(;* [^ 	\n]\\|###autoload\\)\\|("
 ;; ;emacs-lisp-mode              ";;\\ \\*+\\|;;;\\(;* [^ 	\n]\\|###autoload\\)\\|("
 ;; emacs-lisp-mode              ";;\\ \\*+"

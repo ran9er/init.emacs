@@ -79,7 +79,7 @@ up list N level, append PRE ahead and SUF behind, backward M char
 ;;;***
 
 ;;;### (autoloads (run-current-file write-temp find-temp read-lines)
-;;;;;;  "+file" "+file.el" (20226 54301))
+;;;;;;  "+file" "+file.el" (20247 33928))
 ;;; Generated autoloads from +file.el
 
 (autoload 'read-lines "+file" "\
@@ -179,17 +179,17 @@ File suffix is used to determine what program to run.
 
 ;;;***
 
-;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal cons-list-l)
-;;;;;;  "+list" "+list.el" (20225 11838))
+;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal to-alist-l)
+;;;;;;  "+list" "+list.el" (20247 34952))
 ;;; Generated autoloads from +list.el
 
-(autoload 'cons-list-l "+list" "\
-(cons-list-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))
+(autoload 'to-alist-l "+list" "\
+(to-alist-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))
 
 \(fn LST)" nil nil)
 
 (autoload 'mkal "+list" "\
-
+(mkal 1 2 3 4 5 6) => ((1 . 2) (3 . 4) (5 . 6))
 
 \(fn &rest REST)" nil (quote macro))
 
@@ -210,7 +210,7 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (wordpress) "+parse" "+parse.el" (20225 12420))
+;;;### (autoloads (wordpress) "+parse" "+parse.el" (20247 33952))
 ;;; Generated autoloads from +parse.el
 
 (autoload 'wordpress "+parse" "\

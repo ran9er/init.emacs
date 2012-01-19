@@ -1,12 +1,12 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <list.el>
 ;; Create:       <2011-12-27 21:24:57 ran9er>
-;; Time-stamp:   <2012-01-02 12:10:37 ran9er>
+;; Time-stamp:   <2012-01-19 11:05:44 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
-(defun cons-list-l (lst)
-  "(cons-list-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
+(defun to-alist-l (lst)
+  "(to-alist-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
   (let* ((lst (if (eq (logand (length lst) 1) 1) `(,@lst nil) lst))
          (l (length lst))
          (new-list (cons (cons (nth (- l 2) lst)(nth (- l 1) lst)) nil))
@@ -21,6 +21,7 @@
 
 ;;;###autoload
 (defmacro mkal (&rest rest)
+  "(mkal 1 2 3 4 5 6) => ((1 . 2) (3 . 4) (5 . 6))"
   (let* ((lst (if (eq (logand (length rest) 1) 1) `[,@rest nil] `[,@rest]))
          (l (length lst))
          (new-list (cons (cons (aref lst (- l 2))(aref lst (- l 1))) nil))
