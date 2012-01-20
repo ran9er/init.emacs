@@ -22,4 +22,15 @@
            :family "misc-fixed")))))
 
   (setq acc 0)
+
+  (dolist (x (loop for i upto 99 collect i))
+    (insert " ")
+    (set-text-properties
+     (1- (point)) (point)
+     `(font-lock-face 
+       (:background
+        ,(adjust-color "gray20" x)))))
+
+  (loop collect i for i upto 99)
+
   )

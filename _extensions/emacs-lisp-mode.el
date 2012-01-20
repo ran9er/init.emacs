@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <emacs-lisp.el>
 ;; Create:       <2011-12-24 00:02:38 ran9er>
-;; Time-stamp:   <2012-01-19 22:40:03 ran9er>
+;; Time-stamp:   <2012-01-20 09:35:07 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (load-once
@@ -41,4 +41,5 @@
   (setq local-abbrev-table emacs-lisp-mode-abbrev-table)
 )
 
+(hl-line-mode)
 (indent-vline-lisp)

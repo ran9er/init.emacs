@@ -22,12 +22,15 @@
       (puthash name 1 hash))))
 
 ;; * list-to-alist
-(defun to-alist (lst)
+(defun to-alist (&rest lst)
   "(to-alist '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"
-  (if lst
-      (cons
-       (cons (car lst)(cadr lst))
-       (to-alist (cddr lst)))))
+  (let ((l (if (listp (car lst)) (car lst) lst))
+        (alist (lambda(x)
+                 (if x
+                     (cons
+                      (cons (nth 0 x)(nth 1 x))
+                      (funcall alist (nthcdr 2 x)))))))
+    (funcall alist l)))
 
 ;; * make hash-table
 (defun mkhtb (&rest rest)
@@ -170,6 +173,7 @@ See also `define-key-s'."
    (to-alist '("(?\\(lambda\\>\\)" lambda
                ;; "\\<\\(lambda\\)\\>" lambda
                "\\(;;\\ \\)" reference-mark
+               "\\((elf\\ \\)" element-of
                ;; "\\(<-\\)" left-arrow
                ;; "\\(->\\)" right-arrow
                ;; "\\(==\\)" identical
@@ -180,4 +184,3 @@ See also `define-key-s'."
                ;; "\\(()\\)" 'nil
                ;; "\\(!!\\)" double-exclamation
                ))))
-

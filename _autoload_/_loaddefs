@@ -186,13 +186,13 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal to-alist-l)
-;;;;;;  "+list" "+list.el" (20247 34952))
+;;;;;;  "+list" "+list.el" (20249 25214))
 ;;; Generated autoloads from +list.el
 
 (autoload 'to-alist-l "+list" "\
 (to-alist-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))
 
-\(fn LST)" nil nil)
+\(fn &rest LST)" nil nil)
 
 (autoload 'mkal "+list" "\
 (mkal 1 2 3 4 5 6) => ((1 . 2) (3 . 4) (5 . 6))
@@ -213,6 +213,16 @@ File suffix is used to determine what program to run.
 See also `add-to-list-x'
 
 \(fn LIST-VAR &optional BASE &rest REST)" nil nil)
+
+;;;***
+
+;;;### (autoloads (elf) "+loop" "+loop.el" (20249 36830))
+;;; Generated autoloads from +loop.el
+
+(autoload 'elf "+loop" "\
+&optional verb &optional pred &rest form
+
+\(fn &rest FORM)" nil (quote macro))
 
 ;;;***
 
