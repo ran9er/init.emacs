@@ -32,5 +32,5 @@
         ,(adjust-color "gray20" x)))))
 
   (loop collect i for i upto 99)
-
   )
+
