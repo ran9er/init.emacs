@@ -216,21 +216,11 @@ See also `add-to-list-x'
 
 ;;;***
 
-;;;### (autoloads (elf) "+loop" "+loop.el" (20249 41856))
+;;;### (autoloads (elf) "+loop" "+loop.el" (20250 26799))
 ;;; Generated autoloads from +loop.el
 
 (autoload 'elf "+loop" "\
 &optional verb pred &rest form
-\(elf upto 10) => (0 1 2 3 4 5 6 7 8 9 10)
-\(elf x upto 10) => (0 1 2 3 4 5 6 7 8 9 10)
-\(elf 1+ upto 10) => (1 2 3 4 5 6 7 8 9 10 11)
-\(elf (+ 100 x) upto 10) => (100 101 102 103 104 105 106 107 108 109 110)
-\(elf (lambda(x)(+ 100 x)) upto 10) => (100 101 102 103 104 105 106 107 108 109 110)
-\(elf sum upto 10) => 55
-\(elf x sum upto 10) => 55
-\(elf 1+ sum upto 10) => 66
-\(elf (+ 100 x) sum upto 10) => 1155
-\(elf (lambda(x)(+ 100 x)) sum upto 10) => 1155
 
 \(fn &rest FORM)" nil (quote macro))
 

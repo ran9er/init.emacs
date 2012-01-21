@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-20 09:34:42 ran9er>
+;; Time-stamp:   <2012-01-21 11:43:08 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line
@@ -40,7 +40,7 @@ s1 ",\n" s2 "};"
 
 (defvar indent-vline-img (make-vline-xpm 9 20 "#4D4D4D"))
 (defun draw-indent-tab (beg end &optional color)
-  (if window-system
+  (if (display-images-p)
       (set-text-properties
        beg end
        `(display (image
