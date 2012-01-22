@@ -11,8 +11,8 @@
       ;;;;;;
       (if (member load-file-name 
                   (mapcar 'expand-file-name
-                          (list user-init-file
-                                )))
+                          (list "~/.emacs"
+                                (locate-library site-run-file))))
           (setq
            init-name-match
            "init.*emacs\\|emacs.*init"
@@ -112,18 +112,26 @@
          init-files))
       ;;;;;;
       (setq *init-time*
-            (append
-             (list
-              (cons 'Total
-                    (apply '+ (mapcar 'cdr *init-time*))))
+            (cons
+             (list 'init
+                   (apply '+ (mapcar 'cdr *init-time*)))
              *init-time*))
       ;; when init finished, echo some info
       (add-hook
        'emacs-startup-hook
        '(lambda ()
-          (message "load %d init file , spend %g seconds ; startup spend %g seconds"
+          (mapc
+           (lambda(x) (plist-put (car *init-time*) (car x)(cdr x)))
+           (list
+            (cons 'emacs
+                  (- (float-time after-init-time) (float-time before-init-time)))
+            (cons 'other
+                  (- (float-time) (float-time after-init-time)))))
+          (message "load %d init file, spend %g seconds; startup spend %g seconds"
                    (- (length *init-time*) 1)
-                   (cdar *init-time*)
-                   (- (float-time) (float-time before-init-time))))))
+                   (plist-get (car *init-time*) 'init)
+                   (+
+                    (plist-get (car *init-time*) 'emacs)
+                    (plist-get (car *init-time*) 'other))))))
     ;;;;;;;;
-    (throw 'quit "success")))
+    "success"))
