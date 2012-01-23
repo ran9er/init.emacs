@@ -3,5 +3,5 @@
 (require 'my-color-theme)
 (if window-system
     (enable-theme 'desert)
-  (enable-theme 'turquoise))
+  (enable-theme 'desert))
 

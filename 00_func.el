@@ -115,6 +115,10 @@ See also `define-key-s'."
 ;; * pretty symbol
 (defvar *unicode-symbol*
   (mkht
+   open-parenthesis #XFF08
+   close-parenthesis #XFF09
+   vertical-bar #XFF5C
+   backslash #X2198 ;; #XFF3C ;; #X2572
    left-arrow 8592
    up-arrow 8593
    right-arrow 8594
@@ -174,6 +178,10 @@ See also `define-key-s'."
                ;; "\\<\\(lambda\\)\\>" lambda
                "\\(;;\\ \\)" reference-mark
                "\\((elf\\ \\)" element-of
+               "\\(\\\\\\\\(\\)" open-parenthesis
+               "\\(\\\\\\\\)\\)" close-parenthesis
+               "\\(\\\\\\\\|\\)" vertical-bar
+               "\\(\\\\\\\\\\)" backslash
                ;; "\\(<-\\)" left-arrow
                ;; "\\(->\\)" right-arrow
                ;; "\\(==\\)" identical
