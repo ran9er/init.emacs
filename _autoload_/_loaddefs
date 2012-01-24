@@ -159,9 +159,14 @@ File suffix is used to determine what program to run.
 ;;;***
 
 ;;;### (autoloads (insert-doc-head insert-delimit-line insert-time
-;;;;;;  insert-autoload-magic-comment) "+insert" "+insert.el" (20220
-;;;;;;  31152))
+;;;;;;  insert-autoload-magic-comment comment-block) "+insert" "+insert.el"
+;;;;;;  (20254 52015))
 ;;; Generated autoloads from +insert.el
+
+(autoload 'comment-block "+insert" "\
+
+
+\(fn &optional BEG END)" t nil)
 
 (autoload 'insert-autoload-magic-comment "+insert" "\
 

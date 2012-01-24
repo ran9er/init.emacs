@@ -1,8 +1,22 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2011-12-29 22:31:10 ran9er>
+;; Time-stamp:   <2012-01-24 23:15:59 ran9er>
 ;; Mail:         <2999am@gmail.com>
+
+;;;###autoload
+(defun comment-block (&optional beg end)
+  (interactive)
+  (if mark-active
+      (let* ((beg (region-beginning))
+             (end (region-end))
+             (s (buffer-substring-no-properties beg end))
+             (o (if (equal (substring  s 0 2) "#@")
+                    (substring s (1+ (string-match " " s)))
+                  s))
+             (l (1+ (length o))))
+        (delete-region beg end)
+        (insert "#@" (number-to-string l) " " o))))
 
 ;;;###autoload
 (defun insert-autoload-magic-comment ()
@@ -39,7 +53,7 @@
 (defun insert-doc-head ()
   (interactive)
   (let* (beg
-        ;(cmnt (if (string= "" comment-end) comment-start))
+         ;; (cmnt (if (string= "" comment-end) comment-start))
          (common-head '(
           "-*- encoding: utf-8-unix; -*-" "\n"
           "File-name:    <" (if (buffer-file-name)
@@ -50,7 +64,7 @@
             " " user-full-name ">\n"
           "Time-stamp:   <>" "\n"
           ))
-;        (v (apply 'concat (append common-head (cdr (assoc major-mode head-alist))))))
+         ;; (v (apply 'concat (append common-head (cdr (assoc major-mode head-alist))))))
          (v (eval `(concat ,@common-head
                            ,@(cdr (assoc major-mode head-alist))))))
          ;; (o (apply 'concat
@@ -65,14 +79,14 @@
 
 
 (setq head-alist '(
-;                     (c-mode . ,common-head)
-;                     (emacs-lisp-mode . ,common-head)
+                   ;; (c-mode . ,common-head)
+                   ;; (emacs-lisp-mode . ,common-head)
                    (emacs-lisp-mode . ("Mail:         <"
                                        user-mail-address ">\n"
                                        ))
-;                     (lisp-interaction-mode . ,common-head)
-;                     (ruby-mode . ,common-head)
-                     ))
+                   ;; (lisp-interaction-mode . ,common-head)
+                   ;; (ruby-mode . ,common-head)
+                   ))
 
 ;(insert-doc-head)
 ;(add-to-list 'head-alist '(m . n))

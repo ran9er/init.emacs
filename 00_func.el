@@ -32,6 +32,15 @@
                       (funcall alist (nthcdr 2 x)))))))
     (funcall alist l)))
 
+(defun group (source &optional n)
+  (let ((n (or n 2))
+        (rec (lambda (source acc)
+               (let ((rest (nthcdr n source)))
+                 (if (consp rest)
+                     (funcall rec rest (cons (butlast source (- (length source) n)) acc))
+                   (nreverse (cons source acc)))))))
+    (if source (funcall rec source nil) nil)))
+
 ;; * make hash-table
 (defun mkhtb (&rest rest)
   (let* ((lst (if (eq (logand (length rest) 1) 1)
@@ -192,3 +201,15 @@ See also `define-key-s'."
                ;; "\\(()\\)" 'nil
                ;; "\\(!!\\)" double-exclamation
                ))))
+
+;; * lisp block comment
+(defun lisp-block-comment ()
+  (interactive)
+  (font-lock-add-keywords
+   nil `(("#@\\([0-9]+\\)\\ "
+          (0 (let* ((b (match-beginning 1))
+                    (e (match-end 1))
+                    (n (string-to-number (buffer-substring-no-properties b e)))
+                    (beg (- b 2))
+                    (end (+ e n)))
+               (set-text-properties beg end '(font-lock-face font-lock-comment-face))))))))

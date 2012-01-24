@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-23 20:40:58 ran9er>
+;; Time-stamp:   <2012-01-23 23:14:32 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line

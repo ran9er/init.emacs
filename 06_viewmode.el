@@ -9,12 +9,10 @@
   (when (get-buffer-window (current-buffer))
     (cond (window-system
            (cond (view-mode
-;                  (set-face-background 'modeline "black")
-                  (set-face-foreground 'modeline "orange")
+                  (set-face-foreground 'modeline "orange" #@8 "black")
                   )
                  (t
-;                  (set-face-background 'modeline "black")
-                  (set-face-foreground 'modeline "white")))
+                  (set-face-foreground 'modeline "white" #@8 "black")))
            )
           (t
            (set-face-background 'modeline 

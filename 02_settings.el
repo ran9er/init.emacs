@@ -91,6 +91,7 @@
          `(lambda ()
             (lisp-symbol)
             (eldoc-mode)
+            (lisp-block-comment)
             (def-key-s ,(concat-symbol mode '-map)
               "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
               "C-8"       'outside-kill
