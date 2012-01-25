@@ -20,6 +20,9 @@
 (require 'minibuffer-complete-cycle)
 (setq minibuffer-complete-cycle t)
 
+;; *========== iedit
+(autoload 'iedit-mode "iedit" "" t nil)
+
 ;; *========== multi-term
 ;; (require 'multi-term)
 ;; (if (eq system-type 'gnu/linux)

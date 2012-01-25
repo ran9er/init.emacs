@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <ruby-mode.el>
 ;; Create:       <2012-01-08 00:44:15 ran9er>
-;; Time-stamp:   <2012-01-08 00:55:32 ran9er>
+;; Time-stamp:   <2012-01-25 19:53:22 ran9er>
 ;; Mail:         <2999am@gmail.com>
 (load-once
  ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ruby")  
@@ -31,3 +31,12 @@
 
 (inf-ruby-keys)
 (turn-on-font-lock)
+
+;; (require 'ruby-block)
+;; (ruby-block-mode t)
+;; ;; do overlay
+;; (setq ruby-block-highlight-toggle 'overlay)
+;; ;; display to minibuffer
+;; (setq ruby-block-highlight-toggle 'minibuffer)
+;; ;; display to minibuffer and do overlay
+;; (setq ruby-block-highlight-toggle t)
