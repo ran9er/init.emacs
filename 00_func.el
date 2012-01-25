@@ -206,10 +206,5 @@ See also `define-key-s'."
 (defun lisp-block-comment ()
   (interactive)
   (font-lock-add-keywords
-   nil `(("#@\\([0-9]+\\)\\ "
-          (0 (let* ((b (match-beginning 1))
-                    (e (match-end 1))
-                    (n (string-to-number (buffer-substring-no-properties b e)))
-                    (beg (- b 2))
-                    (end (+ e n)))
-               (set-text-properties beg end '(font-lock-face font-lock-comment-face))))))))
+   nil `(("\\(#@[0-9]+:\\)"
+          1 font-lock-warning-face t))))

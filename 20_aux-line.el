@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-25 02:17:44 ran9er>
+;; Time-stamp:   <2012-01-26 01:21:29 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line
@@ -114,26 +114,6 @@ s1 ",\n" s2 "};"
         (forward-line)
         (setq l (1- l))))))
 
-(defun indent-vline-advice ()
-  (defadvice delete-char (before indent-vline activate compile)
-    (save-excursion
-      (let* ((i (current-column))
-             (erase (lambda()
-                      (let* ((p (+ (point) (skip-chars-forward " ")))
-                             (q (+ (point) (skip-chars-backward " ")))
-                             (x (bolp)))
-                        (if x
-                            (remove-text-properties p q '(display)))))))
-        (funcall erase)
-        (while (< i (if (<= (point-max)(line-end-position))
-                        0
-                      (forward-line)                    
-                      (beginning-of-line)
-                      (skip-chars-forward " ")
-                      (current-column)))
-          (move-to-column i)
-          (funcall erase))))))
-
 (defun indent-vline-s (&optional regexp column img color)
   (interactive)
   (let ((x (or regexp "^")))
@@ -160,6 +140,32 @@ s1 ",\n" s2 "};"
 ;;   (interactive)
 ;;   (indent-vline-s (or regexp "^[ \t]*[,`#'(]")))
 
+(defun indent-vline-advice ()
+  (defadvice #@23:indent-for-tab-command
+    delete-char (after #@7:before indent-vline activate compile)
+    (save-excursion
+      (let* ((i (current-column))
+             (erase (lambda()
+                      (let* ((p (+ (point) (skip-chars-forward " ")))
+                             (q (+ (point) (skip-chars-backward " ")))
+                             (x (bolp)))
+                        (if x
+                            (remove-text-properties p q '(display)))))))
+        (while (null (condition-case err
+                         (up-list)(error t))))
+        (backward-list)
+        (funcall erase)
+        (while (< i (if (<= (point-max)(line-end-position))
+                        0
+                      (forward-line)                    
+                      (beginning-of-line)
+                      (skip-chars-forward " ")
+                      (current-column)))
+          (move-to-column i)
+          (funcall erase)))
+      (insert " ")
+      (delete-region (point)(1- (point))))))
+
 (defun indent-vline-lisp ()
   (interactive)
   (let ((c '(save-excursion
@@ -173,8 +179,9 @@ s1 ",\n" s2 "};"
   (indent-vline-advice))
 
 (defun indent-vline-test (&optional regexp)
-  (interactive)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               (interactive)
   (indent-vline-s "\\(def\\|class\\|if\\)"
                   '(save-excursion
                      (goto-char (match-beginning 1))
                      (current-column))))
+  

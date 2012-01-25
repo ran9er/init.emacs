@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2012-01-24 23:15:59 ran9er>
+;; Time-stamp:   <2012-01-26 01:03:52 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -12,11 +12,11 @@
              (end (region-end))
              (s (buffer-substring-no-properties beg end))
              (o (if (equal (substring  s 0 2) "#@")
-                    (substring s (1+ (string-match " " s)))
+                    (substring s (+ 1 (string-match ":" s)))
                   s))
              (l (1+ (length o))))
         (delete-region beg end)
-        (insert "#@" (number-to-string l) " " o))))
+        (insert "#@" (number-to-string l) ":" o))))
 
 ;;;###autoload
 (defun insert-autoload-magic-comment ()
