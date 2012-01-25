@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-26 01:21:29 ran9er>
+;; Time-stamp:   <2012-01-26 01:26:31 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line
@@ -179,9 +179,8 @@ s1 ",\n" s2 "};"
   (indent-vline-advice))
 
 (defun indent-vline-test (&optional regexp)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               (interactive)
+  (interactive)
   (indent-vline-s "\\(def\\|class\\|if\\)"
                   '(save-excursion
                      (goto-char (match-beginning 1))
                      (current-column))))
-  
