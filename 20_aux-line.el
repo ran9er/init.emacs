@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-01-23 23:14:32 ran9er>
+;; Time-stamp:   <2012-01-25 02:17:44 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line
@@ -77,6 +77,24 @@ s1 ",\n" s2 "};"
               nil
             (draw-indent-tab p1 p2 img color)))))))
 
+(defun erase-indent-vline (column)
+  (interactive "P")
+  (save-excursion
+    (let* ((i (or column (current-column))))
+      (let ((p (point))) (if (get-text-property p 'display)
+                             (remove-text-properties p (1+ p) '(display nil))))
+      (while (< i (if (<= (point-max)(line-end-position))
+                      0
+                    (forward-line)                    
+                    (beginning-of-line)
+                    (skip-chars-forward " ")
+                    (current-column)))
+        (move-to-column i)
+        (let* ((p1 (point))(p2 (1+ p1)))
+          (if (get-text-property p1 'display)
+              (remove-text-properties p1 p2 '(display nil))))
+        ))))
+
 (defun draw-indent-vline-lisp-1 ()
   (interactive)
   (save-excursion
@@ -96,19 +114,32 @@ s1 ",\n" s2 "};"
         (forward-line)
         (setq l (1- l))))))
 
+(defun indent-vline-advice ()
+  (defadvice delete-char (before indent-vline activate compile)
+    (save-excursion
+      (let* ((i (current-column))
+             (erase (lambda()
+                      (let* ((p (+ (point) (skip-chars-forward " ")))
+                             (q (+ (point) (skip-chars-backward " ")))
+                             (x (bolp)))
+                        (if x
+                            (remove-text-properties p q '(display)))))))
+        (funcall erase)
+        (while (< i (if (<= (point-max)(line-end-position))
+                        0
+                      (forward-line)                    
+                      (beginning-of-line)
+                      (skip-chars-forward " ")
+                      (current-column)))
+          (move-to-column i)
+          (funcall erase))))))
+
 (defun indent-vline-s (&optional regexp column img color)
   (interactive)
   (let ((x (or regexp "^")))
     (font-lock-add-keywords
      nil `((,x
-            (0 (draw-indent-vline ,column ,img ,color))))))
-  (defadvice delete-char (after indent-vline activate compile)
-    (save-excursion
-      (let* ((p (point))
-             (q (skip-chars-forward " "))
-             (x (progn (skip-chars-backward " ")(bolp))))
-        (if x
-            (remove-text-properties p (+ p q) '(display)))))))
+            (0 (draw-indent-vline ,column ,img ,color)))))))
 
 (defun indent-vline (&optional regexp img color)
   (interactive)
@@ -123,14 +154,7 @@ s1 ",\n" s2 "};"
                              (get-text-property p1 'display))
                          nil
                        (draw-indent-tab p1 p2 img color)
-                       nil))))))))
-  (defadvice delete-char (after indent-vline activate compile)
-    (save-excursion
-      (let* ((p (point))
-             (q (skip-chars-forward " "))
-             (x (progn (skip-chars-backward " ")(bolp))))
-        (if x
-            (remove-text-properties p (+ p q) '(display)))))))
+                       nil)))))))))
 
 ;; (defun indent-vline-lisp (&optional regexp)
 ;;   (interactive)
@@ -145,8 +169,8 @@ s1 ",\n" s2 "};"
     (indent-vline-s "^[ \t]*\\((\\)" c)
     (indent-vline-s "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-vline-img-lst)
     (indent-vline-s blk c 'indent-vline-img-blk)
-    (indent-vline-s "[,`#']+\\((\\)" c 'indent-vline-img-lst)
-    ))
+    (indent-vline-s "[,`#']+\\((\\)" c 'indent-vline-img-lst))
+  (indent-vline-advice))
 
 (defun indent-vline-test (&optional regexp)
   (interactive)
@@ -154,4 +178,3 @@ s1 ",\n" s2 "};"
                   '(save-excursion
                      (goto-char (match-beginning 1))
                      (current-column))))
-
