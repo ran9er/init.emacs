@@ -2,6 +2,7 @@
 ;; * view
 (menu-bar-mode 0)                    ;; 禁用菜单栏，F10 开启关闭菜单
 (scroll-bar-mode 0)                  ;; 禁用滚动栏
+(setq-default cursor-type 'bar)      ;; 光标类型
 (global-font-lock-mode t)            ;; 语法加亮
 (require 'generic-x)                 ;; 增加更多的高亮
 (transient-mark-mode t)              ;; 高亮显示区域选择
