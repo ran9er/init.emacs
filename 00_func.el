@@ -128,7 +128,7 @@ See also `define-key-s'."
    right-corner-bracket #X300D
    open-parenthesis #XFF08
    close-parenthesis #XFF09
-   vertical-bar #@7:#X2502 #X2503 #@7:#XFF5C
+   vertical-bar #@7:#X2502 #@7:#X2503 #XFF5C
    double-vertical-bar #X2016
    backslash #X2198 #@7:#XFF3C #@7:#X2572
    left-arrow 8592
