@@ -6,7 +6,8 @@
 ;; *========== undo-tree
 (require 'undo-tree)
 (global-undo-tree-mode)
-(add-hook 'undo-tree-visualizer-mode-hook 'buffer-face-mode)
+(defadvice undo-tree-visualizer-mode (after undo-tree-face activate)
+  (buffer-face-mode))
 
 ;; *========== anything
 (require 'anything)
