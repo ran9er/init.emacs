@@ -1,8 +1,18 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <04_advice.el>
 ;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-01-29 01:24:07 ran9er>
+;; Time-stamp:   <2012-01-29 11:05:33 ran9er>
 ;; Mail:         <2999am@gmail.com>
+
+(defadvice isearch-yank-word-or-char (around aiywoc activate)
+  ;; default-key: isearch-mode-map C-w
+  (interactive)
+  (isearch-yank-string
+   (if mark-active
+       (buffer-substring-no-properties
+        (region-beginning) (region-end))
+     (current-word nil nil)))
+  (deactivate-mark))
 
 (defadvice comment-or-uncomment-region (before slickcomment activate compile)
   "When called interactively with no active region, toggle comment on current line instead."
@@ -12,6 +22,7 @@
            (line-beginning-position 2)))))
 
 (defadvice what-cursor-position (around what-cursor-position-around activate)
+  "When called interactively with active region, print info of region instead."
   (if mark-active
       (let ((beg (region-beginning))
             (end (region-end)))
@@ -20,6 +31,7 @@
     ad-do-it))
 
 (defadvice delete-horizontal-space (around resize-space (&optional backward-only) activate)
+  "if elop or bolp or space around \"(\" or \")\", delete all space;"
   (interactive "*P")
   (let ((orig-pos (point))
         (skip-chars " \t")
@@ -40,6 +52,7 @@
       (if bwd-p (backward-char 1)))))
 
 (defadvice kill-line (around merge-line (&optional arg) activate)
+  "if this line is not empty and cursor in the end of line, merge next N line"
   (interactive "P")
   (let ((n (or arg 1)))
     (if (and (null (bolp)) (eolp))

@@ -22,17 +22,6 @@
 ;; * 使用 y or n 提问
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; * isearch-yank-word-or-char
-(defun isearch-yank-word-or-char ()
-  ;; default-key: isearch-mode-map C-w
-  (interactive)
-  (isearch-yank-string
-   (if mark-active
-       (buffer-substring-no-properties
-        (region-beginning) (region-end))
-     (current-word nil nil)))
-  (deactivate-mark))
-
 ;; * 不保留备份文件
 (setq-default make-backup-files nil)
 
