@@ -34,3 +34,14 @@
   (loop collect i for i upto 99)
   )
 
+(defun function-maybe (fn)
+  (if (functionp fn)
+      fn
+    (let ((s "-"))
+      (intern
+       (mapconcat
+        'identity
+        (cdr (split-string (symbol-name fn) s)) s)))))
+
+(defadvice newsticker-treeview (before rss activate)
+  (load1 (expand-file-name "my-newsticker.el" work-dir)))

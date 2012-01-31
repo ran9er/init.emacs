@@ -252,11 +252,11 @@ See also `add-to-list-x'
 ;;;***
 
 ;;;### (autoloads (shell-command-symbol-to-string join-string) "+string"
-;;;;;;  "+string.el" (20219 6040))
+;;;;;;  "+string.el" (20263 39852))
 ;;; Generated autoloads from +string.el
 
 (autoload 'join-string "+string" "\
-(mapconcat 'concat lst s)
+(mapconcat 'identity lst s)
 
 \(fn LST S)" nil nil)
 
