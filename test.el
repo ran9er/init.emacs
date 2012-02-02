@@ -45,3 +45,8 @@
 
 (defadvice newsticker-treeview (before rss activate)
   (load1 (expand-file-name "my-newsticker.el" work-dir)))
+
+(eval-after-load 'eshell
+  '(progn
+     (defvar acc 0)
+     (incf acc)))
