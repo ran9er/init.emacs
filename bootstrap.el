@@ -7,6 +7,7 @@
     ;;;;;;;;
     (let ((this-file (file-name-nondirectory load-file-name))
           (this-dir (file-name-directory load-file-name))
+          (tmp (make-temp-name ""))
           init-name-match base-dir init-dir init-files)
       ;;;;;;
       (cond
@@ -14,7 +15,7 @@
        ((member load-file-name
                 (mapcar 'expand-file-name
                         (list "~/.emacs"
-                              (locate-library site-run-file))))
+                              (or (locate-library site-run-file) tmp))))
         (setq
          init-name-match
          "init.*emacs\\|emacs.*init"
@@ -27,9 +28,8 @@
                   `("~"))))
          init-dir
          ((lambda (x) (file-name-as-directory
-                   (or (car (sort x 'file-newer-than-file-p))
-                       (make-temp-name ""))))
-          (mapcar (lambda (x) (if (file-directory-p x) x (make-temp-name "")))
+                   (or (car (sort x 'file-newer-than-file-p)) tmp)))
+          (mapcar (lambda (x) (if (file-directory-p x) x tmp))
                   (directory-files base-dir t init-name-match t)))))
        (t (setq init-dir this-dir)))
       ;; export *init-dir*
@@ -70,7 +70,7 @@
        (directory-files (expand-file-name "_extensions/" *init-dir*) t "\\.el\\'"))
       ;;;;;;
       (add-hook 'find-file-hook
-                '(lambda ()
+                `(lambda ()
                    (let* ((bf (buffer-name))
                           (mode
                            (catch 'md
@@ -85,8 +85,7 @@
                      ;;           (and (string-equal "*" (substring bf 0 1))
                      ;;                (substring bf 1 -1))))
                      (load
-                      (gethash mode *auto-hook-hash*
-                               (make-temp-name ""))
+                      (gethash mode *auto-hook-hash* ,tmp)
                       t))))
       ;; byte-compile
       (when nil
