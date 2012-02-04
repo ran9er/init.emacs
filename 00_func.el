@@ -94,20 +94,19 @@ See also `define-key-s'."
 
 ;; * adjust-color
 (defun adjust-color (color percentage)
-  (apply
-   (lambda(r g b)
-     (format "#%02x%02x%02x"
-             (* r 255)
-             (* g 255)
-             (* b 255)))
-   (mapcar
-    (lambda(x)
-      (let ((v (+ x (/ percentage 100.0))))
-        (cond
-         ((> v 1) 1)
-         ((< v 0) 0)
-         (t v))))
-    (color-name-to-rgb color))))
+  (let ((p (* 65535 (/ percentage 100.0))))
+    (apply
+     (lambda(r g b)
+       (format "#%02x%02x%02x" r g b))
+     (mapcar
+      (lambda(x)
+        (let ((v (+ x p)))
+          (/ (cond
+              ((> v 65535) 65535)
+              ((< v 0) 0)
+              (t v))
+             257.0)))
+      (color-values color)))))
 
 ;; * add-exec-path
 (defun add-exec-path (path)
