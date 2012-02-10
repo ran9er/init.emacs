@@ -30,23 +30,25 @@
           (change-mode-line-color)
           (force-mode-line-update)))
      ;; ** progn
-     (progn
-       (change-mode-line-color-advice set-window-configuration)
-       (change-mode-line-color-advice switch-to-buffer)
-       (change-mode-line-color-advice pop-to-buffer)
-       (change-mode-line-color-advice other-window)
-       (change-mode-line-color-advice toggle-read-only)
-       (change-mode-line-color-advice vc-toggle-read-only)
-       (change-mode-line-color-advice vc-next-action)
-       (change-mode-line-color-advice view-mode-enable)
-       (change-mode-line-color-advice view-mode-disable)
-       (change-mode-line-color-advice bury-buffer)
-       (change-mode-line-color-advice kill-buffer)
-       (change-mode-line-color-advice delete-window)
-       ;; for windows.el
-       (change-mode-line-color-advice win-switch-to-window)
-       (change-mode-line-color-advice win-toggle-window)
-       )
+     (mapc
+      (lambda(x)
+        (eval
+         `(change-mode-line-color-advice ,x)))
+      '(set-window-configuration
+        switch-to-buffer
+        pop-to-buffer
+        other-window
+        toggle-read-only
+        vc-toggle-read-only
+        vc-next-action
+        view-mode-enable
+        view-mode-disable
+        bury-buffer
+        kill-buffer
+        delete-window
+        ;; for windows.el
+        win-switch-to-window
+        win-toggle-window))
      ;; (change-mode-line-color)
      ))
 
