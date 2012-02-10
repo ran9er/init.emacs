@@ -36,6 +36,22 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 ;;;***
 
+;;;### (autoloads (copy-sexp-on-column copy-word-on-column) "+column"
+;;;;;;  "+column.el" (20276 44427))
+;;; Generated autoloads from +column.el
+
+(autoload 'copy-word-on-column "+column" "\
+
+
+\(fn &optional N)" t nil)
+
+(autoload 'copy-sexp-on-column "+column" "\
+
+
+\(fn &optional N)" t nil)
+
+;;;***
+
 ;;;### (autoloads (rename-file-specify-extension) "+dired" "+dired.el"
 ;;;;;;  (20223 24178))
 ;;; Generated autoloads from +dired.el
@@ -47,9 +63,9 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 ;;;***
 
-;;;### (autoloads (copy-word-on-column outside-kill outside parallel-edit
-;;;;;;  smart-backward-kill resize-horizontal-space swap-point) "+edit"
-;;;;;;  "+edit.el" (20276 29209))
+;;;### (autoloads (outside-kill outside parallel-edit smart-backward-kill
+;;;;;;  resize-horizontal-space swap-point) "+edit" "+edit.el" (20276
+;;;;;;  44409))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
@@ -81,11 +97,6 @@ up list N level, append PRE ahead and SUF behind, backward M char
 up list N level, append PRE ahead and SUF behind, backward M char
 
 \(fn &optional N)" t nil)
-
-(autoload 'copy-word-on-column "+edit" "\
-
-
-\(fn &optional N STRICT REALLY-WORD)" t nil)
 
 ;;;***
 
