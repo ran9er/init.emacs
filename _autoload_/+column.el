@@ -1,8 +1,9 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <+column.el>
 ;; Create:       <2012-02-10 13:39:11 ran9er>
-;; Time-stamp:   <2012-02-10 13:39:23 ran9er>
+;; Time-stamp:   <2012-02-10 13:58:39 ran9er>
 ;; Mail:         <2999am@gmail.com>
+
 (defun thing-on-column (fn &optional n)
   (save-excursion
     (let ((c (current-column))

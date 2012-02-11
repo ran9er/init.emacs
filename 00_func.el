@@ -77,7 +77,14 @@ See also `def-key-s'."
                   (to-alist key-defs)
                 (mapcar (lambda (k) (cons k group)) key-defs))))
     (mapc
-     (lambda (d) (define-key map (eval `(kbd ,(car d))) (cdr d)))
+     ;; [remap COMMAND] remaps any key binding for COMMAND
+     (lambda (d)
+       (let ((k (car d)))
+         (define-key
+           map
+           (if (stringp k) (eval `(kbd ,k)) k)
+           (cdr d))))
+     ;; (lambda (d) (define-key map (eval `(kbd ,(car d))) (cdr d)))
      defs)))
 
 (defmacro def-k-s (km &rest kd)

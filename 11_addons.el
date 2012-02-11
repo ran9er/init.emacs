@@ -10,7 +10,7 @@
   (buffer-face-mode))
 
 ;; *========== anything
-(require 'anything)
+;; (require 'anything)
 
 ;; *========== browse-kill-ring
 (require 'browse-kill-ring)

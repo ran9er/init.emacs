@@ -37,7 +37,7 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (copy-sexp-on-column copy-word-on-column) "+column"
-;;;;;;  "+column.el" (20276 44427))
+;;;;;;  "+column.el" (20276 45583))
 ;;; Generated autoloads from +column.el
 
 (autoload 'copy-word-on-column "+column" "\
