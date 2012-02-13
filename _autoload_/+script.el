@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <+script.el>
 ;; Create:       <2012-02-14 00:21:56 ran9er>
-;; Time-stamp:   <2012-02-14 01:05:22 ran9er>
+;; Time-stamp:   <2012-02-14 01:31:36 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -55,3 +55,7 @@ File suffix is used to determine what program to run."
   "make a lua shell"
   (interactive)
   (switch-to-buffer (make-comint "lua" "lua" nil "-i")))
+
+;;;###autoload
+(autoload 'run-ruby "inf-ruby"
+"Run an inferior Ruby process" t)
