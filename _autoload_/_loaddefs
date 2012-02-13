@@ -100,8 +100,8 @@ up list N level, append PRE ahead and SUF behind, backward M char
 
 ;;;***
 
-;;;### (autoloads (run-current-file write-temp find-temp read-lines)
-;;;;;;  "+file" "+file.el" (20247 33928))
+;;;### (autoloads (write-temp find-temp read-lines) "+file" "+file.el"
+;;;;;;  (20281 14467))
 ;;; Generated autoloads from +file.el
 
 (autoload 'read-lines "+file" "\
@@ -118,15 +118,6 @@ Return a list of lines in FILEPATH.
 
 
 \(fn FILENAME &optional CONFIRM)" t nil)
-
-(autoload 'run-current-file "+file" "\
-Execute or compile the current file.
-For example, if the current buffer is the file x.pl,
-then it'll call “perl x.pl” in a shell.
-The file can be php, perl, python, bash, java.
-File suffix is used to determine what program to run.
-
-\(fn)" t nil)
 
 ;;;***
 
@@ -254,6 +245,31 @@ See also `add-to-list-x'
 
 
 \(fn BEG END)" t nil)
+
+;;;***
+
+;;;### (autoloads (lua-shell x-shell run-current-file) "+script"
+;;;;;;  "+script.el" (20281 17106))
+;;; Generated autoloads from +script.el
+
+(autoload 'run-current-file "+script" "\
+Execute or compile the current file.
+For example, if the current buffer is the file x.pl,
+then it'll call “perl x.pl” in a shell.
+The file can be php, perl, python, bash, java.
+File suffix is used to determine what program to run.
+
+\(fn)" t nil)
+
+(autoload 'x-shell "+script" "\
+
+
+\(fn PROG)" nil (quote macro))
+
+(autoload 'lua-shell "+script" "\
+make a lua shell
+
+\(fn)" t nil)
 
 ;;;***
 
