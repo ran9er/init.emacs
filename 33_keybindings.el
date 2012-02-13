@@ -17,8 +17,6 @@
     "M-0"       other-window                        ;; 切换到其它缓冲区 Alt+0 ;; C-x o
     "M-o"       other-window                        ;; 切换到其它缓冲区 Alt+o ;; C-x o
 ;   "C-w"       backward-kill-word                  ;; (kill-region)
-;   "C-x C-k"   kill-region
-;   "C-c C-k"   kill-region
     [remap kill-region]
                 smart-backward-kill                 ;; (kill-region) "C-w"
 ;   "M-\\"      resize-horizontal-space             ;; delete-horizontal-space
