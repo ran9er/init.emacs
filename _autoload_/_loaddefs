@@ -249,7 +249,7 @@ See also `add-to-list-x'
 ;;;***
 
 ;;;### (autoloads (lua-shell x-shell run-current-file) "+script"
-;;;;;;  "+script.el" (20281 18680))
+;;;;;;  "+script.el" (20282 37524))
 ;;; Generated autoloads from +script.el
 
 (autoload 'run-current-file "+script" "\
@@ -264,7 +264,7 @@ File suffix is used to determine what program to run.
 (autoload 'x-shell "+script" "\
 
 
-\(fn PROG)" nil (quote macro))
+\(fn PROG)" nil nil)
 
 (autoload 'lua-shell "+script" "\
 make a lua shell
