@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <04_advice.el>
 ;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-01-29 11:05:33 ran9er>
+;; Time-stamp:   <2012-02-14 20:59:33 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defadvice isearch-yank-word-or-char (around aiywoc activate)
@@ -80,3 +80,14 @@
 ;;       (progn (backward-word)(setq beg (point)
 ;;                                   end p))))))
 
+(defadvice skeleton-pair-insert-maybe (around xxx activate)
+  (if (eq last-command-event 123)
+      (let ((skeleton-pair-alist
+             (save-excursion
+               (skip-chars-backward " \t")
+               (if (eq (char-before (point)) 61)
+                   '((?\{ _ "}"))
+                 ;; skeleton-pair-alist
+                 '((?{ \n > _ \n ?} >))))))
+        ad-do-it)
+    ad-do-it))
