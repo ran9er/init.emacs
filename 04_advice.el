@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <04_advice.el>
 ;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-02-14 20:59:33 ran9er>
+;; Time-stamp:   <2012-02-15 00:05:02 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defadvice isearch-yank-word-or-char (around aiywoc activate)
@@ -63,22 +63,46 @@
           (setq n (1- n)))
       ad-do-it)))
 
-;; (defadvice kill-region (before smart-kill (beg end) activate)
-;;   (let ((p (point))
-;;         (i (save-excursion (abs (skip-chars-backward " \t")))))
-;;     (cond
-;;      ((if mark-active
-;;           (setq beg (mark)
-;;                 end p)))
-;;      ((< 0 i)
-;;        (if (zerop (mod i tab-width))
-;;            (setq beg (- p tab-width)
-;;                  end p)
-;;          (setq beg (- p (mod i tab-width))
-;;                end p)))
-;;      (t
-;;       (progn (backward-word)(setq beg (point)
-;;                                   end p))))))
+(defadvice kill-ring-save (around slick-copy activate)
+  "When called interactively with no active region, copy a single line instead."
+  (if (or (use-region-p) (not (called-interactively-p)))
+      ad-do-it
+    (kill-new (buffer-substring (line-beginning-position)
+                                (line-beginning-position 2))
+              nil '(yank-line))
+    (message "Copied line")))
+
+(defadvice kill-region (around slick-copy)
+  "When called interactively with no active region, kill a single line instead."
+  (if (or (use-region-p) (not (called-interactively-p)))
+      ad-do-it
+    (kill-new (filter-buffer-substring (line-beginning-position)
+                                       (line-beginning-position 2) t)
+              nil '(yank-line))))
+
+(defadvice kill-region (before smart-kill)
+  (let ((p (point))
+        (i (save-excursion (abs (skip-chars-backward " \t")))))
+    (setq end p)
+    (cond
+     ((if mark-active
+          (setq beg (mark))))
+     ((< 0 i)
+       (if (zerop (mod i tab-width))
+           (setq beg (- p tab-width))
+         (setq beg (- p (mod i tab-width)))))
+     (t
+      (progn (backward-word)
+             (setq beg (point)))))))
+;; (ad-activate 'kill-region)
+;; (ad-deactivate 'kill-region)
+
+(defun yank-line (string)
+  "Insert STRING above the current line."
+  (beginning-of-line)
+  (unless (= (elt string (1- (length string))) ?\n)
+    (save-excursion (insert "\n")))
+  (insert string))
 
 (defadvice skeleton-pair-insert-maybe (around xxx activate)
   (if (eq last-command-event 123)
