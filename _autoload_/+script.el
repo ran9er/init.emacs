@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <+script.el>
 ;; Create:       <2012-02-14 00:21:56 ran9er>
-;; Time-stamp:   <2012-02-15 00:57:56 ran9er>
+;; Time-stamp:   <2012-02-15 09:23:27 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload

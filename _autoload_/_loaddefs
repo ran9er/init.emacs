@@ -249,7 +249,7 @@ See also `add-to-list-x'
 ;;;***
 
 ;;;### (autoloads (lua-shell x-shell run-current-file) "+script"
-;;;;;;  "+script.el" (20282 37524))
+;;;;;;  "+script.el" (20283 2319))
 ;;; Generated autoloads from +script.el
 
 (autoload 'run-current-file "+script" "\
