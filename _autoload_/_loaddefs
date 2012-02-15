@@ -63,6 +63,16 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 ;;;***
 
+;;;### (autoloads (dos2unix) "+dos2unix" "+dos2unix.el" (20283 44853))
+;;; Generated autoloads from +dos2unix.el
+
+(autoload 'dos2unix "+dos2unix" "\
+
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (outside-kill outside parallel-edit smart-backward-kill
 ;;;;;;  resize-horizontal-space swap-point) "+edit" "+edit.el" (20276
 ;;;;;;  44409))
@@ -122,7 +132,7 @@ Return a list of lines in FILEPATH.
 ;;;***
 
 ;;;### (autoloads (set-local-variable temp-func-call temp-func-add)
-;;;;;;  "+function" "+function.el" (20223 59932))
+;;;;;;  "+function" "+function.el" (20283 43983))
 ;;; Generated autoloads from +function.el
 
 (defvar temp-func-list '((let ((cnt 0) (acc nil)) (mapc (lambda (x) (setq acc (concat acc "\n" (number-to-string (setq cnt (1+ cnt))) ": " (prin1-to-string x)))) (butlast temp-func-list)) acc)))
@@ -249,7 +259,7 @@ See also `add-to-list-x'
 ;;;***
 
 ;;;### (autoloads (lua-shell x-shell run-current-file) "+script"
-;;;;;;  "+script.el" (20283 2319))
+;;;;;;  "+script.el" (20283 43599))
 ;;; Generated autoloads from +script.el
 
 (autoload 'run-current-file "+script" "\

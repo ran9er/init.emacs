@@ -125,6 +125,10 @@
 (defun eshell/ed (file1 file2)
   (ediff-files file1 file2))
 
+(defun eshell/ro ()
+  "Delete files matching pattern \".*~\" and \"*~\""
+  (eshell/rm (directory-files "." nil "^\\.?.*~$" nil)))
+
 ;; ** alternate func
 (defun eshell/less (&rest args)
   "Invoke `view-file' on a file. "less +42 foo" will go to line 42 in

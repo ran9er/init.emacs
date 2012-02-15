@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <04_advice.el>
 ;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-02-15 09:36:57 ran9er>
+;; Time-stamp:   <2012-02-16 00:22:37 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defadvice isearch-yank-word-or-char (around aiywoc activate)
