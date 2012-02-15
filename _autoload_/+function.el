@@ -1,10 +1,3 @@
-
-;; -*- encoding: utf-8-unix; -*-
-;; File-name:    <function.el>
-;; Create:       <2011-12-27 21:33:05 ran9er>
-;; Time-stamp:   <2012-01-01 13:07:39 ran9er>
-;; Mail:         <2999am@gmail.com>
-
 ;;;###autoload
 (defvar temp-func-list
   '((let ((cnt 0)(acc nil))
