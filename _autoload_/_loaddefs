@@ -275,6 +275,21 @@ See also `add-to-list-x'
 
 ;;;***
 
+;;;### (autoloads (xand xor) "+logic" "+logic.el" (20286 25132))
+;;; Generated autoloads from +logic.el
+
+(autoload 'xor "+logic" "\
+like find-if
+
+\(fn FN &rest LST)" nil (quote macro))
+
+(autoload 'xand "+logic" "\
+
+
+\(fn FN &rest LST)" nil (quote macro))
+
+;;;***
+
 ;;;### (autoloads (elf) "+loop" "+loop.el" (20250 26799))
 ;;; Generated autoloads from +loop.el
 
