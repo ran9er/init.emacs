@@ -10,24 +10,32 @@
    )
 
   (setq zhfont (usage-font
-                "Yahei Consolas"
                 "Yahei Mono"
+                "YaHei Consolas Hybrid"
                 "Microsoft Yahei"
                 "宋体"
                 "文泉驿等宽微米黑"
-                "文泉驿等宽正黑")
+                "文泉驿等宽正黑"
+                "文泉驿微米黑")
         btfont (usage-font
+                "DejaVu Sans Mono"
                 "宋体"
-                "文泉驿点阵正黑")
+                "SimSun"
+                "文泉驿点阵正黑"
+                "文泉驿等宽微米黑"
+                "文泉驿微米黑")
         enfont (usage-font
                 "Proggy"
                 "Inconsolata"
-                "Consolas"))
+                "Consolas"
+                "Yahei Mono"
+                "YaHei Consolas Hybrid"))
 
-  (set-my-font zhfont 12)
-  ;; (my-set-font myfont 12 myfont)
-  ;; (my-set-font myenfont 14 myfont 12)
-  ;; (my-set-font myenfont 12 myfont)
+  ;; (set-my-font zhfont 12)
+  (set-my-font enfont 12 zhfont)
+  ;; (set-my-font zhfont 12 zhfont)
+  ;; (set-my-font enfont 14 zhfont 12)
+
 
   ;; ** buffer face mode
   (set-my-bf-mode btfont 10)
