@@ -131,6 +131,43 @@ Return a list of lines in FILEPATH.
 
 ;;;***
 
+;;;### (autoloads (custom-buffer-face-mode my-buffer-face-mode set-my-ui-font
+;;;;;;  set-my-bf-mode set-my-font usage-font) "+font" "+font.el"
+;;;;;;  (20286 18735))
+;;; Generated autoloads from +font.el
+
+(autoload 'usage-font "+font" "\
+
+
+\(fn &rest FONTS)" nil nil)
+
+(autoload 'set-my-font "+font" "\
+
+
+\(fn BASE-FONTS BASE-FONT-SIZE &optional EXT-FONTS EXT-FONT-SIZE)" nil nil)
+
+(autoload 'set-my-bf-mode "+font" "\
+set buffer face mode
+
+\(fn FONT SIZE)" nil nil)
+
+(autoload 'set-my-ui-font "+font" "\
+set mode-line & header-line
+
+\(fn HEIGHT FONT)" nil nil)
+
+(autoload 'my-buffer-face-mode "+font" "\
+
+
+\(fn &optional LS)" nil nil)
+
+(autoload 'custom-buffer-face-mode "+font" "\
+
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (set-local-variable temp-func-call temp-func-add)
 ;;;;;;  "+function" "+function.el" (20283 43983))
 ;;; Generated autoloads from +function.el

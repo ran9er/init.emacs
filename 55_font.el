@@ -1,17 +1,6 @@
 ;; -*- encoding: utf-8-unix; -*-
-;; * default
-(set-default-font "Monospace-12")
-
-;; Setting English Font
-;; (set-face-attribute 'default nil :font "Consolas 12")
-
 ;; * gui
 (when window-system
-  ;; ** all
-  (if (eq window-system 'w32)
-      ;; myfont1 是 buffer-face-mode 及 mode-line 字体
-      (setq myfont "Yahei Mono" myfont1 "宋体")
-    (setq myfont "文泉驿等宽正黑" myfont1 "文泉驿点阵正黑"))
 
   (setq
    ;; 设置行距
@@ -20,23 +9,28 @@
    initial-frame-alist    '((width . 100)(height . 32)(top . 1)(left . 90))
    )
 
-  (set-fontset-font (frame-parameter nil 'font)
-                    'unicode `(,myfont . "unicode-bmp"))
+  (setq zhfont (usage-font
+                "Yahei Consolas"
+                "Yahei Mono"
+                "Microsoft Yahei"
+                "宋体"
+                "文泉驿等宽微米黑"
+                "文泉驿等宽正黑")
+        btfont (usage-font
+                "宋体"
+                "文泉驿点阵正黑")
+        enfont (usage-font
+                "Proggy"
+                "Inconsolata"
+                "Consolas"))
+
+  (set-my-font zhfont 12)
+  ;; (my-set-font myfont 12 myfont)
+  ;; (my-set-font myenfont 14 myfont 12)
+  ;; (my-set-font myenfont 12 myfont)
 
   ;; ** buffer face mode
-  (set-face-attribute 'variable-pitch nil
-                      :font (concat myfont1 "-10") :fontset "fontset-standard")
-
-  (defun my-buffer-face-mode()
-    (buffer-face-mode)
-    (make-local-variable 'line-spacing)
-    (setq line-spacing 4)
-    )
-  (defun custom-buffer-face-mode()
-    (interactive)
-    (if (and (boundp 'buffer-face-mode) buffer-face-mode)
-        nil
-      (my-buffer-face-mode)))
+  (set-my-bf-mode btfont 10)
 
   (dolist (hook '(
                   completion-list-mode-hook
@@ -54,8 +48,6 @@
                   ;; undo-tree-visualizer-mode-hook
                   ))
     (add-hook hook 'my-buffer-face-mode))
-  ;; ** mode-line
-  (custom-set-faces
-   `(mode-line ((t (:height 0.8 :family ,myfont1))))
-   `(header-line ((t (:height 0.8 :family ,myfont1)))))
+  ;; ** mode line & head line
+  (set-my-ui-font 0.8 btfont)
   )
