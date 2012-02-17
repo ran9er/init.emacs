@@ -1,4 +1,23 @@
 ;; -*- encoding: utf-8-unix; -*-
+;; * arg-parse
+(defun arg-parse (lst)
+  (if (atom (car lst))
+      lst
+    (car lst)))
+
+;; * findp
+(defun findp (fn lst &optional default)
+  "find-if"
+  (while
+      (and
+       lst
+       (null
+        (if (funcall fn (car lst))
+            (setq default (car lst))
+          nil)))
+    (setq lst (cdr lst)))
+  default)
+
 ;; * load-once
 (defvar *load-times* (make-hash-table :test 'equal :size 20))
 (defmacro load-once (&rest s)
