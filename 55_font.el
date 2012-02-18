@@ -18,6 +18,7 @@
                 "文泉驿等宽正黑"
                 "文泉驿微米黑")
         btfont (usage-font
+                "ProFontWindows"
                 "DejaVu Sans Mono"
                 "宋体"
                 "SimSun"
@@ -29,7 +30,8 @@
                 "Inconsolata"
                 "Consolas"
                 "Yahei Mono"
-                "YaHei Consolas Hybrid"))
+                "YaHei Consolas Hybrid"
+                "ProFontWindows"))
 
   ;; (set-my-font zhfont 12)
   (set-my-font enfont 12 zhfont)
@@ -38,7 +40,7 @@
 
 
   ;; ** buffer face mode
-  (set-my-bf-mode btfont 10)
+  (set-my-bf-mode enfont 10)
 
   (dolist (hook '(
                   completion-list-mode-hook
@@ -57,5 +59,5 @@
                   ))
     (add-hook hook 'my-buffer-face-mode))
   ;; ** mode line & head line
-  (set-my-ui-font 0.8 btfont)
+  (set-my-ui-font 0.7 btfont)
   )
