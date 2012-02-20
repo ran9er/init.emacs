@@ -10,6 +10,7 @@
    )
 
   (setq zhfont (usage-font
+                "Hiragino Sans GB"
                 "Yahei Mono"
                 "YaHei Consolas Hybrid"
                 "Microsoft Yahei"
@@ -18,7 +19,10 @@
                 "文泉驿等宽正黑"
                 "文泉驿微米黑")
         btfont (usage-font
+                ;; "ProggySquareTTSZ"
+                ;; "ProggyCleanTTSZ"
                 "ProFontWindows"
+                "Ubuntu Mono"
                 "DejaVu Sans Mono"
                 "宋体"
                 "SimSun"
@@ -40,7 +44,7 @@
 
 
   ;; ** buffer face mode
-  (set-my-bf-mode enfont 10)
+  (set-my-bf-mode enfont 11)
 
   (dolist (hook '(
                   completion-list-mode-hook
