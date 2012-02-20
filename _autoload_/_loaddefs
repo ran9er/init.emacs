@@ -63,11 +63,22 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 
 ;;;***
 
-;;;### (autoloads (dos2unix) "+dos2unix" "+dos2unix.el" (20283 44853))
+;;;### (autoloads (del^M unix2dos dos2unix) "+dos2unix" "+dos2unix.el"
+;;;;;;  (20290 30047))
 ;;; Generated autoloads from +dos2unix.el
 
 (autoload 'dos2unix "+dos2unix" "\
+Convert a DOS formatted text buffer to UNIX format
 
+\(fn)" t nil)
+
+(autoload 'unix2dos "+dos2unix" "\
+Convert a UNIX formatted text buffer to DOS format
+
+\(fn)" t nil)
+
+(autoload 'del^M "+dos2unix" "\
+Not documented
 
 \(fn)" t nil)
 

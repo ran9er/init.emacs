@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # File-name:    <img.py>
 # Create:       <2011-11-24 16:17:49 ran9er>
-# Time-stamp:   <2012-01-18 00:49:10 ran9er>
+# Time-stamp:   <2012-02-21 00:05:02 ran9er>
 import os, sys, string
 from PIL import Image, ImageDraw
 
