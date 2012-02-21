@@ -186,7 +186,9 @@ See also `define-key-s'."
    square-root #X221A
    squared #X00B2
    cubed #X00B3
-   lambda #X03BB
+   ;; lambda #X03BB
+   lambda [?L (11 . 7) ?M (10 . 1) ?a (11 . 9) ?b (11 . 10) ?d (11 . 1) ?a]
+   ;; [?L (11 . 7) ?a (11 . 9) ?M (11 . 9) ?b (11 . 10) ?d (11 . 1) ?a]
    alpha #X03B1
    beta #X03B2
    gamma #X03B3
@@ -201,8 +203,8 @@ See also `define-key-s'."
       nil `((,(car x)
              (0 (progn
                   (compose-region (match-beginning 1) (match-end 1)
-                                  ;; ,(decode-char 'ucs (cdr (assoc (cdr x) *unicode-symbol*)))
-                                  ,(decode-char 'ucs (gethash (cdr x) *unicode-symbol*))
+                                  ;; ,(decode-char 'ucs (gethash (cdr x) *unicode-symbol*))
+                                  ,(gethash (cdr x) *unicode-symbol*)
                                   'decompose-region)
                   nil))))))
    patterns))
