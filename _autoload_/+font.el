@@ -1,9 +1,3 @@
-;; -*- encoding: utf-8-unix; -*-
-;; File-name:    <+font.el>
-;; Create:       <2012-02-17 20:23:36 ran9er>
-;; Time-stamp:   <2012-02-17 20:33:51 Administrator>
-;; Mail:         <2999am@gmail.com>
-
 ;;;###autoload
 (defun usage-font (&rest fonts)
   (let ((l (if (listp (car fonts)) (car fonts) fonts))
@@ -28,20 +22,57 @@
 ;;  "文泉驿等宽正黑")
 
 ;;;###autoload
-(defun set-my-font (base-fonts
+(defun set-my-font (&rest lst)
+  (let* ((key '(:zh :en))
+         (default '("Monospace" 12))
+         (memif
+          (lambda(l o)
+            (let (r)
+              (while (and l (null (if (memq (car l) o)(setq r (car l)) nil)))
+                (setq l (cdr l)))
+              r)))
+         (key (funcall memif key lst))
+         (lst (delq key lst))
+         (len (length lst))
+         (base-font (or (nth 0 lst) (nth 0 default)))
+         (base-font-size (or (nth 1 lst) (nth 1 default)))
+         (ext-font (nth 2 lst))
+         (ext-font-size (nth 3 lst)))
+    (cond
+     ((<= len 2)
+      (set-frame-font (format "Monospace-%s" base-font-size))
+      (set-fontset-font (frame-parameter nil 'font)
+                        'unicode `(,base-font . "unicode-bmp")))
+     ((or (null key)(eq key :zh))
+      (let* ((en-font (format "%s %s" base-font base-font-size))
+             (zh-font (font-spec :family ext-font :size ext-font-size))
+             (script '(greek cyrillic hangul kana han cjk-misc bopomofo symbol mathematical)))
+        (set-face-attribute 'default nil :font en-font)
+        (mapc
+         (lambda (charset)
+           (set-fontset-font (frame-parameter nil 'font) charset zh-font))
+         script)))
+     ((eq key :en)
+      (set-frame-font (format "%s-%s" base-font base-font-size))
+      ;; (set-frame-font (format "Monospace-%s" base-font-size))
+      (set-fontset-font (frame-parameter nil 'font)
+                        'latin `(,ext-font . "unicode-bmp"))))))
+
+(defun set-my-font0 (base-fonts
                     base-font-size
                     &optional
                     ext-fonts
                     ext-font-size)
   (if ext-fonts
       (let* ((en-font (format "%s %s" base-fonts base-font-size))
-             (zh-font (font-spec :family ext-fonts :size ext-font-size)))
+             (zh-font (font-spec :family ext-fonts :size ext-font-size))
+             (script '(greek cyrillic hangul kana han cjk-misc bopomofo symbol mathematical)))
         (set-face-attribute 'default nil :font en-font)
         (mapc
          (lambda (charset)
            (set-fontset-font (frame-parameter nil 'font) charset zh-font))
-         '(kana han symbol cjk-misc bopomofo)))
-    (set-default-font (format "Monospace-%s" base-font-size))
+         script))
+    (set-frame-font (format "Monospace-%s" base-font-size))
     (set-fontset-font (frame-parameter nil 'font)
                       'unicode `(,base-fonts . "unicode-bmp"))))
 

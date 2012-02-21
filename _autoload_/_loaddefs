@@ -144,18 +144,18 @@ Return a list of lines in FILEPATH.
 
 ;;;### (autoloads (custom-buffer-face-mode my-buffer-face-mode set-my-ui-font
 ;;;;;;  set-my-bf-mode set-my-font usage-font) "+font" "+font.el"
-;;;;;;  (20286 18735))
+;;;;;;  (20291 49108))
 ;;; Generated autoloads from +font.el
 
 (autoload 'usage-font "+font" "\
-
+Not documented
 
 \(fn &rest FONTS)" nil nil)
 
 (autoload 'set-my-font "+font" "\
+Not documented
 
-
-\(fn BASE-FONTS BASE-FONT-SIZE &optional EXT-FONTS EXT-FONT-SIZE)" nil nil)
+\(fn &rest LST)" nil nil)
 
 (autoload 'set-my-bf-mode "+font" "\
 set buffer face mode
@@ -168,12 +168,12 @@ set mode-line & header-line
 \(fn HEIGHT FONT)" nil nil)
 
 (autoload 'my-buffer-face-mode "+font" "\
-
+Not documented
 
 \(fn &optional LS)" nil nil)
 
 (autoload 'custom-buffer-face-mode "+font" "\
-
+Not documented
 
 \(fn)" t nil)
 

@@ -39,7 +39,7 @@
 
   ;; (set-my-font zhfont 12)
   (set-my-font enfont 12 zhfont)
-  ;; (set-my-font zhfont 12 zhfont)
+  ;; (set-my-font zhfont 12 enfont :en)
   ;; (set-my-font enfont 14 zhfont 12)
 
 
