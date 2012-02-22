@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <25_insert-head.el>
 ;; Create:       <2011-11-09 13:55:46 ran9er>
-;; Time-stamp:   <2012-01-26 01:03:52 ran9er>
+;; Time-stamp:   <2012-02-22 22:56:22 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -26,18 +26,18 @@
     (insert ";;;###autoload\n")))
 
 ;;;###autoload
-(defun insert-time (&optional format)
+(defun insert-time (&optional time format)
   (interactive )
   (insert
    (format-time-string
     (or format "%Y-%m-%d <%u> %H:%M:%S")
-    (current-time))))
+    time)))
 
 ;;;###autoload
-(defun insert-delimit-line (&optional n)
+(defun insert-delimit-line (&optional n time)
   (interactive "P")
   (let* ((ts "--%Y-%m-%d--%u--%H:%M:%S--")
-         (fts (format-time-string ts (current-time)))
+         (fts (format-time-string ts time))
          (len (+ (length fts) 6))
          (n (if (and n (> n len)) n len))
          (x (/ (- n len) 2))
