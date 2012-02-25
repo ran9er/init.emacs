@@ -359,6 +359,17 @@ Run an inferior Ruby process" t)
 
 ;;;***
 
+;;;### (autoloads (skeleton-pair-alist-update) "+skeleton-pair" "+skeleton-pair.el"
+;;;;;;  (20296 64979))
+;;; Generated autoloads from +skeleton-pair.el
+
+(autoload 'skeleton-pair-alist-update "+skeleton-pair" "\
+
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (shell-command-symbol-to-string join-string) "+string"
 ;;;;;;  "+string.el" (20263 39852))
 ;;; Generated autoloads from +string.el
