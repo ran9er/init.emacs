@@ -14,6 +14,16 @@
 
 ;;;***
 
+;;;### (autoloads (uatld) "+autoload" "+autoload.el" (20300 57446))
+;;; Generated autoloads from +autoload.el
+
+(autoload 'uatld "+autoload" "\
+
+
+\(fn DIR &optional LOADDEFS BASEDIR)" nil nil)
+
+;;;***
+
 ;;;### (autoloads (my-clean-buffer substring-buffer-name) "+buffer"
 ;;;;;;  "+buffer.el" (20219 6040))
 ;;; Generated autoloads from +buffer.el
