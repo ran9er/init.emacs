@@ -49,3 +49,8 @@
 (defmacro acc (x)
   `(progn (defvar ,x 0)
           (setq ,x (1+ ,x))))
+
+
+;; (eval-after-load (expand-file-name "sandbox/test.el" *init-dir*)
+;;   '(acc y))
+;; (load (expand-file-name "sandbox/test.el" *init-dir*))

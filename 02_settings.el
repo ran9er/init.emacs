@@ -84,12 +84,14 @@
             (lisp-symbol)
             (eldoc-mode)
             (lisp-block-comment)
+            (hl-line-mode)
+            (indent-vline-lisp)
             (def-key-s ,(concat-symbol mode '-map)
               "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
               "C-8"       'outside-kill
               "C-6"       'down-list
-              "C-7"       '(lambda nil (interactive)(up-list -1))
-              ))))
+              "C-7"       '(lambda nil (interactive)(up-list -1)))
+            )))
       '(lisp-mode
         lisp-interaction-mode
         emacs-lisp-mode))

@@ -37,5 +37,3 @@
   (setq local-abbrev-table emacs-lisp-mode-abbrev-table)
 )
 
-(hl-line-mode)
-(indent-vline-lisp)

@@ -60,33 +60,19 @@
            (kill-buffer ldfs)
            (load generated-autoload-file)))
        "_autoload_/")
-      ;; *auto-hook-hash*
-      (defvar *auto-hook-hash* (make-hash-table :test 'equal :size 20))
+      ;; *feature-file-hash*
+      (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
       (mapc
        (lambda (x)
          (puthash
-          (file-name-sans-extension (file-name-nondirectory x)) x
-          *auto-hook-hash*))
+          (intern (file-name-sans-extension (file-name-nondirectory x))) x
+          *feature-file-hash*))
        (directory-files (expand-file-name "_extensions/" *init-dir*) t "\\.el\\'"))
       ;;;;;;
-      (add-hook 'find-file-hook
-                `(lambda ()
-                   (let* ((bf (buffer-name))
-                          (mode
-                           (catch 'md
-                             (mapcar
-                              (lambda (x)
-                                (and
-                                 (string-match (car x) bf)
-                                 (throw 'md (symbol-name (cdr x)))))
-                              auto-mode-alist))))
-                     ;; (setq mode
-                     ;;       (or mode
-                     ;;           (and (string-equal "*" (substring bf 0 1))
-                     ;;                (substring bf 1 -1))))
-                     (load
-                      (gethash mode *auto-hook-hash* ,tmp)
-                      t))))
+      (maphash
+       (lambda (x y)
+         (eval-after-load x `(load ,y)))
+       *feature-file-hash*)
       ;; byte-compile
       (when nil
         ;; delete elc without el

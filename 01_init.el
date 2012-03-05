@@ -1,18 +1,15 @@
 ;; -*- encoding: utf-8-unix; -*-
-;; * auto-hooks
-(add-hook 'eshell-load-hook
-          '(lambda ()
-             (load (gethash "+eshell" *auto-hook-hash*
-                            (make-temp-name ""))
-                   t)))
-;; (eval-after-load "eshell"
-;;   (load (gethash "+eshell" *auto-hook-hash* (make-temp-name "")) t))
+;; * feature-file
+;; (add-hook 'eshell-load-hook
+;;           '(lambda ()
+;;              (load (gethash "+eshell" *feature-file-hash*
+;;                             (make-temp-name ""))
+;;                    t)))
+(eval-after-load 'eshell
+  '(load (gethash '+eshell *feature-file-hash* (make-temp-name "")) t))
 
-(add-hook 'dired-mode-hook
-          '(lambda ()
-             (load (gethash "+dired" *auto-hook-hash*
-                            (make-temp-name ""))
-                   t)))
+(eval-after-load 'dired
+  '(load (gethash '+dired *feature-file-hash* (make-temp-name "")) t))
 
 ;; * environment
 (if (eq system-type 'windows-nt)
