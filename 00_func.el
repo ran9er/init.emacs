@@ -18,28 +18,6 @@
     (setq lst (cdr lst)))
   default)
 
-;; * load-once
-(defvar *load-times* (make-hash-table :test 'equal :size 20))
-(defmacro load-once (&rest s)
-  (let* ((hash *load-times*)
-         (name
-          (or load-file-name (buffer-file-name))))
-    `(if (gethash ,name ,hash)
-         (puthash
-          ,name
-          (1+ (gethash ,name ,hash))
-          ,hash)
-       ,@s
-       (puthash ,name 1 ,hash))))
-
-(defun load1 (file)
-  (let ((hash *load-times*)
-        (name (expand-file-name file)))
-    (if (gethash name hash)
-        (puthash name (1+ (gethash name hash)) hash)
-      (load file)
-      (puthash name 1 hash))))
-
 ;; * list-to-alist
 (defun to-alist (&rest lst)
   "(to-alist '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))"

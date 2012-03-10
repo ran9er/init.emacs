@@ -296,6 +296,23 @@ See also `add-to-list-x'
 
 ;;;***
 
+;;;### (autoloads (load1 load-once) "+load" "+load.el" (20315 24964))
+;;; Generated autoloads from +load.el
+
+(defvar *load-times* (make-hash-table :test 'equal :size 20))
+
+(autoload 'load-once "+load" "\
+
+
+\(fn &rest S)" nil (quote macro))
+
+(autoload 'load1 "+load" "\
+
+
+\(fn FILE)" nil nil)
+
+;;;***
+
 ;;;### (autoloads (xand xor) "+logic" "+logic.el" (20286 25132))
 ;;; Generated autoloads from +logic.el
 
