@@ -154,7 +154,7 @@ Return a list of lines in FILEPATH.
 
 ;;;### (autoloads (custom-buffer-face-mode my-buffer-face-mode set-my-ui-font
 ;;;;;;  set-my-bf-mode set-my-font set-font set-my-font0 usage-font)
-;;;;;;  "+font" "+font.el" (20323 25415))
+;;;;;;  "+font" "+font.el" (20323 28885))
 ;;; Generated autoloads from +font.el
 
 (autoload 'usage-font "+font" "\
@@ -170,7 +170,7 @@ Return a list of lines in FILEPATH.
 (autoload 'set-font "+font" "\
 
 
-\(fn SCRIPT FONT)" nil nil)
+\(fn SCRIPT FONT &optional SIZE)" nil nil)
 
 (autoload 'set-my-font "+font" "\
 

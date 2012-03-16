@@ -60,8 +60,9 @@
 
 
 ;;;###autoload
-(defun set-font (script font)
-  (set-fontset-font (frame-parameter nil 'font) script font))
+(defun set-font (script font &optional size)
+  (set-fontset-font (frame-parameter nil 'font) script
+                    (font-spec :family font :size size)))
 
 ;;;###autoload
 (defun set-my-font (base-fonts
