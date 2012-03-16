@@ -10,6 +10,7 @@
    )
 
   (setq zhfont (usage-font
+                ;; "XHei Mono"
                 "Hiragino Sans GB"
                 "Yahei Mono"
                 "YaHei Consolas Hybrid"
@@ -18,12 +19,13 @@
                 "文泉驿等宽微米黑"
                 "文泉驿等宽正黑"
                 "文泉驿微米黑")
+        uifont (usage-font
+                "ProFontWindows"
+                "Ubuntu Mono"
+                "DejaVu Sans Mono")
         btfont (usage-font
                 ;; "ProggySquareTTSZ"
                 ;; "ProggyCleanTTSZ"
-                "ProFontWindows"
-                "Ubuntu Mono"
-                "DejaVu Sans Mono"
                 "宋体"
                 "SimSun"
                 "文泉驿点阵正黑"
@@ -35,17 +37,26 @@
                 "Consolas"
                 "Yahei Mono"
                 "YaHei Consolas Hybrid"
-                "ProFontWindows"))
+                "ProFontWindows")
+        gkfont (usage-font
+                "Consolas"
+                "Comic Sans"
+                "Comic Sans MS"
+                "Lucida Sans Unicode"
+                "Lucida Console")
+        phfont (usage-font
+                "Doulos SIL"
+                "Charis SIL"))
 
   ;; (set-my-font zhfont 12)
   (set-my-font enfont 12 zhfont)
   ;; (set-my-font zhfont 12 enfont :en)
   ;; (set-my-font enfont 14 zhfont 12)
 
-
+  (set-font 'greek gkfont)
+  (set-font 'phonetic phfont)
   ;; ** buffer face mode
-  (set-my-bf-mode enfont 11)
-
+  (set-my-bf-mode btfont 11)
   (dolist (hook '(
                   completion-list-mode-hook
                   eshell-mode-hook
@@ -62,6 +73,7 @@
                   ;; undo-tree-visualizer-mode-hook
                   ))
     (add-hook hook 'my-buffer-face-mode))
+
   ;; ** mode line & head line
-  (set-my-ui-font 0.7 btfont)
+  (set-my-ui-font 0.7 uifont)
   )
