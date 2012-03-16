@@ -22,7 +22,7 @@
 ;;  "文泉驿等宽正黑")
 
 ;;;###autoload
-(defun set-my-font (&rest lst)
+(defun set-my-font0 (&rest lst)
   (let* ((key '(:zh :en))
          (default '("Monospace" 12))
          (memif
@@ -58,7 +58,13 @@
       (set-fontset-font (frame-parameter nil 'font)
                         'latin `(,ext-font . "unicode-bmp"))))))
 
-(defun set-my-font0 (base-fonts
+
+;;;###autoload
+(defun set-font (script font)
+  (set-fontset-font (frame-parameter nil 'font) script font))
+
+;;;###autoload
+(defun set-my-font (base-fonts
                     base-font-size
                     &optional
                     ext-fonts
@@ -66,7 +72,7 @@
   (if ext-fonts
       (let* ((en-font (format "%s %s" base-fonts base-font-size))
              (zh-font (font-spec :family ext-fonts :size ext-font-size))
-             (script '(greek cyrillic hangul kana han cjk-misc bopomofo symbol mathematical)))
+             (script '(cyrillic hangul kana han cjk-misc bopomofo symbol mathematical)))
         (set-face-attribute 'default nil :font en-font)
         (mapc
          (lambda (charset)
