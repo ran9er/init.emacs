@@ -39,6 +39,8 @@
                 "YaHei Consolas Hybrid"
                 "ProFontWindows")
         gkfont (usage-font
+                "DejaVu Sans"
+                "Ubuntu"
                 "Consolas"
                 "Comic Sans"
                 "Comic Sans MS"
