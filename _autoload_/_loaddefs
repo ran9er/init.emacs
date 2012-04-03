@@ -359,7 +359,7 @@ like find-if
 ;;;***
 
 ;;;### (autoloads (lua-shell x-shell run-current-file) "+script"
-;;;;;;  "+script.el" (20283 43599))
+;;;;;;  "+script.el" (20336 37645))
 ;;; Generated autoloads from +script.el
 
 (autoload 'run-current-file "+script" "\

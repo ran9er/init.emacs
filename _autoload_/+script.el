@@ -19,6 +19,7 @@ File suffix is used to determine what program to run."
              "sh"       "bash"
              "java"     "javac"
              "hs"       "hugs"
+             "js"       "node"
              )))
     (setq
      status
