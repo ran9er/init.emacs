@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-04-03 23:14:26 ran9er>
+;; Time-stamp:   <2012-04-07 23:20:56 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line
@@ -95,6 +95,13 @@ s1 ",\n" s2 "};"
               (remove-text-properties p1 p2 '(display nil))))
         ))))
 
+(defun indent-vline (&optional regexp column img color)
+  (interactive)
+  (let ((x (or regexp "^")))
+    (font-lock-add-keywords
+     nil `((,x
+            (0 (draw-indent-vline ,column ,img ,color)))))))
+
 (defun draw-indent-vline-lisp-1 ()
   (interactive)
   (save-excursion
@@ -114,14 +121,7 @@ s1 ",\n" s2 "};"
         (forward-line)
         (setq l (1- l))))))
 
-(defun indent-vline-s (&optional regexp column img color)
-  (interactive)
-  (let ((x (or regexp "^")))
-    (font-lock-add-keywords
-     nil `((,x
-            (0 (draw-indent-vline ,column ,img ,color)))))))
-
-(defun indent-vline (&optional regexp img color)
+(defun indent-vline-0 (&optional regexp img color)
   (interactive)
   (let ((x (or regexp "   \\( \\)")))
     (font-lock-add-keywords
@@ -138,7 +138,9 @@ s1 ",\n" s2 "};"
 
 ;; (defun indent-vline-lisp (&optional regexp)
 ;;   (interactive)
-;;   (indent-vline-s (or regexp "^[ \t]*[,`#'(]")))
+;;   (indent-vline (or regexp "^[ \t]*[,`#'(]")))
+
+;(add-hook 'post-command-hook 'font-lock-fontify-buffer nil t)
 
 (defun indent-vline-advice ()
   (defadvice #@23:indent-for-tab-command
@@ -172,23 +174,26 @@ s1 ",\n" s2 "};"
               (goto-char (match-beginning 1))
               (current-column)))
         (blk "\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)"))
-    (indent-vline-s "^[ \t]*\\((\\)" c)
-    (indent-vline-s "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-vline-img-lst)
-    (indent-vline-s blk c 'indent-vline-img-blk)
-    (indent-vline-s "[,`#']+\\((\\)" c 'indent-vline-img-lst))
-  (indent-vline-advice))
+    (indent-vline "^[ \t]*\\((\\)" c)
+    (indent-vline "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-vline-img-lst)
+    (indent-vline blk c 'indent-vline-img-blk)
+    (indent-vline "[,`#']+\\((\\)" c 'indent-vline-img-lst))
+  (indent-vline-advice)
+  (font-lock-fontify-buffer))
 
 (defun indent-vline-fixed(&optional img)
   (interactive)
-  (indent-vline-s "^[ \t]*\\([^ \t]\\)"
+  (indent-vline "^[ \t]*\\([^ \t]\\)"
                   '(save-excursion
                      (goto-char (match-beginning 1))
                      (current-column))
-                  img))
+                  img)
+  (font-lock-fontify-buffer))
 
 (defun indent-vline-test (&optional regexp)
   (interactive)
-  (indent-vline-s (or regexp "\\(def\\|class\\|if\\)")
+  (indent-vline (or regexp "\\(def\\|class\\|if\\)")
                   '(save-excursion
                      (goto-char (match-beginning 1))
-                     (current-column))))
+                     (current-column)))
+  (font-lock-fontify-buffer))
