@@ -45,6 +45,7 @@
 
 (defadvice newsticker-treeview (before rss activate)
   (load1 (expand-file-name "my-newsticker.el" work-dir)))
+(defalias 'news 'newsticker-treeview)
 
 (defmacro acc (x)
   `(progn (defvar ,x 0)

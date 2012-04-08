@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-04-07 23:20:56 ran9er>
+;; Time-stamp:   <2012-04-08 17:22:33 Administrator>
 ;; Mail:         <2999am@gmail.com>
 
 ;; * hl-line
@@ -38,9 +38,10 @@ static char * dot_vline_xpm[] = {
 s1 ",\n" s2 "};"
 ))))
 
-(defvar indent-vline-img (make-vline-xpm 9 22 "#4D4D4D"))
-(defvar indent-vline-img-lst (make-vline-xpm 9 22 "#6a5acd"))
-(defvar indent-vline-img-blk (make-vline-xpm 9 22 "khaki"))
+(defvar ivl-line-height (or (car (window-line-height)) 20))
+(defvar indent-vline-img (make-vline-xpm 9 ivl-line-height "#4D4D4D"))
+(defvar indent-vline-img-lst (make-vline-xpm 9 ivl-line-height "#6a5acd"))
+(defvar indent-vline-img-blk (make-vline-xpm 9 ivl-line-height "khaki"))
 (defun draw-indent-tab (beg end &optional img color)
   (let ((img (or img indent-vline-img))
         (color (or color "#4D4D4D")))
