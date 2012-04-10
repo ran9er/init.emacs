@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (average) "+arith" "+arith.el" (20356 20585))
+;;;### (autoloads (average) "+arith" "+arith.el" (20356 22944))
 ;;; Generated autoloads from +arith.el
 
 (autoload 'average "+arith" "\
