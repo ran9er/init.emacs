@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <+column.el>
 ;; Create:       <2012-02-10 13:39:11 ran9er>
-;; Time-stamp:   <2012-02-10 13:58:39 ran9er>
+;; Time-stamp:   <2012-04-10 23:21:34 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defun thing-on-column (fn &optional n)
@@ -39,3 +39,14 @@
      (lambda()(buffer-substring-no-properties
            (progn (backward-sexp)(point))
            (progn (forward-sexp)(point)))) n) "\n")))
+
+;;;###autoload
+(defun calc-column (fn)
+  (interactive "aOperation: ")
+  (message
+   (number-to-string
+    (apply fn
+     (mapcar
+      'read
+      (thing-on-column
+       'current-word))))))
