@@ -1,18 +1,8 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-04-08 17:22:33 Administrator>
+;; Time-stamp:   <2012-04-17 23:04:41 ran9er>
 ;; Mail:         <2999am@gmail.com>
-
-;; * hl-line
-(require 'hl-line)
-;; (global-hl-line-mode)
-(set-face-attribute
- 'hl-line nil
- :background
- (adjust-color
-  (face-attribute 'default :background)
-  -2))
 
 ;; * indent-vline
 (defun make-vline-xpm (width height color &optional lor)
@@ -160,7 +150,7 @@ s1 ",\n" s2 "};"
         (funcall erase)
         (while (< i (if (<= (point-max)(line-end-position))
                         0
-                      (forward-line)                    
+                      (forward-line)
                       (beginning-of-line)
                       (skip-chars-forward " ")
                       (current-column)))

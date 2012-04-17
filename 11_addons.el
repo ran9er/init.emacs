@@ -1,4 +1,14 @@
 ;; -*- encoding: utf-8-unix; -*-
+;; *========== hl-line
+(require 'hl-line)
+;; (global-hl-line-mode)
+(set-face-attribute
+ 'hl-line nil
+ :background
+ (adjust-color
+  (face-attribute 'default :background)
+  -2))
+
 ;; *========== ibuffer
 (require 'ibuffer)
 ;; (global-set-key ( kbd "C-x C-b ")' ibuffer)
