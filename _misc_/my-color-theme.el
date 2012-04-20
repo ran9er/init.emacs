@@ -96,6 +96,28 @@
 )
 (provide-theme 'forest)
 
+(deftheme azure "")
+(custom-theme-set-faces
+ 'azure
+ '(default ((t (:background "azure" :foreground "dark slate gray"))))
+ '(cursor ((t (:background "deep sky blue" :foreground "#edef7d"))))
+ '(region ((t (:background "#107500"))))
+ '(fringe ((t (:foreground "#233729" :background "lavender"))))
+ '(mode-line ((t (:foreground "#96dd3b" :background "#336442"))))
+ '(region ((t (:background "#91bb9e"))))
+ '(minibuffer-prompt ((t (:foreground "#96dd3b" :bold t))))
+ '(font-lock-builtin-face ((t (:foreground "#ffaa3e"))))
+ '(font-lock-comment-face ((t (:foreground "#336442"))))
+ '(font-lock-function-name-face ((t (:foreground "#f7e741"))))
+ '(font-lock-keyword-face ((t (:foreground "#96dd3b"))))
+ '(font-lock-string-face ((t (:foreground "DodgerBlue4"))))
+ '(font-lock-type-face ((t (:foreground"#91bb9e"))))
+ '(font-lock-variable-name-face ((t (:foreground "#ffaa3e"))))
+ '(font-lock-warning-face ((t (:foreground "#eb939a" :bold t))))
+ '(header-line ((t (:background "#2f4f4f" :foreground "#778899"))))
+)
+(provide-theme 'azure)
+
 (provide 'my-color-theme)
 ;; M-x list-colors-display
 
