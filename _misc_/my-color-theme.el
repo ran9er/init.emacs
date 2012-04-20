@@ -99,7 +99,7 @@
 (deftheme azure "")
 (custom-theme-set-faces
  'azure
- '(default ((t (:background "azure" :foreground "dark slate gray"))))
+ '(default ((t (:background "azure" :foreground "black"))))
  '(cursor ((t (:background "deep sky blue" :foreground "#edef7d"))))
  '(region ((t (:background "#107500"))))
  '(fringe ((t (:foreground "#233729" :background "lavender"))))
