@@ -32,6 +32,7 @@
                 "文泉驿等宽微米黑"
                 "文泉驿微米黑")
         enfont (usage-font
+                "Envy Code R"
                 "Proggy"
                 "Inconsolata"
                 "Consolas"
@@ -51,7 +52,7 @@
                 "Charis SIL"))
 
   ;; (set-my-font zhfont 12)
-  (set-my-font enfont 12 zhfont)
+  (set-my-font enfont 11 zhfont)
   ;; (set-my-font zhfont 12 enfont :en)
   ;; (set-my-font enfont 14 zhfont 12)
 
