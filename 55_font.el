@@ -12,6 +12,7 @@
   (setq zhfont (usage-font
                 ;; "XHei Mono"
                 "Hiragino Sans GB"
+                "Hiragino Sans GB W3"
                 "Yahei Mono"
                 "YaHei Consolas Hybrid"
                 "Microsoft Yahei"
@@ -20,10 +21,17 @@
                 "文泉驿等宽正黑"
                 "文泉驿微米黑")
         uifont (usage-font
+;                "ProFontWindows"
+                "BPMono"
+                "saxMono"
+                "Share-TechMono"
+                "Raize"
                 "ProFontWindows"
                 "Ubuntu Mono"
                 "DejaVu Sans Mono")
         btfont (usage-font
+                "saxMono"
+                "Share-TechMono"
                 ;; "ProggySquareTTSZ"
                 ;; "ProggyCleanTTSZ"
                 "宋体"
@@ -32,6 +40,7 @@
                 "文泉驿等宽微米黑"
                 "文泉驿微米黑")
         enfont (usage-font
+                "Monaco"
                 "Envy Code R"
                 "Proggy"
                 "Inconsolata"
@@ -52,11 +61,11 @@
                 "Charis SIL"))
 
   ;; (set-my-font zhfont 12)
-  (set-my-font enfont 11 zhfont)
+  (set-my-font enfont 10 zhfont)
   ;; (set-my-font zhfont 12 enfont :en)
   ;; (set-my-font enfont 14 zhfont 12)
 
-  (set-font 'greek gkfont)
+;  (set-font 'greek gkfont)
   (set-font 'phonetic phfont)
   ;; ** buffer face mode
   (set-my-bf-mode btfont 11)
@@ -78,5 +87,5 @@
     (add-hook hook 'my-buffer-face-mode))
 
   ;; ** mode line & head line
-  (set-my-ui-font 0.7 uifont)
+  (set-my-ui-font 0.9 uifont)
   )
