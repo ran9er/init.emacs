@@ -91,7 +91,9 @@ s1 ",\n" s2 "};"
                     (current-column)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (set line (cons (draw-indent-tab p1 p2 line img color) (eval line))))))))
+          (if (overlays-at p1) ;(overlay-get (car (overlays-at p1)) 'display)
+              nil
+            (set line (cons (draw-indent-tab p1 p2 line img color) (eval line)))))))))
 
 (defun indent-vline (&optional regexp column img color)
   (interactive)
