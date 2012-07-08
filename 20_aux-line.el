@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 01:13:59 ran9er>
+;; Time-stamp:   <2012-07-09 01:18:38 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 ;; * indent-vline
@@ -102,39 +102,6 @@ s1 ",\n" s2 "};"
      nil `((,x
             (0 (draw-indent-vline ,column ,img ,color)))))))
 
-(defun draw-indent-vline-lisp-1 ()
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (let* ((i (current-indentation))
-           (l (save-excursion
-                (count-lines (point)
-                             (forward-list)))))
-      (while (> l 0)
-        (let* ((p1 (progn (move-to-column i)(point)))
-               (p2 (1+ p1)))
-          (if (and (eq (get-byte p1) 32)
-                   (save-excursion
-                     (skip-chars-backward " ")(bolp)))
-              (draw-indent-tab p1 p2))
-          nil)
-        (forward-line)
-        (setq l (1- l))))))
-
-(defun indent-vline-0 (&optional regexp img color)
-  (interactive)
-  (let ((x (or regexp "   \\( \\)")))
-    (font-lock-add-keywords
-     nil `((,x
-            (0 (if (save-excursion
-                     (skip-chars-backward " ")(bolp))
-                   (let* ((p1 (point))
-                          (p2 (1+ p1)))
-                     (if (or (null (eq (get-byte p1) 32))
-                             (get-text-property p1 'display))
-                         nil
-                       (draw-indent-tab p1 p2 img color)
-                       nil)))))))))
 
 ;; (defun indent-vline-lisp (&optional regexp)
 ;;   (interactive)
