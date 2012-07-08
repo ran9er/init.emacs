@@ -1,8 +1,8 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-04-17 23:04:41 ran9er>
-;; Mail:         <2999am@gmail.com>
+;; Time-stamp:   <2012-07-09 00:43:20 ran9er>
+;; Mail:         <299am@gmail.com>
 
 ;; * indent-vline
 (defun make-vline-xpm (width height color &optional lor)
@@ -32,30 +32,57 @@ s1 ",\n" s2 "};"
 (defvar indent-vline-img (make-vline-xpm 9 ivl-line-height "#4D4D4D"))
 (defvar indent-vline-img-lst (make-vline-xpm 9 ivl-line-height "#6a5acd"))
 (defvar indent-vline-img-blk (make-vline-xpm 9 ivl-line-height "khaki"))
-(defun draw-indent-tab (beg end &optional img color)
+
+(defun erase-indent-vline (overlay after? beg end &optional length)
+  (mapc
+   (lambda(x)(delete-overlay x))
+   (eval (overlay-get overlay 'auxline-id)))
+  (font-lock-fontify-buffer)
+  )
+
+(defun draw-indent-tab (beg end id &optional img color)
   (let ((img (or img indent-vline-img))
-        (color (or color "#4D4D4D")))
-    (if (display-images-p)
-        (set-text-properties
-         beg end
-         `(display (image
-                    :type xpm
-                    :data ,img
-                    :pointer text
-                    :ascent center
-                    :mask (heuristic t))
-                   rear-nonsticky (display)
-                   fontified t))
-      (compose-region
-       beg end
-       (prog1 "|"
-         (set-text-properties beg end `(font-lock-face (:foreground ,color))))
-       'decompose-region))))
+        (color (or color "#4D4D4D"))
+        (ov (make-overlay beg end)))
+    (overlay-put ov 'auxline-id id)
+    (overlay-put ov 'display
+                 (if (display-images-p)
+                     `(display (image
+                                :type xpm
+                                :data ,img
+                                :pointer text
+                                :ascent center
+                                :mask (heuristic t))
+                               rear-nonsticky (display)
+                               fontified t)))
+    (overlay-put ov 'modification-hooks '(erase-indent-vline))
+    (overlay-put ov 'insert-in-front-hooks '(erase-indent-vline))
+    (overlay-put ov 'insert-behind-hooks '(erase-indent-vline))
+    ov))
+
+;; (if (display-images-p)
+;;         (set-text-properties
+;;          beg end
+;;          `(display (image
+;;                     :type xpm
+;;                     :data ,img
+;;                     :pointer text
+;;                     :ascent center
+;;                     :mask (heuristic t))
+;;                    rear-nonsticky (display)
+;;                    fontified t))
+;;       (compose-region
+;;        beg end
+;;        (prog1 "|"
+;;          (set-text-properties beg end `(font-lock-face (:foreground ,color))))
+;;        'decompose-region))
 
 (defun draw-indent-vline (&optional column img color)
   (interactive "P")
   (save-excursion
-    (let* ((i (or column (current-indentation))))
+    (let* ((line (intern (concat "auxline-" (number-to-string (random 10000)))))
+           (i (or column (current-indentation))))
+      (set line nil)
       (while (< i (if (<= (point-max)(line-end-position))
                       0
                     (forward-line)
@@ -64,27 +91,7 @@ s1 ",\n" s2 "};"
                     (current-column)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (if (get-text-property p1 'display)
-              nil
-            (draw-indent-tab p1 p2 img color)))))))
-
-(defun erase-indent-vline (column)
-  (interactive "P")
-  (save-excursion
-    (let* ((i (or column (current-column))))
-      (let ((p (point))) (if (get-text-property p 'display)
-                             (remove-text-properties p (1+ p) '(display nil))))
-      (while (< i (if (<= (point-max)(line-end-position))
-                      0
-                    (forward-line)                    
-                    (beginning-of-line)
-                    (skip-chars-forward " ")
-                    (current-column)))
-        (move-to-column i)
-        (let* ((p1 (point))(p2 (1+ p1)))
-          (if (get-text-property p1 'display)
-              (remove-text-properties p1 p2 '(display nil))))
-        ))))
+          (set line (cons (draw-indent-tab p1 p2 line img color) (eval line))))))))
 
 (defun indent-vline (&optional regexp column img color)
   (interactive)
@@ -133,32 +140,6 @@ s1 ",\n" s2 "};"
 
 ;(add-hook 'post-command-hook 'font-lock-fontify-buffer nil t)
 
-(defun indent-vline-advice ()
-  (defadvice #@23:indent-for-tab-command
-    delete-char (after #@7:before indent-vline activate compile)
-    (save-excursion
-      (let* ((i (current-column))
-             (erase (lambda()
-                      (let* ((p (+ (point) (skip-chars-forward " ")))
-                             (q (+ (point) (skip-chars-backward " ")))
-                             (x (bolp)))
-                        (if x
-                            (remove-text-properties p q '(display)))))))
-        (while (null (condition-case err
-                         (up-list)(error t))))
-        (backward-list)
-        (funcall erase)
-        (while (< i (if (<= (point-max)(line-end-position))
-                        0
-                      (forward-line)
-                      (beginning-of-line)
-                      (skip-chars-forward " ")
-                      (current-column)))
-          (move-to-column i)
-          (funcall erase)))
-      (insert " ")
-      (delete-region (point)(1- (point))))))
-
 (defun indent-vline-lisp ()
   (interactive)
   (let ((c '(save-excursion
@@ -169,7 +150,6 @@ s1 ",\n" s2 "};"
     (indent-vline "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-vline-img-lst)
     (indent-vline blk c 'indent-vline-img-blk)
     (indent-vline "[,`#']+\\((\\)" c 'indent-vline-img-lst))
-  (indent-vline-advice)
   (font-lock-fontify-buffer))
 
 (defun indent-vline-fixed(&optional img)

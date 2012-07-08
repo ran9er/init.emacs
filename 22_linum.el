@@ -1,10 +1,10 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <22_linum.el>
 ;; Create:       <2012-07-04 21:00:13 ran9er>
-;; Time-stamp:   <2012-07-04 21:48:13 ran9er>
+;; Time-stamp:   <2012-07-05 21:10:38 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
-(global-linum-mode)
+;(global-linum-mode)
 
 ;; Disable linum for certain major-modes
 (setq linum-disabled-modes-list
