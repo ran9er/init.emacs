@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 00:43:20 ran9er>
+;; Time-stamp:   <2012-07-09 01:13:59 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 ;; * indent-vline
@@ -37,7 +37,7 @@ s1 ",\n" s2 "};"
   (mapc
    (lambda(x)(delete-overlay x))
    (eval (overlay-get overlay 'auxline-id)))
-  (font-lock-fontify-buffer)
+  (font-lock-fontify-block)
   )
 
 (defun draw-indent-tab (beg end id &optional img color)
