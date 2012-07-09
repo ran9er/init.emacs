@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 22:38:01 ran9er>
+;; Time-stamp:   <2012-07-09 22:51:34 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
@@ -39,10 +39,13 @@ s1 ",\n" s2 "};"
 (defun kill-indent-vline (m &optional n)
   (let ((n (or n (1+ m))))
     (mapc
-     (lambda(x)(if (overlay-get x indent-line-key)
-               (mapc
-                (lambda(y)(delete-overlay y))
-                (eval (overlay-get x indent-line-key)))))
+     (lambda(x)(let ((i (overlay-get x indent-line-key)))
+             (if i
+                 (progn
+                   (mapc
+                    (lambda(y)(delete-overlay y))
+                    (eval i))
+                   (unintern i)))))
      (overlays-in m n))))
 (defun erase-indent-vline (overlay after? beg end &optional length)
   ;; (mapc
