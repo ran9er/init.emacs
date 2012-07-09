@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 22:51:34 ran9er>
+;; Time-stamp:   <2012-07-09 23:19:43 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
@@ -116,6 +116,7 @@ s1 ",\n" s2 "};"
   (save-excursion
     (let* ((line (intern (concat "*" indent-line-prefix (number-to-string (random 10000)) "*")))
            (i (or column (current-indentation))))
+      (make-local-variable line)
       (set line nil)
       (while (< i (if (<= (point-max)(line-end-position))
                       0
