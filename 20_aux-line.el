@@ -1,11 +1,12 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 23:47:01 ran9er>
+;; Time-stamp:   <2012-07-10 00:44:37 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
-      indent-line-key 'indent-line-id)
+      indent-line-key 'indent-line-id
+      indent-line-bg 'indent-line-bg)
 
 ;; * indent-vline
 (defun make-vline-xpm (width height color &optional lor)
@@ -77,9 +78,6 @@ s1 ",\n" s2 "};"
                                 :mask (heuristic t))
                                rear-nonsticky (display)
                                fontified t)))
-    (overlay-put ov 'modification-hooks '(erase-indent-vline))
-    (overlay-put ov 'insert-in-front-hooks '(erase-indent-vline))
-    (overlay-put ov 'insert-behind-hooks '(erase-indent-vline))
     ov))
 
 ;; (add-hook 'pre-command-hook 'erase-indent-vline)
@@ -102,11 +100,11 @@ s1 ",\n" s2 "};"
 ;;          (set-text-properties beg end `(font-lock-face (:foreground ,color))))
 ;;        'decompose-region))
 
-(defun indent-tab-exist (p)
+(defun indent-line-overlay-exist (p k)
   (let (r (l (overlays-at p)))
     (while (and l
                 (null
-                 (if (overlay-get (car l) indent-line-key)
+                 (if (overlay-get (car l) k)
                      (setq r t)
                    nil)))
       (setq l (cdr l)))
@@ -126,16 +124,32 @@ s1 ",\n" s2 "};"
                     (current-column)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (if (indent-tab-exist p1)
+          (if (indent-line-overlay-exist p1 indent-line-key)
               nil
             (set line (cons (draw-indent-tab p1 p2 line img color) (eval line)))))))))
+
+(defun indent-vline-background ()
+  (let* ((p (line-beginning-position))
+         (i (current-indentation))
+         (q (+ p i))
+         o)
+    (if (indent-line-overlay-exist p indent-line-bg)
+        nil
+      (setq o (make-overlay p q))
+      (overlay-put o indent-line-bg t)
+      (overlay-put o 'modification-hooks '(erase-indent-vline))
+      (overlay-put o 'insert-in-front-hooks '(erase-indent-vline))
+      (overlay-put o 'insert-behind-hooks '(erase-indent-vline)))))
 
 (defun indent-vline (&optional regexp column img color)
   (interactive)
   (let ((x (or regexp "^")))
     (font-lock-add-keywords
      nil `((,x
-            (0 (draw-indent-vline ,column ,img ,color)))))))
+            (0 (draw-indent-vline ,column ,img ,color)))))
+    (font-lock-add-keywords
+     nil '(("^ +"
+            (0 (indent-vline-background)))))))
 
 
 ;; (defun indent-vline-lisp (&optional regexp)
