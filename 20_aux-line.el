@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 23:19:43 ran9er>
+;; Time-stamp:   <2012-07-09 23:47:01 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
@@ -142,12 +142,14 @@ s1 ",\n" s2 "};"
 ;;   (interactive)
 ;;   (indent-vline (or regexp "^[ \t]*[,`#'(]")))
 
+(defun indent-vline-current-column ()
+  (save-excursion
+    (goto-char (match-beginning 1))
+    (current-column)))
 
 (defun indent-vline-lisp ()
   (interactive)
-  (let ((c '(save-excursion
-              (goto-char (match-beginning 1))
-              (current-column)))
+  (let ((c '(indent-vline-current-column))
         (blk "\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)"))
     (indent-vline "^[ \t]*\\((\\)" c)
     (indent-vline "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-vline-img-lst)
@@ -158,9 +160,7 @@ s1 ",\n" s2 "};"
 (defun indent-vline-fixed(&optional img)
   (interactive)
   (indent-vline "^[ \t]*\\([^ \t]\\)"
-                  '(save-excursion
-                     (goto-char (match-beginning 1))
-                     (current-column))
+                  '(indent-vline-current-column)
                   img)
   (font-lock-fontify-buffer))
 
