@@ -1,8 +1,11 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 01:18:38 ran9er>
+;; Time-stamp:   <2012-07-09 22:23:12 ran9er>
 ;; Mail:         <299am@gmail.com>
+
+(setq indent-line-prefix "auxline-"
+      indent-line-key 'indent-line-id)
 
 ;; * indent-vline
 (defun make-vline-xpm (width height color &optional lor)
@@ -33,18 +36,34 @@ s1 ",\n" s2 "};"
 (defvar indent-vline-img-lst (make-vline-xpm 9 ivl-line-height "#6a5acd"))
 (defvar indent-vline-img-blk (make-vline-xpm 9 ivl-line-height "khaki"))
 
+(defun kill-indent-vline (m &optional n)
+  (let ((n (or n (1+ m))))
+    (mapc
+     (lambda(x)(if (overlay-get x indent-line-key)
+               (mapc
+                (lambda(y)(delete-overlay y))
+                (eval (overlay-get x indent-line-key)))))
+     (overlays-in m n))))
 (defun erase-indent-vline (overlay after? beg end &optional length)
-  (mapc
-   (lambda(x)(delete-overlay x))
-   (eval (overlay-get overlay 'auxline-id)))
-  (font-lock-fontify-block)
-  )
+  ;; (mapc
+  ;;  (lambda(x)(delete-overlay x))
+  ;;  (eval (overlay-get overlay indent-line-key)))
+  (let* ((p1 (point))
+         (b (save-excursion (skip-chars-forward " ")))
+         (p2 (+ p1 b))
+         (i (current-indentation)))
+    (kill-indent-vline p1 p2)
+    (save-excursion
+      (forward-line)
+      (move-to-column i)
+      (kill-indent-vline (point))))
+  (font-lock-fontify-block))
 
 (defun draw-indent-tab (beg end id &optional img color)
   (let ((img (or img indent-vline-img))
         (color (or color "#4D4D4D"))
         (ov (make-overlay beg end)))
-    (overlay-put ov 'auxline-id id)
+    (overlay-put ov indent-line-key id)
     (overlay-put ov 'display
                  (if (display-images-p)
                      `(display (image
@@ -77,10 +96,19 @@ s1 ",\n" s2 "};"
 ;;          (set-text-properties beg end `(font-lock-face (:foreground ,color))))
 ;;        'decompose-region))
 
+(defun indent-tab-exist (p)
+  (let (r (l (overlays-at p)))
+    (while (and l
+                (null
+                 (if (overlay-get (car l) indent-line-key)
+                     (setq r t)
+                   nil)))
+      (setq l (cdr l)))
+    r))
 (defun draw-indent-vline (&optional column img color)
   (interactive "P")
   (save-excursion
-    (let* ((line (intern (concat "auxline-" (number-to-string (random 10000)))))
+    (let* ((line (intern (concat "*" indent-line-prefix (number-to-string (random 10000)) "*")))
            (i (or column (current-indentation))))
       (set line nil)
       (while (< i (if (<= (point-max)(line-end-position))
@@ -91,7 +119,7 @@ s1 ",\n" s2 "};"
                     (current-column)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (if (overlays-at p1) ;(overlay-get (car (overlays-at p1)) 'display)
+          (if (indent-tab-exist p1)
               nil
             (set line (cons (draw-indent-tab p1 p2 line img color) (eval line)))))))))
 
