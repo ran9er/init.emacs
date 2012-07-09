@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-09 22:23:12 ran9er>
+;; Time-stamp:   <2012-07-09 22:38:01 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
@@ -79,6 +79,9 @@ s1 ",\n" s2 "};"
     (overlay-put ov 'insert-behind-hooks '(erase-indent-vline))
     ov))
 
+;; (add-hook 'pre-command-hook 'erase-indent-vline)
+;; (add-hook 'post-command-hook 'font-lock-fontify-block)
+
 ;; (if (display-images-p)
 ;;         (set-text-properties
 ;;          beg end
@@ -135,7 +138,6 @@ s1 ",\n" s2 "};"
 ;;   (interactive)
 ;;   (indent-vline (or regexp "^[ \t]*[,`#'(]")))
 
-;(add-hook 'post-command-hook 'font-lock-fontify-buffer nil t)
 
 (defun indent-vline-lisp ()
   (interactive)
