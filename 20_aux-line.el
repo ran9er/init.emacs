@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-10 20:39:59 ran9er>
+;; Time-stamp:   <2012-07-10 23:23:17 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
@@ -46,20 +46,51 @@ s1 ",\n" s2 "};"
                    (mapc
                     (lambda(y)(delete-overlay y))
                     (eval i))
-                   (unintern i)))))
+                   ;; (unintern i)
+                   ))))
      (overlays-in m n))))
 (defun erase-indent-vline (overlay after? beg end &optional length)
-  (if after?
-      (let* (i)
+  (let ((inhibit-modification-hooks t)
+        p1 p2)
+    (if after?
         (save-excursion
           (forward-line)
-          (setq i (point))
-          (kill-indent-vline
-           i (+ i (skip-chars-forward " "))))
-        (font-lock-fontify-block))
-    (let* ((p1 (point))
-           (b (save-excursion (skip-chars-forward " ")))
-           (p2 (+ p1 b)))
+          (setq p1 (point))
+          (skip-chars-forward " ")
+          (setq p2 (point))
+          (kill-indent-vline p1 p2)
+          (font-lock-fontify-block))
+      (setq p1 (point)
+            p2 (+ p1 (save-excursion (skip-chars-forward " "))))
+      (kill-indent-vline p1 p2))))
+
+(defun what-overlays ()
+  (interactive)
+  (print
+   (cons (cons (point) (current-column))
+         (mapcar
+          (lambda(x) (remove-if
+                  nil
+                  `(,x
+                    ,(overlay-get x indent-line-key)
+                    ,(if (overlay-get x indent-line-bg) 'bg)
+                    ,(if (eq (overlay-get x 'face) 'hl-line) 'hl-line))))
+          (overlays-at (point))))))
+(defun erase-indent-vline-0 (overlay after? beg end &optional length)
+  (let ((inhibit-modification-hooks t)
+        (c (current-column))
+        p1 p2)
+    (if after?
+        (save-excursion
+          (forward-line)
+          (move-to-column c)
+          (setq p1 (point))
+          (skip-chars-forward " ")
+          (setq p2 (point))
+          (kill-indent-vline p1 p2)
+          (font-lock-fontify-block))
+      (setq p1 (point)
+            p2 (+ p1 (save-excursion (skip-chars-forward " "))))
       (kill-indent-vline p1 p2))))
 
 (defun draw-indent-tab (beg end id &optional img color)
