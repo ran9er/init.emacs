@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-10 00:44:37 ran9er>
+;; Time-stamp:   <2012-07-10 19:36:17 ran9er>
 ;; Mail:         <299am@gmail.com>
 
 (setq indent-line-prefix "auxline-"
@@ -49,19 +49,17 @@ s1 ",\n" s2 "};"
                    (unintern i)))))
      (overlays-in m n))))
 (defun erase-indent-vline (overlay after? beg end &optional length)
-  ;; (mapc
-  ;;  (lambda(x)(delete-overlay x))
-  ;;  (eval (overlay-get overlay indent-line-key)))
-  (let* ((p1 (point))
-         (b (save-excursion (skip-chars-forward " ")))
-         (p2 (+ p1 b))
-         (i (current-indentation)))
-    (kill-indent-vline p1 p2)
-    (save-excursion
-      (forward-line)
-      (move-to-column i)
-      (kill-indent-vline (point))))
-  (font-lock-fontify-block))
+  (if after? (font-lock-fontify-block)
+    (let* ((p1 (point))
+           (b (save-excursion (skip-chars-forward " ")))
+           (p2 (+ p1 b))
+           i)
+      (kill-indent-vline p1 p2)
+      (save-excursion
+        (forward-line)
+        (setq i (point))
+        (kill-indent-vline
+         i (+ i (skip-chars-forward " ")))))))
 
 (defun draw-indent-tab (beg end id &optional img color)
   (let ((img (or img indent-vline-img))
