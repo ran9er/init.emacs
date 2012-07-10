@@ -1,12 +1,18 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-10 23:23:17 ran9er>
+;; Time-stamp:   <2012-07-11 00:03:14 ran9er>
 ;; Mail:         <299am@gmail.com>
 
-(setq indent-line-prefix "auxline-"
+(setq indent-line-counter 0
+      indent-line-prefix "auxline-"
       indent-line-key 'indent-line-id
       indent-line-bg 'indent-line-bg)
+(defun indent-line-genid ()
+  (prog1
+      (intern
+       (concat "*" indent-line-prefix (number-to-string indent-line-counter) "*"))
+    (setq indent-line-counter (1+ indent-line-counter))))
 
 ;; * indent-vline
 (defun make-vline-xpm (width height color &optional lor)
@@ -142,7 +148,7 @@ s1 ",\n" s2 "};"
 (defun draw-indent-vline (&optional column img color)
   (interactive "P")
   (save-excursion
-    (let* ((line (intern (concat "*" indent-line-prefix (number-to-string (random 10000)) "*")))
+    (let* ((line (indent-line-genid))
            (i (or column (current-indentation))))
       (make-local-variable line)
       (set line nil)
@@ -193,6 +199,7 @@ s1 ",\n" s2 "};"
 
 (defun indent-vline-lisp ()
   (interactive)
+  (make-local-variable 'indent-line-counter)
   (let ((c '(indent-vline-current-column))
         (blk "\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)"))
     (indent-vline "^[ \t]*\\((\\)" c)
@@ -203,6 +210,7 @@ s1 ",\n" s2 "};"
 
 (defun indent-vline-fixed(&optional img)
   (interactive)
+  (make-local-variable 'indent-line-counter)
   (indent-vline "^[ \t]*\\([^ \t]\\)"
                   '(indent-vline-current-column)
                   img)
@@ -210,6 +218,7 @@ s1 ",\n" s2 "};"
 
 (defun indent-vline-test (&optional regexp)
   (interactive)
+  (make-local-variable 'indent-line-counter)
   (indent-vline (or regexp "\\(def\\|class\\|if\\)")
                   '(save-excursion
                      (goto-char (match-beginning 1))
