@@ -1,23 +1,30 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-11 00:45:29 ran9er>
-;; Mail:         <299am@gmail.com>
+;; Time-stamp:   <2012-07-11 22:43:58 ran9er>
+;; Mail:         <2999am@gmail.com>
 
-(setq indent-line-counter 0
-      indent-line-prefix "auxline-"
-      indent-line-key 'indent-line-id
-      indent-line-bg 'indent-line-bg)
-(defun indent-line-genid ()
+(setq indent-hint-counter 0
+      indent-hint-list nil
+      indent-hint-prefix "auxline-"
+      indent-hint-key 'indent-hint-id
+      indent-hint-bg 'indent-hint-bg)
+(defun indent-hint-genid ()
   (progn
-    (or (local-variable-p 'indent-line-counter)
-        (make-local-variable 'indent-line-counter))
-    (setq indent-line-counter (1+ indent-line-counter))
+    (setq indent-hint-counter (1+ indent-hint-counter))
     (intern
-     (concat "*" indent-line-prefix (number-to-string indent-line-counter) "*"))))
+     (concat "*" indent-hint-prefix (number-to-string indent-hint-counter) "*"))))
+(defun indent-hint-init()
+  (mapc
+   (lambda(x) (or (local-variable-p x)
+              (make-local-variable x)))
+   '(indent-hint-counter indent-hint-list))
+  (indent-hint-bgo-init)
+  (add-hook 'post-command-hook 'indent-hint-bgo-mv t t)
+  (font-lock-fontify-buffer))
 
-;; * indent-vline
-(defun make-vline-xpm (width height color &optional lor)
+;; * indent-hint
+(defun make-indent-hint-xpm (width height color &optional lor)
   (let* ((w width)
          (h height)
          (s1 (concat "\"" (make-string w (string-to-char " ")) "\""))
@@ -40,15 +47,15 @@ static char * dot_vline_xpm[] = {
 s1 ",\n" s2 "};"
 ))))
 
-(defvar ivl-line-height (or (car (window-line-height)) 20))
-(defvar indent-vline-img (make-vline-xpm 9 ivl-line-height "#4D4D4D"))
-(defvar indent-vline-img-lst (make-vline-xpm 9 ivl-line-height "#6a5acd"))
-(defvar indent-vline-img-blk (make-vline-xpm 9 ivl-line-height "khaki"))
+(defvar indent-hint-line-height (or (car (window-line-height)) 20))
+(defvar indent-hint-img (make-indent-hint-xpm 9 indent-hint-line-height "#4D4D4D"))
+(defvar indent-hint-img-lst (make-indent-hint-xpm 9 indent-hint-line-height "#6a5acd"))
+(defvar indent-hint-img-blk (make-indent-hint-xpm 9 indent-hint-line-height "khaki"))
 
-(defun kill-indent-vline (m &optional n)
+(defun kill-indent-hint (m &optional n)
   (let ((n (or n (1+ m))))
     (mapc
-     (lambda(x)(let ((i (overlay-get x indent-line-key)))
+     (lambda(x)(let ((i (overlay-get x indent-hint-key)))
              (if i
                  (progn
                    (mapc
@@ -57,7 +64,7 @@ s1 ",\n" s2 "};"
                    ;; (unintern i)
                    ))))
      (overlays-in m n))))
-(defun erase-indent-vline (overlay after? beg end &optional length)
+(defun erase-indent-hint (overlay after? beg end &optional length)
   (let ((inhibit-modification-hooks t)
         p1 p2)
     (if after?
@@ -66,11 +73,11 @@ s1 ",\n" s2 "};"
           (setq p1 (point))
           (skip-chars-forward " ")
           (setq p2 (point))
-          (kill-indent-vline p1 p2)
+          (kill-indent-hint p1 p2)
           (font-lock-fontify-block))
       (setq p1 (point)
             p2 (+ p1 (save-excursion (skip-chars-forward " "))))
-      (kill-indent-vline p1 p2))))
+      (kill-indent-hint p1 p2))))
 
 (defun what-overlays ()
   (interactive)
@@ -80,11 +87,11 @@ s1 ",\n" s2 "};"
           (lambda(x) (remove-if
                   nil
                   `(,x
-                    ,(overlay-get x indent-line-key)
-                    ,(if (overlay-get x indent-line-bg) 'bg)
+                    ,(overlay-get x indent-hint-key)
+                    ,(if (overlay-get x indent-hint-bg) 'bg)
                     ,(if (eq (overlay-get x 'face) 'hl-line) 'hl-line))))
           (overlays-at (point))))))
-(defun erase-indent-vline-0 (overlay after? beg end &optional length)
+(defun erase-indent-hint-0 (overlay after? beg end &optional length)
   (let ((inhibit-modification-hooks t)
         (c (current-column))
         p1 p2)
@@ -95,17 +102,17 @@ s1 ",\n" s2 "};"
           (setq p1 (point))
           (skip-chars-forward " ")
           (setq p2 (point))
-          (kill-indent-vline p1 p2)
+          (kill-indent-hint p1 p2)
           (font-lock-fontify-block))
       (setq p1 (point)
             p2 (+ p1 (save-excursion (skip-chars-forward " "))))
-      (kill-indent-vline p1 p2))))
+      (kill-indent-hint p1 p2))))
 
-(defun draw-indent-tab (beg end id &optional img color)
-  (let ((img (or img indent-vline-img))
+(defun draw-indent-hint (beg end id &optional img color)
+  (let ((img (or img indent-hint-img))
         (color (or color "#4D4D4D"))
         (ov (make-overlay beg end)))
-    (overlay-put ov indent-line-key id)
+    (overlay-put ov indent-hint-key id)
     (overlay-put ov 'display
                  (if (display-images-p)
                      `(display (image
@@ -117,9 +124,6 @@ s1 ",\n" s2 "};"
                                rear-nonsticky (display)
                                fontified t)))
     ov))
-
-;; (add-hook 'pre-command-hook 'erase-indent-vline)
-;; (add-hook 'post-command-hook 'font-lock-fontify-block)
 
 ;; (if (display-images-p)
 ;;         (set-text-properties
@@ -138,7 +142,7 @@ s1 ",\n" s2 "};"
 ;;          (set-text-properties beg end `(font-lock-face (:foreground ,color))))
 ;;        'decompose-region))
 
-(defun indent-line-overlay-exist (p k)
+(defun indent-hint-overlay-exist (p k)
   (let (r (l (overlays-at p)))
     (while (and l
                 (null
@@ -147,12 +151,13 @@ s1 ",\n" s2 "};"
                    nil)))
       (setq l (cdr l)))
     r))
-(defun draw-indent-vline (&optional column img color)
+(defun draw-indent-hint-line (&optional column img color)
   (interactive "P")
   (save-excursion
-    (let* ((line (indent-line-genid))
+    (let* ((line (indent-hint-genid))
            (i (or column (current-indentation))))
       (make-local-variable line)
+      (setq indent-hint-list (cons line indent-hint-list))
       (set line nil)
       (while (< i (if (<= (point-max)(line-end-position))
                       0
@@ -162,64 +167,69 @@ s1 ",\n" s2 "};"
                     (current-column)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (if (indent-line-overlay-exist p1 indent-line-key)
+          (if (indent-hint-overlay-exist p1 indent-hint-key)
               nil
-            (set line (cons (draw-indent-tab p1 p2 line img color) (eval line)))))))))
+            (set line (cons (draw-indent-hint p1 p2 line img color) (eval line)))))))))
 
-(defun indent-vline-background ()
-  (let* ((p (line-beginning-position))
-         (i (current-indentation))
-         (q (+ p i))
+
+(defun indent-hint-bgo-init (&optional r)
+  (let* ((b (line-beginning-position))
+         (e (+ b (current-indentation)))
          o)
-    (if (indent-line-overlay-exist p indent-line-bg)
-        nil
-      (setq o (make-overlay p q))
-      (overlay-put o indent-line-bg t)
-      (overlay-put o 'modification-hooks '(erase-indent-vline))
-      (overlay-put o 'insert-in-front-hooks '(erase-indent-vline))
-      (overlay-put o 'insert-behind-hooks '(erase-indent-vline)))))
+    (setq r (or r 'indent-hint-background-overlay))
+    (make-local-variable r)
+    (setq o (make-overlay b e))
+    (overlay-put o indent-hint-bg t)
+    ;; debug
+    ;; (overlay-put o 'face '((t (:background "grey40"))))
+    (overlay-put o 'modification-hooks '(erase-indent-hint))
+    (overlay-put o 'insert-in-front-hooks '(erase-indent-hint))
+    (overlay-put o 'insert-behind-hooks '(erase-indent-hint))
+    (set r o)))
+(defun indent-hint-bgo-mv(&optional o)
+  (let* ((o (or o indent-hint-background-overlay))
+         (b (line-beginning-position))
+         (e (+ b (current-indentation))))
+    (move-overlay o b e)))
 
-(defun indent-vline (&optional regexp column img color)
+(defun indent-hint (&optional regexp column img color)
   (interactive)
   (let ((x (or regexp "^")))
     (font-lock-add-keywords
      nil `((,x
-            (0 (draw-indent-vline ,column ,img ,color)))))
-    (font-lock-add-keywords
-     nil '(("^ +"
-            (0 (indent-vline-background)))))))
+            (0 (draw-indent-hint-line ,column ,img ,color)))))))
 
 
 ;; (defun indent-vline-lisp (&optional regexp)
 ;;   (interactive)
-;;   (indent-vline (or regexp "^[ \t]*[,`#'(]")))
+;;   (indent-hint (or regexp "^[ \t]*[,`#'(]")))
 
-(defun indent-vline-current-column ()
+(defun indent-hint-current-column ()
   (save-excursion
     (goto-char (match-beginning 1))
     (current-column)))
 
 (defun indent-vline-lisp ()
   (interactive)
-  (let ((c '(indent-vline-current-column))
+  (let ((c '(indent-hint-current-column))
         (blk "\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)"))
-    (indent-vline "^[ \t]*\\((\\)" c)
-    (indent-vline "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-vline-img-lst)
-    (indent-vline blk c 'indent-vline-img-blk)
-    (indent-vline "[,`#']+\\((\\)" c 'indent-vline-img-lst))
-  (font-lock-fontify-buffer))
+    (indent-hint "^[ \t]*\\((\\)" c)
+    (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
+    (indent-hint blk c 'indent-hint-img-blk)
+    (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst))
+  (indent-hint-init))
 
 (defun indent-vline-fixed(&optional img)
   (interactive)
-  (indent-vline "^[ \t]*\\([^ \t]\\)"
-                  '(indent-vline-current-column)
+  (indent-hint "^[ \t]*\\([^ \t]\\)"
+                  '(indent-hint-current-column)
                   img)
-  (font-lock-fontify-buffer))
+  (indent-hint-init))
 
 (defun indent-vline-test (&optional regexp)
   (interactive)
-  (indent-vline (or regexp "\\(def\\|class\\|if\\)")
+  (indent-hint (or regexp "\\(def\\|class\\|if\\)")
                   '(save-excursion
                      (goto-char (match-beginning 1))
                      (current-column)))
-  (font-lock-fontify-buffer))
+  (indent-hint-init))
