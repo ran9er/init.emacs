@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-12 00:23:44 ran9er>
+;; Time-stamp:   <2012-07-12 00:37:03 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-counter 0
@@ -169,10 +169,10 @@ s1 ",\n" s2 "};"
                     (current-column)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (if (indent-hint-overlay-exist p1 indent-hint-key)
-              (if indent-hint-lazy nil
-                (kill-indent-hint p1)
+          (if indent-hint-lazy
+              (if (indent-hint-overlay-exist p1 indent-hint-key) nil
                 (set line (cons (draw-indent-hint p1 p2 line img color) (eval line))))
+            (kill-indent-hint p1)
             (set line (cons (draw-indent-hint p1 p2 line img color) (eval line)))))))))
 
 
