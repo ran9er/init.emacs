@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-12 00:00:54 ran9er>
+;; Time-stamp:   <2012-07-12 00:23:44 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-counter 0
@@ -9,18 +9,18 @@
       indent-hint-prefix "auxline-"
       indent-hint-key 'indent-hint-id
       indent-hint-bg 'indent-hint-bg
-      indent-hint-ovwrt nil)
+      indent-hint-lazy nil)
 (defun indent-hint-genid ()
   (progn
     (setq indent-hint-counter (1+ indent-hint-counter))
     (intern
      (concat "*" indent-hint-prefix (number-to-string indent-hint-counter) "*"))))
-(defun indent-hint-init(&optional o)
+(defun indent-hint-init(&optional l)
   (mapc
    (lambda(x) (or (local-variable-p x)
               (make-local-variable x)))
-   '(indent-hint-counter indent-hint-list indent-hint-ovwrt))
-  (if o (setq indent-hint-ovwrt t))
+   '(indent-hint-counter indent-hint-list indent-hint-lazy))
+  (if l (setq indent-hint-lazy t))
   (indent-hint-bgo-init)
   (add-hook 'post-command-hook 'indent-hint-bgo-mv t t)
   (font-lock-fontify-buffer))
@@ -170,10 +170,9 @@ s1 ",\n" s2 "};"
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
           (if (indent-hint-overlay-exist p1 indent-hint-key)
-              (if indent-hint-ovwrt
-                  (progn
-                    (kill-indent-hint p1)
-                    (set line (cons (draw-indent-hint p1 p2 line img color) (eval line)))))
+              (if indent-hint-lazy nil
+                (kill-indent-hint p1)
+                (set line (cons (draw-indent-hint p1 p2 line img color) (eval line))))
             (set line (cons (draw-indent-hint p1 p2 line img color) (eval line)))))))))
 
 
@@ -214,22 +213,20 @@ s1 ",\n" s2 "};"
     (goto-char (match-beginning 1))
     (current-column)))
 
-(defun indent-hint-mode (&optional o lst)
+(defun indent-hint-mode (&optional l lst)
   (interactive)
   (let* ((c '(indent-hint-current-column))
          (lst (or lst '(("^[ \t]*\\([^ \t]\\)"))))
-         (lst (if o (reverse lst) lst)))
-    (indent-hint-init o)
-    (mapcar
-     (lambda(x)
-       (indent-hint (car x) c (cadr x)))
-     lst)))
+         (lst (if l lst (reverse lst))))
+    (indent-hint-init l)
+    (dolist (x lst)
+      (indent-hint (car x) c (cadr x)))))
 
 ;; ???
 (defun indent-hint-lisp ()
   (interactive)
   (indent-hint-mode
-   t
+   nil
    '(("^[ \t]*\\((\\)")
      ("\\((lambda\\|(setq\\|(defvar\\)" 'indent-hint-img-lst)
      ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)" 'indent-hint-img-blk)
@@ -239,20 +236,19 @@ s1 ",\n" s2 "};"
 ;; example
 (defun indent-vline-lisp ()
   (interactive)
-  (indent-hint-init t)
+  (indent-hint-init)
   (let ((c '(indent-hint-current-column))
         (blk "\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)"))
-    (if indent-hint-ovwrt
+    (if indent-hint-lazy
         (progn
-          (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst)
-          (indent-hint blk c 'indent-hint-img-blk)
+          (indent-hint "^[ \t]*\\((\\)" c)
           (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
-          (indent-hint "^[ \t]*\\((\\)" c))
-      (indent-hint "^[ \t]*\\((\\)" c)
-      (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
+          (indent-hint blk c 'indent-hint-img-blk)
+          (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst))
+      (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst)
       (indent-hint blk c 'indent-hint-img-blk)
-      (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst)))
-  )
+      (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
+      (indent-hint "^[ \t]*\\((\\)" c))))
 
 (defun indent-hint-fixed(&optional img)
   (interactive)
