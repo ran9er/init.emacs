@@ -1,14 +1,16 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-12 22:50:00 ran9er>
+;; Time-stamp:   <2012-07-12 23:44:53 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "auxline-"
       indent-hint-key 'indent-hint-id
       indent-hint-bg 'indent-hint-bg
+      indent-hint-gc-timer 5
       ;; ;
       indent-hint-counter 0
+      indent-hint-gc-counter 0
       indent-hint-list nil
       indent-hint-overlay-pool nil
       indent-hint-lazy nil)
@@ -21,10 +23,14 @@
   (mapc
    (lambda(x) (or (local-variable-p x)
               (make-local-variable x)))
-   '(indent-hint-counter indent-hint-list indent-hint-lazy))
+   '(indent-hint-counter
+     indent-hint-list
+     indent-hint-lazy
+     indent-hint-gc-counter))
   (if l (setq indent-hint-lazy t))
   (indent-hint-bgo-init)
   (add-hook 'post-command-hook 'indent-hint-bgo-mv t t)
+  (add-hook 'post-gc-hook 'indent-hint-gc t t)
   (font-lock-fontify-buffer))
 
 (defun indent-hint-make-overlay (b e)
@@ -38,6 +44,16 @@
 (defun indent-hint-delete-overlay (o)
   (delete-overlay o)
   (setq indent-hint-overlay-pool (cons o indent-hint-overlay-pool)))
+
+(defun indent-hint-gc ()
+  (if (< indent-hint-gc-counter indent-hint-gc-timer)
+      (setq indent-hint-gc-counter (1+ indent-hint-gc-counter))
+    (setq indent-hint-gc-counter 0)
+    (dolist (x indent-hint-list)
+      (if (null (eval x))
+          (and (unintern x)
+               (setq indent-hint-list
+                     (delq x indent-hint-list)))))))
 
 ;; * indent-hint
 (defun make-indent-hint-xpm (width height color &optional lor)
@@ -77,9 +93,9 @@ s1 ",\n" s2 "};"
                    (mapc
                     (lambda(y)(indent-hint-delete-overlay y))
                     (eval i))
-                   ;; (setq indent-hint-list
-                   ;;       (delq x indent-hint-list))
-                   ;; (unintern x)
+                   (setq indent-hint-list
+                         (delq i indent-hint-list))
+                   (unintern i)
                    ))))
      (overlays-in m n))))
 (defun erase-indent-hint (overlay after? beg end &optional length)
