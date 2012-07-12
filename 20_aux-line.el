@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-12 23:44:53 ran9er>
+;; Time-stamp:   <2012-07-12 23:52:14 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "auxline-"
@@ -51,9 +51,9 @@
     (setq indent-hint-gc-counter 0)
     (dolist (x indent-hint-list)
       (if (null (eval x))
-          (and (unintern x)
-               (setq indent-hint-list
-                     (delq x indent-hint-list)))))))
+          (and (setq indent-hint-list
+                     (delq x indent-hint-list))
+               (unintern x))))))
 
 ;; * indent-hint
 (defun make-indent-hint-xpm (width height color &optional lor)
