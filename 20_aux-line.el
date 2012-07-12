@@ -1,14 +1,16 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-12 00:37:03 ran9er>
+;; Time-stamp:   <2012-07-12 22:50:00 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
-(setq indent-hint-counter 0
-      indent-hint-list nil
-      indent-hint-prefix "auxline-"
+(setq indent-hint-prefix "auxline-"
       indent-hint-key 'indent-hint-id
       indent-hint-bg 'indent-hint-bg
+      ;; ;
+      indent-hint-counter 0
+      indent-hint-list nil
+      indent-hint-overlay-pool nil
       indent-hint-lazy nil)
 (defun indent-hint-genid ()
   (progn
@@ -24,6 +26,18 @@
   (indent-hint-bgo-init)
   (add-hook 'post-command-hook 'indent-hint-bgo-mv t t)
   (font-lock-fontify-buffer))
+
+(defun indent-hint-make-overlay (b e)
+  (let (o)
+    (if (null indent-hint-overlay-pool)
+        (setq o (make-overlay b e))
+      (setq o (car indent-hint-overlay-pool))
+      (move-overlay o b e)
+      (setq indent-hint-overlay-pool (cdr indent-hint-overlay-pool)))
+    o))
+(defun indent-hint-delete-overlay (o)
+  (delete-overlay o)
+  (setq indent-hint-overlay-pool (cons o indent-hint-overlay-pool)))
 
 ;; * indent-hint
 (defun make-indent-hint-xpm (width height color &optional lor)
@@ -61,9 +75,11 @@ s1 ",\n" s2 "};"
              (if i
                  (progn
                    (mapc
-                    (lambda(y)(delete-overlay y))
+                    (lambda(y)(indent-hint-delete-overlay y))
                     (eval i))
-                   ;; (unintern i)
+                   ;; (setq indent-hint-list
+                   ;;       (delq x indent-hint-list))
+                   ;; (unintern x)
                    ))))
      (overlays-in m n))))
 (defun erase-indent-hint (overlay after? beg end &optional length)
@@ -113,7 +129,7 @@ s1 ",\n" s2 "};"
 (defun draw-indent-hint (beg end id &optional img color)
   (let ((img (or img indent-hint-img))
         (color (or color "#4D4D4D"))
-        (ov (make-overlay beg end)))
+        (ov (indent-hint-make-overlay beg end)))
     (overlay-put ov indent-hint-key id)
     (overlay-put ov 'display
                  (if (display-images-p)
@@ -253,14 +269,31 @@ s1 ",\n" s2 "};"
 (defun indent-hint-fixed(&optional img)
   (interactive)
   (indent-hint "^[ \t]*\\([^ \t]\\)"
-                  '(indent-hint-current-column)
-                  img)
+               '(indent-hint-current-column)
+               img)
   (indent-hint-init))
 
 (defun indent-vline-test (&optional regexp)
   (interactive)
   (indent-hint (or regexp "\\(def\\|class\\|if\\)")
-                  '(save-excursion
-                     (goto-char (match-beginning 1))
-                     (current-column)))
+               '(save-excursion
+                  (goto-char (match-beginning 1))
+                  (current-column)))
   (indent-hint-init))
+
+
+(when nil
+(what-overlays)
+(length indent-hint-list)
+(dolist (x indent-hint-list)
+  (if (null (eval x))
+      (and (unintern x)
+           (setq indent-hint-list
+                 (delq x indent-hint-list)))))
+(setq overlay-no-buffer nil)
+(dolist (x indent-hint-list)
+  (dolist (y (eval x))
+    (if (null (overlay-buffer y))
+        (setq overlay-no-buffer
+              (cons y overlay-no-buffer)))))
+)
