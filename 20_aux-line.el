@@ -1,18 +1,19 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-13 20:49:53 ran9er>
+;; Time-stamp:   <2012-07-13 22:35:04 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
-(setq indent-hint-prefix "auxline-"
+(setq indent-hint-prefix "il-"
       indent-hint-key 'indent-hint-id
       indent-hint-bg 'indent-hint-bg
       indent-hint-gc-timer 5
+      indent-hint-overlay-pool-minimum 10
       ;; ;
       indent-hint-counter 0
       indent-hint-gc-counter 0
-      indent-hint-list nil
       indent-hint-overlay-pool nil
+      indent-hint-list nil
       indent-hint-lazy nil)
 (defun indent-hint-genid ()
   (progn
@@ -35,7 +36,9 @@
 
 (defun indent-hint-make-overlay (b e)
   (let (o)
-    (if (null indent-hint-overlay-pool)
+    (if ;; (null indent-hint-overlay-pool)
+        (> indent-hint-overlay-pool-minimum
+           (length indent-hint-overlay-pool))
         (setq o (make-overlay b e))
       (setq o (car indent-hint-overlay-pool))
       (move-overlay o b e)
