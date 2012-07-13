@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-12 23:52:14 ran9er>
+;; Time-stamp:   <2012-07-13 20:49:53 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "auxline-"
@@ -142,21 +142,28 @@ s1 ",\n" s2 "};"
             p2 (+ p1 (save-excursion (skip-chars-forward " "))))
       (kill-indent-hint p1 p2))))
 
+(setq draw-indent-hint-func
+      (if (display-images-p)
+          (lambda(o img)
+            (overlay-put o 'display
+                         `(display (image
+                                    :type xpm
+                                    :data ,img
+                                    :pointer text
+                                    :ascent center
+                                    :mask (heuristic t))
+                                   rear-nonsticky (display)
+                                   fontified t)))
+        (lambda(o color)
+          (overlay-put o 'display
+                       "|"))))
+
 (defun draw-indent-hint (beg end id &optional img color)
   (let ((img (or img indent-hint-img))
         (color (or color "#4D4D4D"))
         (ov (indent-hint-make-overlay beg end)))
     (overlay-put ov indent-hint-key id)
-    (overlay-put ov 'display
-                 (if (display-images-p)
-                     `(display (image
-                                :type xpm
-                                :data ,img
-                                :pointer text
-                                :ascent center
-                                :mask (heuristic t))
-                               rear-nonsticky (display)
-                               fontified t)))
+    (funcall draw-indent-hint-func ov img)
     ov))
 
 ;; (if (display-images-p)
