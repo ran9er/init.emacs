@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-13 22:35:04 ran9er>
+;; Time-stamp:   <2012-07-14 09:23:27 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -166,6 +166,7 @@ s1 ",\n" s2 "};"
         (color (or color "#4D4D4D"))
         (ov (indent-hint-make-overlay beg end)))
     (overlay-put ov indent-hint-key id)
+    ;; (overlay-put ov evaporate t)
     (funcall draw-indent-hint-func ov img)
     ov))
 
