@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-14 09:23:27 ran9er>
+;; Time-stamp:   <2012-07-21 22:57:46 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -107,12 +107,13 @@ s1 ",\n" s2 "};"
     (if after?
         (save-excursion
           (forward-line)
-          (setq p1 (point))
+          ;; (setq p1 (point))
+          (setq p1 (line-beginning-position))
           (skip-chars-forward " ")
           (setq p2 (point))
           (kill-indent-hint p1 p2)
           (font-lock-fontify-block))
-      (setq p1 (point)
+      (setq p1 (line-beginning-position) ;; (point)
             p2 (+ p1 (save-excursion (skip-chars-forward " "))))
       (kill-indent-hint p1 p2))))
 
@@ -309,7 +310,8 @@ s1 ",\n" s2 "};"
   (indent-hint-init))
 
 
-(when nil
+(when
+nil
 (what-overlays)
 (length indent-hint-list)
 (dolist (x indent-hint-list)
