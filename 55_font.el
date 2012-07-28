@@ -11,8 +11,8 @@
 
   (setq zhfont (usage-font
                 ;; "XHei Mono"
-                "Hiragino Sans GB"
-                "Hiragino Sans GB W3"
+                ;; "Hiragino Sans GB"
+                ;; "Hiragino Sans GB W3"
                 "Yahei Mono"
                 "YaHei Consolas Hybrid"
                 "Microsoft Yahei"

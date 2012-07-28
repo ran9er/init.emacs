@@ -1,195 +1,116 @@
-ï»¿"è¿è¡Œåœ¨éå…¼å®¹(VI)æ¨¡å¼ä¸‹(å‘½ä»¤æ¨¡å¼ä¸‹ TAB è¡¥å…¨){{{
+"ÔËĞĞÔÚ·Ç¼æÈİ(VI)Ä£Ê½ÏÂ(ÃüÁîÄ£Ê½ÏÂ TAB ²¹È«)
 set nocompatible
-"}}}
-
-"è®¾å®šæ–‡ä»¶ç¼–ç {{{
-"å†…éƒ¨ç¼–ç 
+ 
+"Éè¶¨ÎÄ¼ş±àÂë
+"ÄÚ²¿±àÂë
 set encoding=utf-8
-"é»˜è®¤ä¿å­˜ç¼–ç 
+"Ä¬ÈÏ±£´æ±àÂë
 set fileencoding=utf-8
-"è¯†åˆ«ç¼–ç 
+"Ê¶±ğ±àÂë
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
-"æ­£ç¡®å¤„ç†ä¸­æ–‡æŠ˜è¡Œ
+"ÕıÈ·´¦ÀíÖĞÎÄÕÛĞĞ
 set formatoptions+=mM
-"å°†ä¸æ˜å®½åº¦çš„å­—ç¬¦ä½œä¸ºåŒå­—èŠ‚
+"½«²»Ã÷¿í¶ÈµÄ×Ö·û×÷ÎªË«×Ö½Ú
 set ambiwidth=double
-"ä»¥ä¸‹å­—ç¬¦å°†è¢«è§†ä¸ºå•è¯çš„ä¸€éƒ¨åˆ† (ASCII)ï¼š
-set iskeyword+=33-47,58-64,91-96,123-128
-"æ’å…¥æ¨¡å¼ä¸‹ï¼Œâ€œâ†â€å¦‚ä½•åˆ é™¤å…‰æ ‡å‰çš„å­—ç¬¦ï¼šè¡Œé¦–ç©ºç™½ã€æ¢è¡Œç¬¦ã€æ’å…¥ç‚¹ä¹‹å‰çš„å­—ç¬¦
-set backspace=indent,eol,start
-"}}}
-
-"å­—ä½“{{{
-if has("win32")
-    set guifont=Yahei_Consolas_Hybrid:h12
-"    set guifontwide=Yahei_Consolas_Hybrid:h12
-endif
-"}}}
-
-"çŠ¶æ€æ æ ·å¼ {{{
-set laststatus=2
-  function! CurDir()
-     let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
-     return curdir
-  endfunction
-set statusline=\ %F%m%r%h\ [%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-"åœ¨çŠ¶æ€æ ä½ç½®æ˜¾ç¤ºè¡¥å…¨èœå•
-set wildmenu
-"}}}
-
-"UIé€‰é¡¹{{{ 
-"ç®€æ´å¯åŠ¨æ¨¡å¼
-set shortmess=atI
-"è®¾å®š GUI é€‰é¡¹
-"set guioptions=gmrLtT  m:èœå• T:å·¥å…·æ  r:æ»šåŠ¨æ¡
-set guioptions=gLt
-"å‘½ä»¤è¡Œé«˜åº¦
-set cmdheight=1
-"æ˜¾ç¤ºæ ‡å°º
-set ruler
-"}}}
-
-"ç¼“å†²åŒºé€‰é¡¹{{{ 
-"å¼€å¯è¯­æ³•åŠ äº®
+ 
+set guifont=Monaco:h10:w6
+"set guifontwide=NSimSun-18030,NSimSun
+ 
+"¿ªÆôÓï·¨¼ÓÁÁ
 syntax on
-"é…è‰²é£æ ¼
+"ÅäÉ«·ç¸ñ
 colorscheme desert
-"æ˜¾ç¤ºä¸å®Œæ•´çš„æ®µè½
+ 
+"¼ò½àÆô¶¯Ä£Ê½
+set shortmess=atI
+"Éè¶¨ GUI Ñ¡Ïî
+"set guioptions=gmrLtT  m:²Ëµ¥ T:¹¤¾ßÀ¸ r:¹ö¶¯Ìõ
+set guioptions=gLt
+"  "×´Ì¬À¸ÑùÊ½
+"  set laststatus=2
+"    function! CurDir()
+"       let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
+"       return curdir
+"    endfunction
+"  set statusline=\ %F%m%r%h\ [%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+"ÔÚ×´Ì¬À¸Î»ÖÃÏÔÊ¾²¹È«²Ëµ¥
+set wildmenu
+"ÃüÁîĞĞ¸ß¶È
+set cmdheight=1
+"ÏÔÊ¾±ê³ß
+set ruler
+ 
+"ÏÔÊ¾²»ÍêÕûµÄ¶ÎÂä
 set display=lastline
-"è‡ªåŠ¨æŠ˜è¡Œ
+"×Ô¶¯ÕÛĞĞ
 "set nowrap
 set wrap
-"æŒ‰å®Œæ•´å•è¯æŠ˜è¡Œ
+"°´ÍêÕûµ¥´ÊÕÛĞĞ
 set nolinebreak
 "set linebreak
-"è®¾å®šè¡Œè· ( GUI ç•Œé¢ä¸­ç”Ÿæ•ˆ )
+"Éè¶¨ĞĞ¾à ( GUI ½çÃæÖĞÉúĞ§ )
 set linespace=4
-"è¡Œå®½ï¼ˆè¾“å…¥æ—¶è‡ªåŠ¨æ’å…¥æ¢è¡Œç¬¦ï¼‰
+"ĞĞ¿í£¨ÊäÈëÊ±×Ô¶¯²åÈë»»ĞĞ·û£©
 "set textwidth=80
 set textwidth=0
-"å‘½ä»¤è¡Œå†å²çºªå½•
-set history=500
-"ç²˜è´´æ¨¡å¼
-"set paste "set nopaste
-"}}}
-
-"ç¼©è¿›é€‰é¡¹{{{
-"è®¾å®šåˆ¶è¡¨ç¬¦å®½åº¦
-set tabstop=4
-"è®¾å®š Tab ç¼©è¿›çš„ç©ºæ ¼æ•°
-set shiftwidth=4
-"å°†ç¼©è¿›è½¬æ¢ä¸ºç©ºæ ¼
-set expandtab
-"è®¾å®šè‡ªåŠ¨ç¼©è¿›(æ–°è¡Œä¸å‰ä¸€è¡Œç¼©è¿›ç›¸åŒ)
-"set autoindent
-set noautoindent
-"}}}
-
-"æœç´¢é€‰é¡¹{{{ 
-"ç¦ç”¨å¢é‡æœç´¢
-set incsearch
-"set noincsearch
-"æœç´¢æ—¶å¿½ç•¥å¤§å°å†™
-set ignorecase
-"set noignorecase
-"é«˜äº®æ˜¾ç¤ºæœç´¢ç»“æœ
-set hlsearch
-"}}}
-
-"è™šç©ºé—´æ“ä½œ{{{
-"å…è®¸æ‰€æœ‰æ¨¡å¼ä¸‹çš„è™šç©ºé—´ç¼–è¾‘ ï¼ˆè™šç©ºé—´:ä¸åŒ…å«ä»»ä½•æ–‡æœ¬çš„ç©ºé—´ã€‚å¦‚æ¢è¡Œç¬¦ä¹‹åï¼‰
-"set virtualedit=all
-"ç¦æ­¢åœ¨è™šç©ºé—´ç¼–è¾‘
-"set virtualedit=
-"æ¢è¡Œç¬¦åä¸€æ ¼ä½œä¸ºè™šç©ºé—´
-set virtualedit=onemore,block
-"}}}
-
-"è®¾å®šæŠ˜å æ–¹å¼{{{
-"set foldmethod=manual
-set foldmethod=marker
-"}}}
-
-"æŒ‰é”®é€‰é¡¹{{{
-"ä½¿ç”¨ Space ç¿»é¡µ
-noremap <Space> <PageDown>
-"j k åœ¨å±å¹•è¡Œé—´ä¸Šä¸‹ç§»åŠ¨ï¼›gj gk åœ¨ç‰©ç†è¡Œé—´ä¸Šä¸‹ç§»åŠ¨ 
+"j k ÔÚÆÁÄ»ĞĞ¼äÉÏÏÂÒÆ¶¯£»gj gk ÔÚÎïÀíĞĞ¼äÉÏÏÂÒÆ¶¯
 noremap j gj
 noremap k gk
 noremap gj j
 noremap gk k
-"}}}
+"Ê¹ÓÃ Space ·­Ò³
+noremap <Space> <PageDown>
+ 
+"ÔÊĞíËùÓĞÄ£Ê½ÏÂµÄĞé¿Õ¼ä±à¼­ £¨Ğé¿Õ¼ä:²»°üº¬ÈÎºÎÎÄ±¾µÄ¿Õ¼ä¡£Èç»»ĞĞ·ûÖ®ºó£©
+"set virtualedit=all
+"½ûÖ¹ÔÚĞé¿Õ¼ä±à¼­
+"set virtualedit=
+"»»ĞĞ·ûºóÒ»¸ñ×÷ÎªĞé¿Õ¼ä
+set virtualedit=onemore,block
+ 
+"Éè¶¨ÖÆ±í·û¿í¶È
+set tabstop=4
+"Éè¶¨ Tab Ëõ½øµÄ¿Õ¸ñÊı
+set shiftwidth=4
+"½«Ëõ½ø×ª»»Îª¿Õ¸ñ
+set expandtab
+"Éè¶¨×Ô¶¯Ëõ½ø(ĞÂĞĞÓëÇ°Ò»ĞĞËõ½øÏàÍ¬)
+"set autoindent
+set noautoindent
+"²åÈëÄ£Ê½ÏÂ£¬¡°¡û¡±ÈçºÎÉ¾³ı¹â±êÇ°µÄ×Ö·û£ºĞĞÊ×¿Õ°×¡¢»»ĞĞ·û¡¢²åÈëµãÖ®Ç°µÄ×Ö·û
+set backspace=indent,eol,start
+"Õ³ÌùÄ£Ê½
+"set paste "set nopaste
+ 
+"ÃüÁîĞĞÀúÊ·¼ÍÂ¼
+set history=500
+ 
+"½ûÓÃÔöÁ¿ËÑË÷
+set incsearch
+"set noincsearch
+"ËÑË÷Ê±ºöÂÔ´óĞ¡Ğ´
+set ignorecase
+"set noignorecase
+"¸ßÁÁÏÔÊ¾ËÑË÷½á¹û
+set hlsearch
+ 
+"Éè¶¨ÕÛµş·½Ê½
+"set foldmethod=manual
+ 
+"ÒÔÏÂ×Ö·û½«±»ÊÓÎªµ¥´ÊµÄÒ»²¿·Ö (ASCII)£º
+set iskeyword+=33-47,58-64,91-96,123-128
 
-"è®°å¿†æœ€åç¼–è¾‘çŠ¶æ€{{{
+"¼ÇÒä×îºó±à¼­×´Ì¬
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 set viminfo='1000,f1,<500
-"}}}
 
-"Windowså…¨å±{{{
+chdir $VIM/..
+
 if has('gui_running') && has("win32")
     map <F11> :call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
 
-chdir $VIM/..
-"}}}
-
-"vimimè®¾ç½®{{{
-":let g:vimim_tab_as_onekey=1 	                    "Tabé”®ä¸ºç‚¹çŸ³æˆé‡‘
-:let g:vimim_one_row_menu=1 	                    "ç¼ºçœï¼šèœå•æ¨ªæ’
-":let g:vimim_custom_color=1 	                    "ç¼ºçœï¼šVimIMé¢œè‰²
-":let g:vimim_custom_color=0 	                    "å…³é—­èœå•é¢œè‰²é€‰é¡¹
-":let g:vimim_chinese_input_mode='static' 	        "ä¸­æ–‡é™æ€è¾“å…¥æ¨¡å¼
-":let g:vimim_toggle_list='english,wubi,pinyin' 	"è®¾å®šå¾ªç¯å…ˆåæ¬¡åº
-":let g:vimim_plugin_folder=0 	                    "ç¼ºçœæ˜¯Vim plugin
-":let g:vimim_chinese_punctuation=1 	            "ç¼ºçœï¼šå…¨è§’æ ‡ç‚¹
-""""mapping é€‰é¡¹
-":let g:vimim_ctrl_space_to_toggle=1 	            "ä½¿ç”¨ ctrl+space å¼€å…³è¾“å…¥æ³•
-":let g:vimim_ctrl_space_to_toggle=2 	            "ä½¿ç”¨ ctrl+space åˆ‡æ¢è¾“å…¥æ³•
-":let g:vimim_ctrl_space_to_toggle=3 	            "ä½¿ç”¨ ctrl+space ç‚¹çŸ³æˆé‡‘
-:let g:vimim_ctrl_h_to_toggle=1 	                "ä½¿ç”¨ ctrl+h å¼€å…³è¾“å…¥æ³•
-":let g:vimim_ctrl_h_to_toggle=2 	                "ä½¿ç”¨ ctrl+h åˆ‡æ¢è¾“å…¥æ³•
-":let g:vimim_ctrl_h_to_toggle=3 	                "ä½¿ç”¨ ctrl+h ç‚¹çŸ³æˆé‡‘
-""""åŒæ‹¼é€‰é¡¹
-":let g:vimim_shuangpin=0 	                        " ç¼ºçœæ— åŒæ‹¼
-":let g:vimim_shuangpin='abc' 	                    " åŒæ‹¼ï¼šæ™ºèƒ½ABC
-":let g:vimim_shuangpin='ms' 	                    " åŒæ‹¼ï¼šå¾®è½¯
-:let g:vimim_shuangpin='nature' 	                " åŒæ‹¼ï¼šè‡ªç„¶ç 
-":let g:vimim_shuangpin='plusplus' 	                " åŒæ‹¼ï¼šæ‹¼éŸ³åŠ åŠ 
-":let g:vimim_shuangpin='purple' 	                " åŒæ‹¼ï¼šç´«å…‰
-":let g:vimim_shuangpin='flypy' 	                " åŒæ‹¼ï¼šå°é¹¤
-""""äº‘è¾“å…¥é€‰é¡¹
-":let g:vimim_cloud='baidu' 	                    " ç¼ºçœï¼šç™¾åº¦äº‘è¾“å…¥
-":let g:vimim_cloud='google' 	                    " è°·æ­Œäº‘è¾“å…¥
-":let g:vimim_cloud='sogou' 	                    " æœç‹—äº‘è¾“å…¥
-":let g:vimim_cloud='qq' 	                        " QQäº‘è¾“å…¥
-":let g:vimim_cloud='sogou.dynamic' 	            " æœç‹—çº¯äº‘è¾“å…¥ï¼ŒåŠ¨æ€
-":let g:vimim_cloud='sogou.static' 	                " æœç‹—çº¯äº‘è¾“å…¥ï¼Œé™æ€
-":let g:vimim_cloud='qq.fanti' 	                    " QQäº‘è¾“å…¥ï¼Œå¼€å¯ç¹ä½“
-":let g:vimim_cloud='qq.mixture' 	                " QQäº‘è¾“å…¥ï¼Œå¼€å¯æ··åˆæ¨¡å¼
-":let g:vimim_cloud='qq.fuzzy' 	                    " QQäº‘è¾“å…¥ï¼Œå¼€å¯æ¨¡ç³ŠéŸ³
-":let g:vimim_cloud='qq.wubi' 	                    " QQäº‘è¾“å…¥ï¼Œäº”ç¬”
-":let g:vimim_cloud='qq.wubi.dynamic' 	            " QQçº¯äº‘è¾“å…¥ï¼Œäº”ç¬”ï¼ŒåŠ¨æ€
-":let g:vimim_cloud='qq.shuangpin.abc' 	            " QQäº‘è¾“å…¥ï¼ŒåŒæ‹¼æ™ºèƒ½ABC
-":let g:vimim_cloud='qq.shuangpin.ms' 	            " QQäº‘è¾“å…¥ï¼ŒåŒæ‹¼å¾®è½¯æ‹¼éŸ³2003
-":let g:vimim_cloud='qq.shuangpin.plusplus' 	    " QQäº‘è¾“å…¥ï¼ŒåŒæ‹¼æ‹¼éŸ³åŠ åŠ 
-":let g:vimim_cloud='qq.shuangpin.purple' 	        " QQäº‘è¾“å…¥ï¼ŒåŒæ‹¼ç´«å…‰æ‹¼éŸ³
-":let g:vimim_cloud='qq.shuangpin.flypy' 	        " QQäº‘è¾“å…¥ï¼ŒåŒæ‹¼å°é¹¤åŒæ‹¼
-":let g:vimim_cloud='qq.shuangpin.nature' 	        " QQäº‘è¾“å…¥ï¼ŒåŒæ‹¼è‡ªç„¶ç 
-:let g:vimim_cloud=-1 	                            " å½»åº•å…³é—­äº‘è¾“å…¥
-""""è‡ªå·±çš„äº‘æ ·æœ¬URL
-:let g:vimim_mycloud = 0                            " ç¼ºçœå…³é—­
-":let g:vimim_mycloud = "dll:/data/libvimim.so:192.168.0.1"
-":let g:vimim_mycloud = "dll:/home/im/plugin/libmyplugin.so:arg:func"
-":let g:vimim_mycloud = "dll:".$HOME."/plugin/libvimim.so"
-":let g:vimim_mycloud = "dll:".$HOME."/plugin/cygvimim.dll"
-":let g:vimim_mycloud = "app:".$VIM."/src/mycloud/mycloud"
-":let g:vimim_mycloud = "app:python d:/mycloud/mycloud.py"
-":let g:vimim_mycloud = "http://pim-cloud.appspot.com/ms/"
-":let g:vimim_mycloud = "http://pim-cloud.appspot.com/abc/"
-":let g:vimim_mycloud = "http://pim-cloud.appspot.com/qp/"
-"}}}
-
-""python block{{{
+""python block
 "python << EOF
 "import vim
 "def SetBreakpoint():
@@ -237,7 +158,3 @@ chdir $VIM/..
 "    vim.command( "!start python -m pdb %s" % strFile)
 "vim.command( 'map <s-f12> :py RunDebugger()<cr>')
 "EOF
-"}}}
-
-"" END OF FILE """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim:filetype=vim foldmethod=marker autoindent expandtab shiftwidth=4
