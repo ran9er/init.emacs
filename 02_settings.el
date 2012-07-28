@@ -59,15 +59,6 @@
 (modify-syntax-entry ?] "w")
 
 ;; * auto-mode-alist
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
-(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
-(autoload 'lua-mode "lua-mode" "" t nil)
-
-(add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
-(autoload 'markdown-mode "markdown-mode.el"
-   "Major mode for editing Markdown files" t)
-;; (setq auto-mode-alist
-;;       (remove '("\\.js\\'" . javascript-generic-mode) auto-mode-alist))
 (add-to-list 'auto-mode-alist '("_loaddefs\\'" . emacs-lisp-mode))
 
 ;; * 让 Emacs 可以直接打开和显示图片。
