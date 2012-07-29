@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <list.el>
 ;; Create:       <2011-12-27 21:24:57 ran9er>
-;; Time-stamp:   <2012-01-20 20:47:58 ran9er>
+;; Time-stamp:   <2012-07-29 22:29:43 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -36,24 +36,34 @@
     `',new-list))
 
 ;;;###autoload
-(defun zip-lists (a b)
+(defun zip-lists (f a &optional b)
   "(zip-lists '(1 3 5) '(2 4 6)) => ((1 . 2) (3 . 4) (5 . 6))"
+  (and (listp f)
+       (setq b a
+             a f
+             f 'cons))
   (if (and a b)
       (cons
-       (cons (car a)(car b))
-       (zip-lists (cdr a)(cdr b)))))
+       (funcall f (car a)(car b))
+       (zip-lists f (cdr a)(cdr b)))))
 
 ;;;###autoload
 (defun merge-lists (&rest lists)
   "(merge-lists '(1 2) '(3 4) '(5 6)) => ((1 3 5) (2 4 6))"
-  (let* ((l (length (car (last lists))))
-         (m (1- (length lists)))
-         (new-lists (zip-lists (car (last lists))(make-list l nil)))
-         (lists (butlast lists)))
-    (while (> m 0)
-      (setq new-lists (zip-lists (car (last lists)) new-lists)
+  (let (f l m new-lists n)
+    (if (listp (car lists))
+        (setq f 'cons)
+      (setq f (car lists)
+            lists (cdr lists)))
+    (setq l (length (car (last lists)))
+          m (1- (length lists))
+          new-lists (zip-lists f (nth (1- m) lists)(nth m lists))
+          lists (butlast lists 2)
+          n (1- m))
+    (while (> n 0)
+      (setq new-lists (zip-lists f (car (last lists)) new-lists)
             lists (butlast lists)
-            m (1- m)))
+            n (1- n)))
     new-lists))
 
 ;; ;;;###autoload
@@ -73,5 +83,5 @@
 
 ;;;###autoload
 (defun add-to-list-p (LIST-VAR &optional BASE &rest REST)
-"See also `add-to-list-x'"
+  "See also `add-to-list-x'"
   (mapc (lambda(ELEMENT) (add-to-list LIST-VAR (expand-file-name ELEMENT BASE))) REST))
