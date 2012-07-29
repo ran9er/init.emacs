@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <list.el>
 ;; Create:       <2011-12-27 21:24:57 ran9er>
-;; Time-stamp:   <2012-07-29 22:29:43 ran9er>
+;; Time-stamp:   <2012-07-29 23:37:34 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -50,20 +50,21 @@
 ;;;###autoload
 (defun merge-lists (&rest lists)
   "(merge-lists '(1 2) '(3 4) '(5 6)) => ((1 3 5) (2 4 6))"
-  (let (f l m new-lists n)
+  (let (f l m new-lists i)
     (if (listp (car lists))
         (setq f 'cons)
       (setq f (car lists)
             lists (cdr lists)))
+    (if (memq f '(cons list))
+        (setq i nil)
+      (setq i 0))
     (setq l (length (car (last lists)))
           m (1- (length lists))
-          new-lists (zip-lists f (nth (1- m) lists)(nth m lists))
-          lists (butlast lists 2)
-          n (1- m))
-    (while (> n 0)
+          new-lists (zip-lists f (nth m lists)(make-list l i))
+          lists (butlast lists))
+    (while lists
       (setq new-lists (zip-lists f (car (last lists)) new-lists)
-            lists (butlast lists)
-            n (1- n)))
+            lists (butlast lists)))
     new-lists))
 
 ;; ;;;###autoload
