@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-21 22:57:46 ran9er>
+;; Time-stamp:   <2012-07-30 23:55:24 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -108,13 +108,12 @@ s1 ",\n" s2 "};"
         (save-excursion
           (forward-line)
           ;; (setq p1 (point))
-          (setq p1 (line-beginning-position))
-          (skip-chars-forward " ")
-          (setq p2 (point))
+          (setq p1 (line-beginning-position)
+                p2 (+ p1 (current-indentation)))
           (kill-indent-hint p1 p2)
           (font-lock-fontify-block))
       (setq p1 (line-beginning-position) ;; (point)
-            p2 (+ p1 (save-excursion (skip-chars-forward " "))))
+            p2 (+ p1 (current-indentation)))
       (kill-indent-hint p1 p2))))
 
 (defun what-overlays ()

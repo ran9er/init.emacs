@@ -291,7 +291,7 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (add-to-list-p merge-lists zip-lists mkal to-alist-l)
-;;;;;;  "+list" "+list.el" (20501 18647))
+;;;;;;  "+list" "+list.el" (20501 22718))
 ;;; Generated autoloads from +list.el
 
 (autoload 'to-alist-l "+list" "\
