@@ -78,13 +78,13 @@ Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.
 ;;;***
 
 ;;;### (autoloads (rename-file-specify-extension) "+dired" "+dired.el"
-;;;;;;  (20223 24178))
+;;;;;;  (20502 45876))
 ;;; Generated autoloads from +dired.el
 
 (autoload 'rename-file-specify-extension "+dired" "\
 
 
-\(fn)" t nil)
+\(fn &optional SUF)" t nil)
 
 ;;;***
 

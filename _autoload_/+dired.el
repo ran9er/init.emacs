@@ -1,10 +1,10 @@
 ;; -*- encoding: utf-8-unix; -*-
 
 ;;;###autoload
-(defun rename-file-specify-extension ()
+(defun rename-file-specify-extension (&optional suf)
   (interactive)
   (let* (buffer-read-only
-         (suffix "bak")
+         (suffix (or suf "bak"))
          (from-file (dired-get-filename))
          (new-file 
           (if (string-equal suffix (file-name-extension from-file))
