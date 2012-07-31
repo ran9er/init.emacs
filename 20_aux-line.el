@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-30 23:55:24 ran9er>
+;; Time-stamp:   <2012-07-31 22:54:46 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -45,8 +45,9 @@
       (setq indent-hint-overlay-pool (cdr indent-hint-overlay-pool)))
     o))
 (defun indent-hint-delete-overlay (o)
-  (delete-overlay o)
-  (setq indent-hint-overlay-pool (cons o indent-hint-overlay-pool)))
+  (let ((ov o))
+    (delete-overlay ov)
+    (setq indent-hint-overlay-pool (cons ov indent-hint-overlay-pool))))
 
 (defun indent-hint-gc ()
   (if (< indent-hint-gc-counter indent-hint-gc-timer)
