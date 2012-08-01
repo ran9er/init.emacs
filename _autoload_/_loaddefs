@@ -109,9 +109,8 @@ Not documented
 
 ;;;***
 
-;;;### (autoloads (outside-kill outside parallel-edit smart-backward-kill
-;;;;;;  resize-horizontal-space swap-point) "+edit" "+edit.el" (20276
-;;;;;;  44409))
+;;;### (autoloads (smart-backward-kill resize-horizontal-space swap-point)
+;;;;;;  "+edit" "+edit.el" (20505 14834))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
@@ -129,17 +128,29 @@ Not documented
 
 \(fn)" t nil)
 
-(autoload 'parallel-edit "+edit" "\
+;;;***
+
+;;;### (autoloads (parallel-edit) "+edit-ad" "+edit-ad.el" (20505
+;;;;;;  13737))
+;;; Generated autoloads from +edit-ad.el
+
+(autoload 'parallel-edit "+edit-ad" "\
 
 
 \(fn POSITION-LIST &optional PRT)" t nil)
 
-(autoload 'outside "+edit" "\
+;;;***
+
+;;;### (autoloads (outside-kill outside) "+edit-lisp" "+edit-lisp.el"
+;;;;;;  (20505 14091))
+;;; Generated autoloads from +edit-lisp.el
+
+(autoload 'outside "+edit-lisp" "\
 up list N level, append PRE ahead and SUF behind, backward M char
 
 \(fn O B S &optional N)" t nil)
 
-(autoload 'outside-kill "+edit" "\
+(autoload 'outside-kill "+edit-lisp" "\
 up list N level, append PRE ahead and SUF behind, backward M char
 
 \(fn &optional N)" t nil)
