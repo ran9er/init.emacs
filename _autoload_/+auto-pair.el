@@ -15,3 +15,13 @@
                                      ))
         (setq skeleton-pair t)
         (define-key-s 1  '("(" "{" "\"" "[") 'skeleton-pair-insert-maybe))
+
+(defadvice skeleton-pair-insert-maybe (around xxx activate)
+  (let ((skeleton-pair-alist skeleton-pair-alist)
+        (c-before
+         (lambda(x)(save-excursion
+                 (skip-chars-backward " \t")
+                 (eq (char-before (point)) x)))))
+    (if (and (eq last-command-event 123)(funcall c-before 61))
+        (setq skeleton-pair-alist '((?\{ _ "}"))))
+    ad-do-it))

@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <04_advice.el>
 ;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-02-16 00:22:37 ran9er>
+;; Time-stamp:   <2012-08-01 23:02:41 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defadvice isearch-yank-word-or-char (around aiywoc activate)
@@ -104,12 +104,8 @@
     (save-excursion (insert "\n")))
   (insert string))
 
-(defadvice skeleton-pair-insert-maybe (around xxx activate)
-  (let ((skeleton-pair-alist skeleton-pair-alist)
-        (c-before
-         (lambda(x)(save-excursion
-                 (skip-chars-backward " \t")
-                 (eq (char-before (point)) x)))))
-    (if (and (eq last-command-event 123)(funcall c-before 61))
-        (setq skeleton-pair-alist '((?\{ _ "}"))))
+(defadvice move-beginning-of-line (around nai-dhs activate compile)
+  "When remap newline to newline-and-indent, use this"
+  (if (eq last-command 'newline-and-indent)
+      (delete-horizontal-space)
     ad-do-it))

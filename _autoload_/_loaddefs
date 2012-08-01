@@ -13,8 +13,8 @@
 
 ;;;***
 
-;;;### (autoloads (my-auto-pair) "+auto-pair" "+auto-pair.el" (20242
-;;;;;;  39187))
+;;;### (autoloads (my-auto-pair) "+auto-pair" "+auto-pair.el" (20505
+;;;;;;  16792))
 ;;; Generated autoloads from +auto-pair.el
 
 (autoload 'my-auto-pair "+auto-pair" "\
@@ -423,7 +423,7 @@ Run an inferior Ruby process" t)
 ;;;***
 
 ;;;### (autoloads (skeleton-pair-alist-update) "+skeleton-pair" "+skeleton-pair.el"
-;;;;;;  (20296 64979))
+;;;;;;  (20505 16351))
 ;;; Generated autoloads from +skeleton-pair.el
 
 (autoload 'skeleton-pair-alist-update "+skeleton-pair" "\

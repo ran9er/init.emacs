@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-07-31 22:54:46 ran9er>
+;; Time-stamp:   <2012-08-01 14:08:48 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -148,7 +148,7 @@ s1 ",\n" s2 "};"
 
 (setq draw-indent-hint-func
       (if (display-images-p)
-          (lambda(o img)
+          (lambda(o img color)
             (overlay-put o 'display
                          `(display (image
                                     :type xpm
@@ -158,7 +158,7 @@ s1 ",\n" s2 "};"
                                     :mask (heuristic t))
                                    rear-nonsticky (display)
                                    fontified t)))
-        (lambda(o color)
+        (lambda(o img color)
           (overlay-put o 'display
                        "|"))))
 
@@ -168,7 +168,7 @@ s1 ",\n" s2 "};"
         (ov (indent-hint-make-overlay beg end)))
     (overlay-put ov indent-hint-key id)
     ;; (overlay-put ov evaporate t)
-    (funcall draw-indent-hint-func ov img)
+    (funcall draw-indent-hint-func ov img color)
     ov))
 
 ;; (if (display-images-p)

@@ -18,7 +18,7 @@
                (eq last-command-event (cadr (car x)))
                (eval (caar x)))
               (setq skeleton-pair-alist (list (cdar x)))
-              nil)))
+            nil)))
       (setq x (cdr x)))
     ad-do-it))
 ;; (defadvice skeleton-pair-insert-maybe (around xxx activate)
