@@ -45,6 +45,12 @@
     ;;                 (goto-char p)))
 ))
 
+(bind-keys
+ ()
+ "C-m"  'eshell
+ "C-i"  'undo-tree-visualize
+ "C-["  'magit-status)
+
 ;;F10 显示/隐藏菜单栏 ;; M-x menu-bar-open
 ;;(global-set-key (kbd "F10") 'menu-bar-mode)
 

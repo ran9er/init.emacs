@@ -1,25 +1,26 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-08-01 14:08:48 ran9er>
+;; Time-stamp:   <2012-08-04 22:30:28 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
       indent-hint-key 'indent-hint-id
       indent-hint-bg 'indent-hint-bg
       indent-hint-gc-timer 5
-      indent-hint-overlay-pool-minimum 10
       ;; ;
       indent-hint-counter 0
       indent-hint-gc-counter 0
       indent-hint-overlay-pool nil
       indent-hint-list nil
       indent-hint-lazy nil)
+
 (defun indent-hint-genid ()
-  (progn
-    (setq indent-hint-counter (1+ indent-hint-counter))
+  (let ((i 'indent-hint-counter))
     (intern
-     (concat "*" indent-hint-prefix (number-to-string indent-hint-counter) "*"))))
+     (concat "*" indent-hint-prefix
+             (number-to-string
+              (set i (1+ (eval i)))) "*"))))
 (defun indent-hint-init(&optional l)
   (mapc
    (lambda(x) (or (local-variable-p x)
@@ -35,19 +36,17 @@
   (font-lock-fontify-buffer))
 
 (defun indent-hint-make-overlay (b e)
-  (let (o)
-    (if ;; (null indent-hint-overlay-pool)
-        (> indent-hint-overlay-pool-minimum
-           (length indent-hint-overlay-pool))
-        (setq o (make-overlay b e))
-      (setq o (car indent-hint-overlay-pool))
-      (move-overlay o b e)
-      (setq indent-hint-overlay-pool (cdr indent-hint-overlay-pool)))
-    o))
+  (let* ((p 'indent-hint-overlay-pool)
+         (q (eval p))
+         (ov (or (car (prog1 q (set p (cdr q))))
+                 (make-overlay b e))))
+    (move-overlay ov b e)
+    ov))
 (defun indent-hint-delete-overlay (o)
-  (let ((ov o))
+  (let ((ov o)
+        (p 'indent-hint-overlay-pool))
     (delete-overlay ov)
-    (setq indent-hint-overlay-pool (cons ov indent-hint-overlay-pool))))
+    (set p (cons ov (eval p)))))
 
 (defun indent-hint-gc ()
   (if (< indent-hint-gc-counter indent-hint-gc-timer)
@@ -99,8 +98,7 @@ s1 ",\n" s2 "};"
                     (eval i))
                    (setq indent-hint-list
                          (delq i indent-hint-list))
-                   (unintern i)
-                   ))))
+                   (unintern i)))))
      (overlays-in m n))))
 (defun erase-indent-hint (overlay after? beg end &optional length)
   (let ((inhibit-modification-hooks t)
