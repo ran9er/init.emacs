@@ -34,6 +34,17 @@
 
 ;;;***
 
+;;;### (autoloads (bind-keys) "+bind-keys" "+bind-keys.el" (20509
+;;;;;;  22378))
+;;; Generated autoloads from +bind-keys.el
+
+(autoload 'bind-keys "+bind-keys" "\
+bind some key like \"C-m\" \"C-i\" \"C-[\"
+
+\(fn MAP &rest KD)" nil nil)
+
+;;;***
+
 ;;;### (autoloads (my-clean-buffer substring-buffer-name) "+buffer"
 ;;;;;;  "+buffer.el" (20219 6040))
 ;;; Generated autoloads from +buffer.el

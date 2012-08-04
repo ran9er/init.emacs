@@ -96,21 +96,6 @@ See also `define-key-s'."
 See also `define-key-s'."
   (define-key-s keymap key-defs))
 
-;; * bind-keys
-(defun bind-keys (map &rest kd)
-  "bind some key like \"C-m\" \"C-i\" \"C-[\""
-  (let* ((k (lambda (l)
-              (if l (cons
-                     (list (nth 0 l) `[,(random)] (nth 1 l))
-                     (funcall k (nthcdr 2 l))))))
-         (l (funcall k kd))
-         (m (or map (current-global-map))))
-    (mapc
-      (lambda(x)
-        (define-key input-decode-map (eval `(kbd ,(nth 0 x)))(nth 1 x))
-        (define-key m (nth 1 x) (nth 2 x)))
-      l)))
-
 ;; * adjust-color
 (defun adjust-color (color percentage)
   (let ((p (* 65535 (/ percentage 100.0))))
