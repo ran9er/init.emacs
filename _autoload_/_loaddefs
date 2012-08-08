@@ -34,11 +34,16 @@
 
 ;;;***
 
-;;;### (autoloads (bind-keys) "+bind-keys" "+bind-keys.el" (20509
-;;;;;;  22378))
+;;;### (autoloads (def-keys-low bind-keys) "+bind-keys" "+bind-keys.el"
+;;;;;;  (20510 37453))
 ;;; Generated autoloads from +bind-keys.el
 
 (autoload 'bind-keys "+bind-keys" "\
+bind some key like \"C-m\" \"C-i\" \"C-[\"
+
+\(fn MAP &rest KD)" nil nil)
+
+(autoload 'def-keys-low "+bind-keys" "\
 bind some key like \"C-m\" \"C-i\" \"C-[\"
 
 \(fn MAP &rest KD)" nil nil)
