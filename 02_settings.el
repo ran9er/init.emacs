@@ -80,7 +80,7 @@
             (eldoc-mode)
             (lisp-block-comment)
             (hl-line-mode)
-            (indent-vline-lisp)
+            ;; (indent-vline-lisp)
             (def-key-s ,(concat-symbol mode '-map)
               "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
               "C-8"       'outside-kill

@@ -39,6 +39,9 @@
 ;; (if (eq system-type 'gnu/linux)
 ;;     (setq multi-term-program "/bin/bash"))
 
+;; *========== mpg123
+;; (autoload 'mpg123 "mpg123" "A Front-end to mpg123/ogg123" t)
+
 ;; *========== docbook
 ;; (require 'docbook-xml-mode)
 ;; (add-hook 'docbook-xml-mode-hook
