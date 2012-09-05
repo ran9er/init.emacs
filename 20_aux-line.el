@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-09-05 22:54:08 ran9er>
+;; Time-stamp:   <2012-09-05 23:53:34 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -84,8 +84,9 @@ s1 ",\n" s2 "};"
 
 (defvar indent-hint-line-height (or (car (window-line-height)) 20))
 (defvar indent-hint-img (make-indent-hint-xpm 9 indent-hint-line-height "#4D4D4D"))
-(defvar indent-hint-img-lst (make-indent-hint-xpm 9 indent-hint-line-height "#6a5acd"))
-(defvar indent-hint-img-blk (make-indent-hint-xpm 9 indent-hint-line-height "khaki"))
+(defvar indent-hint-img-lgc (make-indent-hint-xpm 9 indent-hint-line-height "#5d478b"))
+(defvar indent-hint-img-mtd (make-indent-hint-xpm 9 indent-hint-line-height "khaki"))
+(defvar indent-hint-img-dat (make-indent-hint-xpm 9 indent-hint-line-height "#008b45"))
 
 (defun kill-indent-hint (m &optional n)
   (let ((n (or n (1+ m))))
@@ -265,9 +266,10 @@ s1 ",\n" s2 "};"
   (indent-hint-mode
    nil
    '(("^[ \t]*\\((\\)")
-     ("\\((lambda\\|(setq\\|(defvar\\)" indent-hint-img-lst)
-     ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)" indent-hint-img-blk)
-     ("[,`#']+\\((\\)" indent-hint-img-lst))))
+     ("\\((lambda\\|(defun\\|(defmacro\\)" indent-hint-img-mtd)
+     ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(save-excursion\\)" indent-hint-img-lgc)
+     ("\\((setq\\|(defvar\\)" indent-hint-img-dat)
+     ("[,`#']+\\((\\)" indent-hint-img-dat))))
 
 
 (defun indent-hint-fixed(&optional img)
