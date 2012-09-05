@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-08-04 22:30:28 ran9er>
+;; Time-stamp:   <2012-09-05 22:54:08 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -245,11 +245,6 @@ s1 ",\n" s2 "};"
      nil `((,x
             (0 (draw-indent-hint-line ,column ,img ,color)))))))
 
-
-;; (defun indent-vline-lisp (&optional regexp)
-;;   (interactive)
-;;   (indent-hint (or regexp "^[ \t]*[,`#'(]")))
-
 (defun indent-hint-current-column ()
   (save-excursion
     (goto-char (match-beginning 1))
@@ -264,18 +259,31 @@ s1 ",\n" s2 "};"
     (dolist (x lst)
       (indent-hint (car x) c (cadr x)))))
 
-;; ???
+;; example
 (defun indent-hint-lisp ()
   (interactive)
   (indent-hint-mode
    nil
    '(("^[ \t]*\\((\\)")
-     ("\\((lambda\\|(setq\\|(defvar\\)" 'indent-hint-img-lst)
-     ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)" 'indent-hint-img-blk)
-     ("[,`#']+\\((\\)" 'indent-hint-img-lst))))
+     ("\\((lambda\\|(setq\\|(defvar\\)" indent-hint-img-lst)
+     ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(defun\\|(save-excursion\\)" indent-hint-img-blk)
+     ("[,`#']+\\((\\)" indent-hint-img-lst))))
 
 
-;; example
+(defun indent-hint-fixed(&optional img)
+  (interactive)
+  (indent-hint-mode
+   nil
+   `(( "^[ \t]*\\([^ \t]\\)"
+       ,img))))
+
+(defun indent-hint-test (&optional regexp)
+  (interactive)
+  (indent-hint (or regexp "\\(def\\|class\\|if\\)")
+               '(indent-hint-current-column))
+  (indent-hint-init))
+
+;; old
 (defun indent-vline-lisp ()
   (interactive)
   (indent-hint-init)
@@ -291,22 +299,6 @@ s1 ",\n" s2 "};"
       (indent-hint blk c 'indent-hint-img-blk)
       (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
       (indent-hint "^[ \t]*\\((\\)" c))))
-
-(defun indent-hint-fixed(&optional img)
-  (interactive)
-  (indent-hint "^[ \t]*\\([^ \t]\\)"
-               '(indent-hint-current-column)
-               img)
-  (indent-hint-init))
-
-(defun indent-vline-test (&optional regexp)
-  (interactive)
-  (indent-hint (or regexp "\\(def\\|class\\|if\\)")
-               '(save-excursion
-                  (goto-char (match-beginning 1))
-                  (current-column)))
-  (indent-hint-init))
-
 
 (when
 nil
