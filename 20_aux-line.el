@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-09-05 23:53:34 ran9er>
+;; Time-stamp:   <2012-09-09 11:58:01 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -278,6 +278,16 @@ s1 ",\n" s2 "};"
    nil
    `(( "^[ \t]*\\([^ \t]\\)"
        ,img))))
+
+(defun indent-hint-js ()
+  (interactive)
+  (indent-hint-mode
+   nil
+   '(("^[ \t]*\\([^ \t}(]\\)")
+     ("\\(function\\|var\\)" indent-hint-img-mtd)
+     ("\\(if\\|for\\|else\\|switch\\)" indent-hint-img-lgc)
+     ("^[ \t]*\\((\\)" indent-hint-img-dat)
+     )))
 
 (defun indent-hint-test (&optional regexp)
   (interactive)
