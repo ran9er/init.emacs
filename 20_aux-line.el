@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <20_indent-vline.el>
 ;; Create:       <2012-01-18 00:53:10 ran9er>
-;; Time-stamp:   <2012-09-09 11:58:01 ran9er>
+;; Time-stamp:   <2012-09-09 13:50:08 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (setq indent-hint-prefix "il-"
@@ -13,6 +13,7 @@
       indent-hint-gc-counter 0
       indent-hint-overlay-pool nil
       indent-hint-list nil
+      indent-hint-with-white-line nil
       indent-hint-lazy nil)
 
 (defun indent-hint-genid ()
@@ -28,8 +29,9 @@
    '(indent-hint-counter
      indent-hint-list
      indent-hint-lazy
+     indent-hint-with-white-line
      indent-hint-gc-counter))
-  (if l (setq indent-hint-lazy t))
+  (if l (setq indent-hint-with-white-line t))
   (indent-hint-bgo-init)
   (add-hook 'post-command-hook 'indent-hint-bgo-mv t t)
   (add-hook 'post-gc-hook 'indent-hint-gc t t)
@@ -196,6 +198,15 @@ s1 ",\n" s2 "};"
                    nil)))
       (setq l (cdr l)))
     r))
+(defun indent-hint-white-line (&optional n)
+  (save-excursion
+    (let* ((i (current-indentation))
+           (y (eq i (progn
+                      (goto-char (line-end-position))
+                      (current-column)))))
+      (if (and y (> n i))
+          (insert (make-string (- n i) 32)))
+      y)))
 (defun draw-indent-hint-line (&optional column img color)
   (interactive "P")
   (save-excursion
@@ -207,17 +218,20 @@ s1 ",\n" s2 "};"
       (while (< i (if (<= (point-max)(line-end-position))
                       0
                     (forward-line)
-                    (beginning-of-line)
-                    (skip-chars-forward " ")
-                    (current-column)))
+                    ;; (beginning-of-line)(skip-chars-forward " ")(current-column)
+                    (if indent-hint-with-white-line
+                        (indent-hint-white-line (1+ i)))
+                    (current-indentation)))
         (move-to-column i)
         (let* ((p1 (point))(p2 (1+ p1)))
-          (if indent-hint-lazy
-              (if (indent-hint-overlay-exist p1 indent-hint-key) nil
-                (set line (cons (draw-indent-hint p1 p2 line img color) (eval line))))
-            (kill-indent-hint p1)
-            (set line (cons (draw-indent-hint p1 p2 line img color) (eval line)))))))))
-
+          ;; (if indent-hint-lazy
+          ;;     (if (indent-hint-overlay-exist p1 indent-hint-key) nil
+          ;;       (set line (cons (draw-indent-hint p1 p2 line img color) (eval line))))
+          ;;   (kill-indent-hint p1)
+          ;;   (set line (cons (draw-indent-hint p1 p2 line img color) (eval line))))
+          (kill-indent-hint p1)
+          (set line (cons (draw-indent-hint p1 p2 line img color) (eval line)))
+          )))))
 
 (defun indent-hint-bgo-init (&optional r)
   (let* ((b (line-beginning-position))
@@ -251,7 +265,7 @@ s1 ",\n" s2 "};"
     (goto-char (match-beginning 1))
     (current-column)))
 
-(defun indent-hint-mode (&optional l lst)
+(defun indent-hint-mode (&optional lst l)
   (interactive)
   (let* ((c '(indent-hint-current-column))
          (lst (or lst '(("^[ \t]*\\([^ \t]\\)"))))
@@ -264,7 +278,6 @@ s1 ",\n" s2 "};"
 (defun indent-hint-lisp ()
   (interactive)
   (indent-hint-mode
-   nil
    '(("^[ \t]*\\((\\)")
      ("\\((lambda\\|(defun\\|(defmacro\\)" indent-hint-img-mtd)
      ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(save-excursion\\)" indent-hint-img-lgc)
@@ -275,19 +288,17 @@ s1 ",\n" s2 "};"
 (defun indent-hint-fixed(&optional img)
   (interactive)
   (indent-hint-mode
-   nil
    `(( "^[ \t]*\\([^ \t]\\)"
        ,img))))
 
 (defun indent-hint-js ()
   (interactive)
   (indent-hint-mode
-   nil
    '(("^[ \t]*\\([^ \t}(]\\)")
      ("\\(function\\|var\\)" indent-hint-img-mtd)
      ("\\(if\\|for\\|else\\|switch\\)" indent-hint-img-lgc)
-     ("^[ \t]*\\((\\)" indent-hint-img-dat)
-     )))
+     ("^[ \t]*\\((\\)" indent-hint-img-dat))
+   #@2:t))
 
 (defun indent-hint-test (&optional regexp)
   (interactive)

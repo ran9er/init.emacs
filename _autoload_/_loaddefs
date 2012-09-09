@@ -287,31 +287,31 @@ set mode-line & header-line
 
 ;;;### (autoloads (insert-doc-head insert-delimit-line insert-time
 ;;;;;;  insert-autoload-magic-comment comment-block) "+insert" "+insert.el"
-;;;;;;  (20293 534))
+;;;;;;  (20556 11551))
 ;;; Generated autoloads from +insert.el
 
 (autoload 'comment-block "+insert" "\
-Not documented
+
 
 \(fn &optional BEG END)" t nil)
 
 (autoload 'insert-autoload-magic-comment "+insert" "\
-Not documented
+
 
 \(fn)" t nil)
 
 (autoload 'insert-time "+insert" "\
-Not documented
+
 
 \(fn &optional TIME FORMAT)" t nil)
 
 (autoload 'insert-delimit-line "+insert" "\
-Not documented
+
 
 \(fn &optional N TIME)" t nil)
 
 (autoload 'insert-doc-head "+insert" "\
-Not documented
+
 
 \(fn)" t nil)
 
