@@ -61,7 +61,7 @@
                 "Charis SIL"))
 
   ;; (set-my-font zhfont 12)
-  (set-my-font enfont 10 zhfont)
+  (set-my-font enfont 9 zhfont)
   ;; (set-my-font zhfont 12 enfont :en)
   ;; (set-my-font enfont 14 zhfont 12)
 
