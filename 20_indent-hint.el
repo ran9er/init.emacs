@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <indent-hint.el>
 ;; Create:       <2012-09-10 12:04:07 ran9er>
-;; Time-stamp:   <2012-09-11 22:09:16 ran9er>
+;; Time-stamp:   <2012-09-11 23:08:12 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; *init
@@ -17,7 +17,7 @@
    (lambda(x) (or (local-variable-p x)
               (make-local-variable x)))
    '(ih-table ih-overlay-pool))
-  (setq ih-table (make-hash-table :size 100))
+  (setq ih-table (make-hash-table :size 100 :test 'equal))
   (ih-bgo-init)
   (add-hook 'post-command-hook 'ih-bgo-mv t t)
   (font-lock-fontify-buffer))
@@ -73,7 +73,7 @@ s1 ",\n" s2 "};"
   (let ((ov o)
         (p 'ih-overlay-pool))
     (overlay-put ov ih-key nil)
-    (overlay-put ov ih-head nil)
+    ;; (overlay-put ov ih-head nil)
     (delete-overlay ov)
     (set p (cons ov (eval p)))))
 (defun ih-overlay-exist (k p q)
@@ -86,11 +86,11 @@ s1 ",\n" s2 "};"
       (setq l (cdr l)))
     (if r o)))
 (defun ih-make-head()
+  (make-temp-name ""))
+(defun ih-make-head1()
   (let* ((p (point))
          (q (1+ p))
          o)
-    ;; debug
-    (message (number-to-string p))
     (or
      (setq o (ih-overlay-exist ih-head p q))
      (progn
@@ -142,12 +142,11 @@ s1 ",\n" s2 "};"
   (save-excursion
     (let* ((i (or column (current-indentation)))
            (h (ih-make-head))
-           m lst)
-      (forward-line)
-      (move-to-column i)
-      (setq m (ih-count-line))
-      (if (<= m 0)
-          (ih-delete-overlay h)
+           (m (progn (forward-line)
+                     (move-to-column i)
+                     (ih-count-line)))
+           lst)
+      (if (<= m 0) nil
         (kill-indent-hint (point))
         (dotimes (n m)
           (setq lst (cons (draw-indent-hint (point) h img color) lst))
@@ -192,7 +191,8 @@ s1 ",\n" s2 "};"
                     (lambda(y)(ih-delete-overlay y))
                     (ih-get i))
                    (ih-rem i)
-                   (ih-delete-overlay i)))))
+                   ;; (ih-delete-overlay i)
+                   ))))
      (overlays-in m n))))
 (defun erase-indent-hint (overlay after? beg end &optional length)
   (let ((inhibit-modification-hooks t)
@@ -320,7 +320,7 @@ s1 ",\n" s2 "};"
                     nil
                     `(,x
                       ,(overlay-get x ih-key)
-                      ,(if (overlay-get x ih-head) 'head)
+                      ;; ,(if (overlay-get x ih-head) 'head)
                       ,(if (overlay-get x ih-bg) 'bg)
                       ,(if (eq (overlay-get x 'face) 'hl-line) 'hl-line))))
             (overlays-in pt (1+ pt)))))))
