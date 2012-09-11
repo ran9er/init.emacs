@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <indent-hint.el>
 ;; Create:       <2012-09-10 12:04:07 ran9er>
-;; Time-stamp:   <2012-09-10 23:31:51 ran9er>
+;; Time-stamp:   <2012-09-11 22:09:16 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; *init
@@ -9,14 +9,15 @@
       ih-head 'ihh
       ih-bg 'indent-hint-bg
       ih-overlay-pool nil
-      ih-table (make-hash-table)
+      ih-table nil
       )
 
 (defun ih-init(&optional l)
   (mapc
    (lambda(x) (or (local-variable-p x)
               (make-local-variable x)))
-   '(ih-table))
+   '(ih-table ih-overlay-pool))
+  (setq ih-table (make-hash-table :size 100))
   (ih-bgo-init)
   (add-hook 'post-command-hook 'ih-bgo-mv t t)
   (font-lock-fontify-buffer))
@@ -53,16 +54,26 @@ s1 ",\n" s2 "};"
 
 
 ;; *overlay
+;; (defun ih-make-overlay (b e)
+;;   (let* ((p 'ih-overlay-pool)
+;;          (q (eval p))
+;;          (ov (or (car (prog1 q (set p (cdr q))))
+;;                  (make-overlay b e))))
+;;     (move-overlay ov b e)
+;;     ov))
 (defun ih-make-overlay (b e)
   (let* ((p 'ih-overlay-pool)
          (q (eval p))
-         (ov (or (car (prog1 q (set p (cdr q))))
-                 (make-overlay b e))))
-    (move-overlay ov b e)
+         (ov (car (prog1 q (set p (cdr q))))))
+    (if ov
+        (move-overlay ov b e)
+      (setq ov (make-overlay b e)))
     ov))
 (defun ih-delete-overlay (o)
   (let ((ov o)
         (p 'ih-overlay-pool))
+    (overlay-put ov ih-key nil)
+    (overlay-put ov ih-head nil)
     (delete-overlay ov)
     (set p (cons ov (eval p)))))
 (defun ih-overlay-exist (k p q)
@@ -77,12 +88,12 @@ s1 ",\n" s2 "};"
 (defun ih-make-head()
   (let* ((p (point))
          (q (1+ p))
-         ;; (l (overlays-in p q))
          o)
-    (or 
-     ;; (setq o (find-if (lambda(x)(overlay-get x ih-head)) l))
+    ;; debug
+    (message (number-to-string p))
+    (or
      (setq o (ih-overlay-exist ih-head p q))
-     (progn 
+     (progn
        (setq o (ih-make-overlay p p))
        (overlay-put o ih-head t)))
     o))
@@ -97,24 +108,25 @@ s1 ",\n" s2 "};"
 (defun ih-rem (k)
   (let ((h ih-table))
     (remhash k h)
-    (ih-table-length)                   ;debug
+    ;; debug
+    ;; (ih-table-length)
     ))
 
 ;; *count-line
 (defun ih-white-line()
-  (save-excursion 
+  (save-excursion
     (move-to-column (current-indentation))
     (eolp)))
 (defun ih-count-line(&optional pos)
   (let* ((p (or pos (point)))
-         (c (save-excursion 
+         (c (save-excursion
               (goto-char p)
               (current-column)))
          (x 0)(r 0))
-    (save-excursion 
-      (while 
+    (save-excursion
+      (while
           (and (> (point-max)(line-end-position))
-               (or 
+               (or
                 (and (ih-white-line)
                      (setq x (1+ x)))
                 (and (< c (current-indentation))
@@ -128,19 +140,31 @@ s1 ",\n" s2 "};"
 (defun draw-indent-hint-line (&optional column img color)
   (interactive "P")
   (save-excursion
-    (let* ((h (ih-make-head))
-           (i (or column (current-indentation)))
-           lst)
+    (let* ((i (or column (current-indentation)))
+           (h (ih-make-head))
+           m lst)
       (forward-line)
       (move-to-column i)
-      (kill-indent-hint (point))
-      (dotimes (n (ih-count-line))
-        (setq lst (cons (draw-indent-hint (point) h img color) lst))
-        (forward-line)
-        (move-to-column i))
-      (ih-put h lst))))
+      (setq m (ih-count-line))
+      (if (<= m 0)
+          (ih-delete-overlay h)
+        (kill-indent-hint (point))
+        (dotimes (n m)
+          (setq lst (cons (draw-indent-hint (point) h img color) lst))
+          (forward-line)
+          (move-to-column i))
+        (ih-put h lst)))))
 
 ;; *draw-indent-hint
+(defun draw-indent-hint (pos id &optional img color)
+  (let* ((img (or img ih-img))
+         (color (or color "#4D4D4D"))
+         (ov (ih-make-overlay pos (1+ pos))))
+    (overlay-put ov ih-key id)
+    ;; (overlay-put ov evaporate t)
+    (funcall draw-indent-hint-func ov img color)
+    ov))
+
 (setq draw-indent-hint-func
       (if (display-images-p)
           (lambda(o img color)
@@ -156,15 +180,6 @@ s1 ",\n" s2 "};"
         (lambda(o img color)
           (overlay-put o 'display
                        "|"))))
-
-(defun draw-indent-hint (pos id &optional img color)
-  (let* ((img (or img ih-img))
-         (color (or color "#4D4D4D"))
-         (ov (ih-make-overlay pos (1+ pos))))
-    (overlay-put ov ih-key id)
-    ;; (overlay-put ov evaporate t)
-    (funcall draw-indent-hint-func ov img color)
-    ov))
 
 ;; *erase-indent-hint
 (defun kill-indent-hint (m &optional n)
@@ -240,10 +255,10 @@ s1 ",\n" s2 "};"
   (interactive)
   (indent-hint-mode
    '(("^[ \t]*\\((\\)")
-     ("\\((lambda\\|(defun\\|(defmacro\\)" indent-hint-img-mtd)
-     ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(map.*\\|(save-excursion\\)" indent-hint-img-lgc)
-     ("\\((setq\\|(defvar\\)" indent-hint-img-dat)
-     ("[,`#']+\\((\\)" indent-hint-img-dat))))
+     ("\\((lambda\\|(defun\\|(defmacro\\)" ih-img-mtd)
+     ("\\((let\\*?\\|(if\\|(while\\|(cond\\|(and\\|(or\\|(map.*\\|(save-excursion\\)" ih-img-lgc)
+     ("\\((setq\\|(defvar\\)" ih-img-dat)
+     ("[,`#']+\\((\\)" ih-img-dat))))
 
 
 (defun indent-hint-fixed(&optional img)
@@ -256,9 +271,9 @@ s1 ",\n" s2 "};"
   (interactive)
   (indent-hint-mode
    '(("^[ \t]*\\([^ \t}(]\\)")
-     ("\\(function\\|var\\)" indent-hint-img-mtd)
-     ("\\(if\\|for\\|else\\|switch\\)" indent-hint-img-lgc)
-     ("^[ \t]*\\((\\)" indent-hint-img-dat))
+     ("\\(function\\|var\\)" ih-img-mtd)
+     ("\\(if\\|for\\|else\\|switch\\)" ih-img-lgc)
+     ("^[ \t]*\\((\\)" ih-img-dat))
    #@2:t))
 
 (defun indent-hint-test (&optional regexp)
@@ -276,18 +291,18 @@ s1 ",\n" s2 "};"
     (if indent-hint-lazy
         (progn
           (indent-hint "^[ \t]*\\((\\)" c)
-          (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
-          (indent-hint blk c 'indent-hint-img-blk)
-          (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst))
-      (indent-hint "[,`#']+\\((\\)" c 'indent-hint-img-lst)
-      (indent-hint blk c 'indent-hint-img-blk)
-      (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'indent-hint-img-lst)
+          (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'ih-img-lst)
+          (indent-hint blk c 'ih-img-blk)
+          (indent-hint "[,`#']+\\((\\)" c 'ih-img-lst))
+      (indent-hint "[,`#']+\\((\\)" c 'ih-img-lst)
+      (indent-hint blk c 'ih-img-blk)
+      (indent-hint "\\((lambda\\|(setq\\|(defvar\\)" c 'ih-img-lst)
       (indent-hint "^[ \t]*\\((\\)" c))))
 
 ;; *debug
 (defun ih-table-length()
   (interactive)
-  (let ((l 0) 
+  (let ((l 0)
         (h ih-table))
     (maphash
      (lambda(x y)
@@ -305,9 +320,10 @@ s1 ",\n" s2 "};"
                     nil
                     `(,x
                       ,(overlay-get x ih-key)
+                      ,(if (overlay-get x ih-head) 'head)
                       ,(if (overlay-get x ih-bg) 'bg)
                       ,(if (eq (overlay-get x 'face) 'hl-line) 'hl-line))))
-            (overlays-at pt))))))
+            (overlays-in pt (1+ pt)))))))
 
 (when
 nil
