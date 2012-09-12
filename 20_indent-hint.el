@@ -1,12 +1,11 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <indent-hint.el>
 ;; Create:       <2012-09-10 12:04:07 ran9er>
-;; Time-stamp:   <2012-09-11 23:08:12 ran9er>
+;; Time-stamp:   <2012-09-12 12:22:01 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; *init
 (setq ih-key 'ih
-      ih-head 'ihh
       ih-bg 'indent-hint-bg
       ih-overlay-pool nil
       ih-table nil
@@ -72,8 +71,7 @@ s1 ",\n" s2 "};"
 (defun ih-delete-overlay (o)
   (let ((ov o)
         (p 'ih-overlay-pool))
-    (overlay-put ov ih-key nil)
-    ;; (overlay-put ov ih-head nil)
+    ;; (overlay-put ov ih-key nil)
     (delete-overlay ov)
     (set p (cons ov (eval p)))))
 (defun ih-overlay-exist (k p q)
@@ -87,16 +85,16 @@ s1 ",\n" s2 "};"
     (if r o)))
 (defun ih-make-head()
   (make-temp-name ""))
-(defun ih-make-head1()
-  (let* ((p (point))
-         (q (1+ p))
-         o)
-    (or
-     (setq o (ih-overlay-exist ih-head p q))
-     (progn
-       (setq o (ih-make-overlay p p))
-       (overlay-put o ih-head t)))
-    o))
+;; (defun ih-make-head1()
+;;   (let* ((p (point))
+;;          (q (1+ p))
+;;          o)
+;;     (or
+;;      (setq o (ih-overlay-exist ih-head p q))
+;;      (progn
+;;        (setq o (ih-make-overlay p p))
+;;        (overlay-put o ih-head t)))
+;;     o))
 
 ;; *table
 (defun ih-put (k v)
@@ -113,29 +111,40 @@ s1 ",\n" s2 "};"
     ))
 
 ;; *count-line
-(defun ih-white-line()
-  (save-excursion
-    (move-to-column (current-indentation))
-    (eolp)))
 (defun ih-count-line(&optional pos)
   (let* ((p (or pos (point)))
          (c (save-excursion
               (goto-char p)
               (current-column)))
-         (x 0)(r 0))
+         (x 0)(r 0) w)
     (save-excursion
       (while
           (and (> (point-max)(line-end-position))
                (or
                 (and (ih-white-line)
-                     (setq x (1+ x)))
+                     (setq x (1+ x)
+                           w (cons r w)))
                 (and (< c (current-indentation))
                      (setq x 0))))
         (forward-line)
         (move-to-column c)
         (setq r (1+ r))))
-    (- r x)))
+    (cons (- r x) (nthcdr x w))))
 
+;; *white line
+(defun ih-white-line()
+  (save-excursion
+    (move-to-column (current-indentation))
+    (eolp)))
+
+(defun ihwl-create()
+  )
+(defun ihwl-destroy()
+  )
+(defun ihwl-insert(col k &optional img color)
+  )
+(defun ihwl-delete()
+  )
 ;; *draw-indent-hint-line
 (defun draw-indent-hint-line (&optional column img color)
   (interactive "P")
@@ -145,14 +154,17 @@ s1 ",\n" s2 "};"
            (m (progn (forward-line)
                      (move-to-column i)
                      (ih-count-line)))
-           lst)
-      (if (<= m 0) nil
-        (kill-indent-hint (point))
-        (dotimes (n m)
-          (setq lst (cons (draw-indent-hint (point) h img color) lst))
-          (forward-line)
-          (move-to-column i))
-        (ih-put h lst)))))
+           (x (car m))(y (cdr m)) lst)
+      (if (> x 0)
+          (progn
+            (kill-indent-hint (point))
+            (dotimes (n x)
+              (if (memq n y)
+                  (ihwl-insert i h img color)
+                (setq lst (cons (draw-indent-hint (point) h img color) lst)))
+              (forward-line)
+              (move-to-column i))
+            (ih-put h (cons y lst)))))))
 
 ;; *draw-indent-hint
 (defun draw-indent-hint (pos id &optional img color)
@@ -189,9 +201,11 @@ s1 ",\n" s2 "};"
                  (progn
                    (mapc
                     (lambda(y)(ih-delete-overlay y))
-                    (ih-get i))
+                    (cdr (ih-get i)))
+                   ;; (mapc
+                   ;;  (lambda(x)(ihwl-delete x))
+                   ;;  (car (ih-get i)))
                    (ih-rem i)
-                   ;; (ih-delete-overlay i)
                    ))))
      (overlays-in m n))))
 (defun erase-indent-hint (overlay after? beg end &optional length)
