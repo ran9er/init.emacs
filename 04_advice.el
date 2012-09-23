@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <04_advice.el>
 ;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-08-01 23:02:41 ran9er>
+;; Time-stamp:   <2012-09-18 19:55:44 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 (defadvice isearch-yank-word-or-char (around aiywoc activate)
@@ -96,6 +96,10 @@
              (setq beg (point)))))))
 ;; (ad-activate 'kill-region)
 ;; (ad-deactivate 'kill-region)
+
+(defadvice kill-rectangle (after copy-to-kill-ring activate)
+  (interactive "r\nP")
+  (kill-new (mapconcat 'identity killed-rectangle "\n")))
 
 (defun yank-line (string)
   "Insert STRING above the current line."
