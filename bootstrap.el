@@ -1,7 +1,7 @@
 (defvar *init-status*
   ;;;;;;;;;;
   (catch 'quit
-    ;;;;;;;;
+    ;; to avoid loading this file recursively
     (if (boundp '*init-time*)
         (throw 'quit "have been loaded"))
     ;;;;;;;;
@@ -11,7 +11,9 @@
           init-name-match base-dir init-dir init-files)
       ;;;;;;
       (cond
+       ; when specify *init-dir* outside, then load this file
        ((boundp '*init-dir*) nil)
+       ; when this file's name is .emacs or site-start.el
        ((member load-file-name
                 (mapcar 'expand-file-name
                         (list "~/.emacs"
@@ -28,9 +30,13 @@
                   `("~"))))
          init-dir
          ((lambda (x) (file-name-as-directory
+                   ; *init-dir* is the newest directory with "init" and "emacs" in name
+                   ; or directory where this file is located
                    (or (car (sort x 'file-newer-than-file-p)) this-dir)))
           (mapcar (lambda (x) (if (file-directory-p x) x tmp))
                   (directory-files base-dir t init-name-match t)))))
+       ; when this file's name is not .emacs or site-start.el, for example as bootstrap.el
+       ; load this file in emacs init file : (load "...../bootstrap.el")
        (t (setq init-dir this-dir)))
       ;; export *init-dir*
       (defvar *init-dir* init-dir)
