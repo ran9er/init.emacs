@@ -5,7 +5,7 @@
       )
 
 ;; * Desktop Reload
-(load "desktop")
+(require 'desktop)
 (add-to-list 'desktop-modes-not-to-save 'dired-mode)
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
@@ -20,6 +20,14 @@
 
 (setq desktop-clear-preserve-buffers
       (cons "\\*eshell\\*.*" desktop-clear-preserve-buffers))
+
+;; desktop-frame
+;(require 'desktop-frame)
+;(add-hook 'desktop-save-hook
+;           (lambda ()
+;             (desktop-frame-save desktop-dirname)))
+;(desktop-read)
+;(load (expand-file-name "emacs.frx" desktop-dirname))
 
 (defalias 'clear 'desktop-clear)
 ;(autoload 'my-clean-buffer "my-clean-buffer" t)

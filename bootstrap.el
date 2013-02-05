@@ -28,10 +28,11 @@
                   `("~"))))
          init-dir
          ((lambda (x) (file-name-as-directory
-                   (or (car (sort x 'file-newer-than-file-p)) tmp)))
+                   (or (car (sort x 'file-newer-than-file-p)) this-dir)))
           (mapcar (lambda (x) (if (file-directory-p x) x tmp))
                   (directory-files base-dir t init-name-match t)))))
-       (t (setq init-dir this-dir)))
+       ;; (t (setq init-dir this-dir))
+       )
       ;; export *init-dir*
       (defvar *init-dir* init-dir)
       ;;;;;;
