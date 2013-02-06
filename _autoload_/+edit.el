@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2013-02-07 01:58:09 ran9er>
+;; Time-stamp:   <2013-02-07 02:29:17 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -27,7 +27,7 @@
                          "C-M-c to jump back."))))
   (let ((x (point-marker)))
     (if (and n (> (recursion-depth) 0))
-        (dotimes (i n)(throw (- (recursion-depth) n) t))
+        (throw (- (recursion-depth) n) t)
       (catch 'exit (and (catch (recursion-depth) (recursive-edit)) (throw 'exit t)))
       (goto-char x))))
 
