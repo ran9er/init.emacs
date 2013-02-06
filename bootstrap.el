@@ -11,9 +11,9 @@
           init-name-match base-dir init-dir init-files)
       ;;;;;;
       (cond
-       ; when specify *init-dir* outside, then load this file
+       ; when specify *init-dir* outside, and load this file
        ((boundp '*init-dir*) nil)
-       ; when this file's name is .emacs or site-start.el
+       ; when this file's name is /home/.../.emacs or /.../emacs/.../site-start.el
        ((member load-file-name
                 (mapcar 'expand-file-name
                         (list "~/.emacs"
@@ -30,8 +30,8 @@
                   `("~"))))
          init-dir
          ((lambda (x) (file-name-as-directory
-                   ; *init-dir* is the newest directory with "init" and "emacs" in name
-                   ; or directory where this file is located
+                   ; *init-dir* is the newest directory with "init" and "emacs" in it's name
+                   ; or directory where this file is located (*init-dir* is $HOME or site-lisp)
                    (or (car (sort x 'file-newer-than-file-p)) this-dir)))
           (mapcar (lambda (x) (if (file-directory-p x) x tmp))
                   (directory-files base-dir t init-name-match t)))))
@@ -54,6 +54,15 @@
          (if (file-directory-p p)
              (add-to-list 'load-path p)))
        (directory-files *init-dir* t "^_.*_\\'"))
+      ;;;;;; check-directory
+      (make-local-variable 'check-directory)
+      (setq check-directory
+            (lambda (x &optional dir-p base)
+              (let ((f (expand-file-name x (or base *init-dir*))))
+                (unless (file-exists-p f)
+                  (if dir-p
+                      (make-directory f)
+                    (find-file f))))))
       ;; autoload
       ((lambda (dir &optional loaddefs basedir)
          (let* ((path
@@ -62,18 +71,22 @@
                  (or loaddefs "_loaddefs"))
                 (generated-autoload-file
                  (expand-file-name ldfs path)))
+           (funcall check-directory path t basedir)
+           (funcall check-directory ldfs nil basedir)
            (update-directory-autoloads path)
            (kill-buffer ldfs)
            (load generated-autoload-file)))
        "_autoload_/")
       ;; *feature-file-hash*
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
-      (mapc
-       (lambda (x)
-         (puthash
-          (intern (file-name-sans-extension (file-name-nondirectory x))) x
-          *feature-file-hash*))
-       (directory-files (expand-file-name "_extensions/" *init-dir*) t "\\.el\\'"))
+      (let ((dir "_extensions/"))
+        (funcall check-directory dir t *init-dir*)
+        (mapc
+         (lambda (x)
+           (puthash
+            (intern (file-name-sans-extension (file-name-nondirectory x))) x
+            *feature-file-hash*))
+         (directory-files (expand-file-name dir *init-dir*) t "\\.el\\'")))
       ;;;;;;
       (maphash
        (lambda (x y)

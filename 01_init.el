@@ -21,6 +21,7 @@
            exec-directory)))
 
 ;; * working dir
+(funcall check-directory "sandbox/")
 (setq work-dir (expand-file-name "sandbox/" *init-dir*))
 (cd work-dir)
 
