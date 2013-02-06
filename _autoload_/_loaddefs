@@ -125,14 +125,19 @@ Not documented
 
 ;;;***
 
-;;;### (autoloads (smart-backward-kill resize-horizontal-space swap-point)
-;;;;;;  "+edit" "+edit.el" (20505 14834))
+;;;### (autoloads (smart-backward-kill resize-horizontal-space beacon
+;;;;;;  swap-point) "+edit" "+edit.el" (20754 38256))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\
 
 
 \(fn)" t nil)
+
+(autoload 'beacon "+edit" "\
+
+
+\(fn &optional N)" t nil)
 
 (autoload 'resize-horizontal-space "+edit" "\
 
