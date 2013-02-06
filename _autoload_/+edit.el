@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2013-02-07 02:29:17 ran9er>
+;; Time-stamp:   <2013-02-07 03:12:21 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -18,24 +18,22 @@
         (setq *last-point* (cons p (cdr *last-point*)))))))
 
 ;;;###autoload
-(defun beacon (&optional n)
+(defun beacon ()
   (interactive)
-  (if (null (eq last-command 'beacon-jump))
-      (let ((k (where-is-internal 'beacon-jump)))
-        (message (concat (mapconcat 'key-description k " , ")
-                         (if k " or ")
-                         "C-M-c to jump back."))))
+  (let ((k (where-is-internal 'beacon-jump)))
+    (message (concat (mapconcat 'key-description k " , ")
+                     (if k " or ")
+                     "C-M-c to jump back.")))
   (let ((x (point-marker)))
-    (if (and n (> (recursion-depth) 0))
-        (throw (- (recursion-depth) n) t)
-      (catch 'exit (and (catch (recursion-depth) (recursive-edit)) (throw 'exit t)))
-      (goto-char x))))
+    (catch 'exit (and (catch (recursion-depth) (recursive-edit)) (throw 'exit t)))
+    (goto-char x)))
 
 (defun beacon-jump (&optional n)
   (interactive "p")
-  (let ((x (recursion-depth)))
-    (beacon (if (> (or n 1) x)
-                x n))))
+  (let* ((x (recursion-depth))
+         (i (if (> (or n 1) x)
+                x n)))
+    (throw (- x i) t)))
 
 ;;;###autoload
 (defun resize-horizontal-space (&optional backward-only)
