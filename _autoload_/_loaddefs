@@ -126,7 +126,7 @@ Not documented
 ;;;***
 
 ;;;### (autoloads (smart-backward-kill resize-horizontal-space beacon
-;;;;;;  swap-point) "+edit" "+edit.el" (20754 38256))
+;;;;;;  swap-point) "+edit" "+edit.el" (20754 39345))
 ;;; Generated autoloads from +edit.el
 
 (autoload 'swap-point "+edit" "\

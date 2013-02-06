@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <edit.el>
 ;; Create:       <2011-12-27 21:29:35 ran9er>
-;; Time-stamp:   <2013-02-07 01:40:00 ran9er>
+;; Time-stamp:   <2013-02-07 01:58:09 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;;;###autoload
@@ -20,10 +20,11 @@
 ;;;###autoload
 (defun beacon (&optional n)
   (interactive)
-  (let ((k (where-is-internal 'beacon-jump)))
-    (message (concat (mapconcat 'key-description k " , ")
-                     (if k " or ")
-                   "C-M-c to jump back.")))
+  (if (null (eq last-command 'beacon-jump))
+      (let ((k (where-is-internal 'beacon-jump)))
+        (message (concat (mapconcat 'key-description k " , ")
+                         (if k " or ")
+                         "C-M-c to jump back."))))
   (let ((x (point-marker)))
     (if (and n (> (recursion-depth) 0))
         (dotimes (i n)(throw (- (recursion-depth) n) t))
@@ -31,8 +32,10 @@
       (goto-char x))))
 
 (defun beacon-jump (&optional n)
-  (interactive)
-  (beacon (or n 1)))
+  (interactive "p")
+  (let ((x (recursion-depth)))
+    (beacon (if (> (or n 1) x)
+                x n))))
 
 ;;;###autoload
 (defun resize-horizontal-space (&optional backward-only)
