@@ -26,7 +26,7 @@
                      "C-M-c to jump back.")))
   (let ((x (point-marker)))
     (catch 'exit (and (catch (recursion-depth) (recursive-edit)) (throw 'exit t)))
-    (goto-char x)))
+    (switch-to-buffer (marker-buffer x))(goto-char x)))
 
 (defun beacon-jump (&optional n)
   (interactive "p")
