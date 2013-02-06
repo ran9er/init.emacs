@@ -5,10 +5,30 @@
     (if (boundp '*init-time*)
         (throw 'quit "have been loaded"))
     ;;;;;;;;
-    (let ((this-file (file-name-nondirectory load-file-name))
-          (this-dir (file-name-directory load-file-name))
-          (tmp (make-temp-name ""))
-          init-name-match base-dir init-dir init-files)
+    (let* ((this-file (file-name-nondirectory load-file-name))
+           (this-dir (file-name-directory load-file-name))
+           (tmp (make-temp-name ""))
+           init-name-match base-dir init-dir init-files
+           (_check-directory
+            (lambda (x &optional dir-p base)
+              (let ((f (expand-file-name x (or base *init-dir*))))
+                (unless (file-exists-p f)
+                  (if dir-p
+                      (make-directory f)
+                    (find-file f))))))
+           (_autoload
+            (lambda (dir &optional loaddefs basedir)
+              (let* ((path
+                      (expand-file-name dir (or basedir *init-dir*)))
+                     (ldfs
+                      (or loaddefs "_loaddefs"))
+                     (generated-autoload-file
+                      (expand-file-name ldfs path)))
+                (funcall _check-directory path t basedir)
+                (funcall _check-directory ldfs nil basedir)
+                (update-directory-autoloads path)
+                (kill-buffer ldfs)
+                (load generated-autoload-file)))))
       ;;;;;;
       (cond
        ; when specify *init-dir* outside, and load this file
@@ -54,33 +74,12 @@
          (if (file-directory-p p)
              (add-to-list 'load-path p)))
        (directory-files *init-dir* t "^_.*_\\'"))
-      ;;;;;; check-directory
-      (make-local-variable 'check-directory)
-      (setq check-directory
-            (lambda (x &optional dir-p base)
-              (let ((f (expand-file-name x (or base *init-dir*))))
-                (unless (file-exists-p f)
-                  (if dir-p
-                      (make-directory f)
-                    (find-file f))))))
       ;; autoload
-      ((lambda (dir &optional loaddefs basedir)
-         (let* ((path
-                 (expand-file-name dir (or basedir *init-dir*)))
-                (ldfs
-                 (or loaddefs "_loaddefs"))
-                (generated-autoload-file
-                 (expand-file-name ldfs path)))
-           (funcall check-directory path t basedir)
-           (funcall check-directory ldfs nil basedir)
-           (update-directory-autoloads path)
-           (kill-buffer ldfs)
-           (load generated-autoload-file)))
-       "_autoload_/")
+      (funcall _autoload "_autoload_/")
       ;; *feature-file-hash*
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
       (let ((dir "_extensions/"))
-        (funcall check-directory dir t *init-dir*)
+        (funcall _check-directory dir t *init-dir*)
         (mapc
          (lambda (x)
            (puthash
