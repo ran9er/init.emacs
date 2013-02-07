@@ -4,18 +4,21 @@
     ;; to avoid loading this file recursively
     (if (boundp '*init-time*)
         (throw 'quit "have been loaded"))
+    (defalias '$ 'funcall)
     ;;;;;;;;
     (let* ((this-file (file-name-nondirectory load-file-name))
            (this-dir (file-name-directory load-file-name))
            (tmp (make-temp-name ""))
-           init-name-match base-dir init-dir init-files
+           init-name-match base-dir base-files init-dir init-files
            (_check-directory
             (lambda (x &optional dir-p base)
               (let ((f (expand-file-name x (or base *init-dir*))))
                 (unless (file-exists-p f)
                   (if dir-p
-                      (make-directory f)
-                    (find-file f))))))
+                      (progn (make-directory f)
+                             (message (concat "New dir " f)))
+                    (progn (find-file f)
+                           (message (concat "New file " f))))))))
            (_autoload
             (lambda (dir &optional loaddefs basedir)
               (let* ((path
@@ -24,12 +27,31 @@
                       (or loaddefs "_loaddefs"))
                      (generated-autoload-file
                       (expand-file-name ldfs path)))
-                (funcall _check-directory path t basedir)
-                (funcall _check-directory ldfs nil basedir)
+                ($ _check-directory path t basedir)
+                ($ _check-directory ldfs nil basedir)
                 (update-directory-autoloads path)
                 (kill-buffer ldfs)
-                (load generated-autoload-file)))))
+                (load generated-autoload-file))))
+           (_load
+            (lambda (lst &optional var)
+              (let* ((var (or var '*init-time*))
+                     tm)
+                (mapc
+                 (lambda (f)
+                   (setq tm (float-time))
+                   (load f)
+                   (set var
+                        (cons
+                         (cons
+                          (file-name-nondirectory f)
+                          (- (float-time) tm))
+                         (eval var))))
+                 lst))))
+           (_message
+            (lambda(x)
+              (message (concat "=======>" x)))))
       ;;;;;;
+      ($ _message "Find *init-dir*")
       (cond
        ; when specify *init-dir* outside, and load this file
        ((boundp '*init-dir*) nil)
@@ -58,28 +80,41 @@
        ; when this file's name is not .emacs or site-start.el, for example as bootstrap.el
        ; load this file in emacs init file : (load "...../bootstrap.el")
        (t (setq init-dir this-dir)))
-      ;; export *init-dir*
+      ;; export
+      (defvar *init-time* nil)
       (defvar *init-dir* init-dir)
       ;;;;;;
       (if (null (file-exists-p *init-dir*))
           (throw 'quit "can't found *init-dir*"))
       ;;;;;;
-      (setq init-files
+      (setq base-files
             (mapcar
              (lambda (f) (file-name-sans-extension f))
-             (directory-files *init-dir* t "\\.el\\'")))
+             (directory-files *init-dir* t "^__.*\\.el\\'"))
+            init-files
+            (mapcar
+             (lambda (f) (file-name-sans-extension f))
+             (directory-files *init-dir* t "^[^_].*\\.el\\'")))
+
+      ;; load base-files
+      ($ _message "Load base-files")
+      ($ _load base-files)
+
       ;; add "_xxx_" to load-path
+      ($ _message "Add load-path")
       (mapc
        (lambda (p)
          (if (file-directory-p p)
              (add-to-list 'load-path p)))
        (directory-files *init-dir* t "^_.*_\\'"))
       ;; autoload
-      (funcall _autoload "_autoload_/")
+      ($ _message "Load autoloads")
+      ($ _autoload "_autoload_/")
       ;; *feature-file-hash*
+      ($ _message "Load _extensions")
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
       (let ((dir "_extensions/"))
-        (funcall _check-directory dir t *init-dir*)
+        ($ _check-directory dir t *init-dir*)
         (mapc
          (lambda (x)
            (puthash
@@ -93,6 +128,7 @@
        *feature-file-hash*)
       ;; byte-compile
       (when nil
+        ($ _message "byte-compile")
         ;; delete elc without el
         (mapc (lambda(f)(or (file-exists-p (substring f 0 -1))
                         (delete-file f)))
@@ -102,25 +138,15 @@
         (mapc (lambda(f) (byte-recompile-file f nil 0))
               (directory-files *init-dir* t "\\.el\\'")))
       ;; load *.elc || *.el in *init-dir*
-      (defvar *init-time* nil)
-      (let (tm)
-        (mapc
-         (lambda (f)
-           (setq tm (float-time))
-           (load f)
-           (setq *init-time*
-                 (cons
-                  (cons
-                   (file-name-nondirectory f)
-                   (- (float-time) tm))
-                  *init-time*)))
-         init-files))
+      ($ _message "Load init-files")
+      ($ _load init-files)
       ;;;;;;
+      ($ _message "Calc *init-time*")
       (setq *init-time*
             (cons
              (list 'init
                    (apply '+ (mapcar 'cdr *init-time*)))
-             *init-time*))
+             (reverse *init-time*)))
       ;; when init finished, echo some info
       (add-hook
        'emacs-startup-hook
