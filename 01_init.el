@@ -21,7 +21,7 @@
            exec-directory)))
 
 ;; * working dir
-(funcall _check-directory "sandbox/" t)
+(~ _check-directory "sandbox/" t)
 (setq work-dir (expand-file-name "sandbox/" *init-dir*))
 (cd work-dir)
 
@@ -29,7 +29,7 @@
 ;(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
 
 ;; * 打开文件
-(remove-hook 'find-file-hook 'vc-find-file-hook)
+;(remove-hook 'find-file-hook 'vc-find-file-hook)
 (add-hook 'find-file-hook
           '(lambda ()
              (if (file-exists-p (buffer-file-name))                 ; 已存在文件
