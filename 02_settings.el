@@ -40,7 +40,7 @@
  visible-bell          t           ;; 闪屏报警
  column-number-mode    t           ;; 显示列号
  ;; resize-mini-windows   nil         ;; 锁定行高
- enable-recursive-minibuffers nil  ;; 递归 minibuffer
+ enable-recursive-minibuffers  t    ;; 递归 minibuffer
  echo-keystrokes       0.1         ;; 按键序列显示延迟，默认 1
  ;; 当使用 M-x COMMAND 后，过 1 秒钟显示该 COMMAND 绑定的键。
  ;; suggest-key-bindings 1

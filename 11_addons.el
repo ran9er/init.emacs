@@ -27,6 +27,11 @@
 (global-set-key [(control c)(k)] 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
 
+;; *========== minibuffer-depth
+(when enable-recursive-minibuffers
+  (require 'mb-depth)
+  (minibuffer-depth-indicate-mode))
+
 ;; *========== minibuffer-complete-cycle
 (require 'minibuffer-complete-cycle)
 (setq minibuffer-complete-cycle t)
