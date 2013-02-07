@@ -9,7 +9,7 @@
     (let* ((this-file (file-name-nondirectory load-file-name))
            (this-dir (file-name-directory load-file-name))
            (tmp (make-temp-name ""))
-           init-name-match base-dir base-files init-dir init-files
+           init-name-match base-dir pre-init-files init-dir init-files
            (_check-directory
             (lambda (x &optional dir-p base)
               (let ((f (expand-file-name x (or base *init-dir*))))
@@ -87,7 +87,7 @@
       (if (null (file-exists-p *init-dir*))
           (throw 'quit "can't found *init-dir*"))
       ;;;;;;
-      (setq base-files
+      (setq pre-init-files
             (mapcar
              (lambda (f) (file-name-sans-extension f))
              (directory-files *init-dir* t "^__.*\\.el\\'"))
@@ -96,9 +96,9 @@
              (lambda (f) (file-name-sans-extension f))
              (directory-files *init-dir* t "^[^_].*\\.el\\'")))
 
-      ;; load base-files
-      ($ _message "Load base-files")
-      ($ _load base-files)
+      ;; load pre-init-files
+      ($ _message "Load pre-init-files")
+      ($ _load pre-init-files)
 
       ;; add "_xxx_" to load-path
       ($ _message "Add load-path")
