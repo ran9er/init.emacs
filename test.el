@@ -55,7 +55,7 @@
 ;; (eval-after-load (expand-file-name "sandbox/test.el" *init-dir*)
 ;;   '(acc y))
 ;; (load (expand-file-name "sandbox/test.el" *init-dir*))
-(autoload 'b (expand-file-name "sandbox/edit" *init-dir*) "\
+;; (autoload 'b (expand-file-name "sandbox/edit" *init-dir*) "\
 
 
-\(fn)" t nil)
+;; \(fn)" t nil)

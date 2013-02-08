@@ -21,8 +21,8 @@
            exec-directory)))
 
 ;; * working dir
-(~ _check-directory "sandbox/" t)
-(setq work-dir (expand-file-name "sandbox/" *init-dir*))
+(~ _check-directory wk-dir t)
+(setq work-dir (expand-file-name wk-dir *init-dir*))
 (cd work-dir)
 
 ;; * time-stamp-format
