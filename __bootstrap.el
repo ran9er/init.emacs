@@ -114,8 +114,8 @@
        (directory-files *init-dir* t "^_.*_\\'"))
       ;; autoload
       (~ _message "Load autoloads")
-      ;; (loaddefs-update (expand-file-name "_autoload" *init-dir*) '*init-dir*)
-      (~ _autoload atld-dir)
+      (loaddefs-update (expand-file-name "_autoload" *init-dir*) '*init-dir*)
+      ;; (~ _autoload atld-dir)
       ;; *feature-file-hash*
       (~ _message "Load _extensions")
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))

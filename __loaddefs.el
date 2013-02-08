@@ -30,9 +30,6 @@
 
 (defun loaddefs-file-mtime (file)
   (nth 5 (file-attributes file)))
-(defun loaddefs-newer-than-p (file time)
-  (time-less-p
-   (loaddefs-file-mtime file) time))
 
 (defun loaddefs-read (ldfs)
   (let (var)
@@ -103,24 +100,51 @@
      var (cons (current-time) (reverse var))
      var (cons file var))))
 
-(defun loaddefs-update (dir &optional base ldfs)
+(defun loaddefs-update-1 (dir &optional base ldfs lf ld var)
   (let* ((base (or base '*init-dir*))
          (ldfs (or ldfs "_loaddefs"))
-         (lf (expand-file-name ldfs dir))
-         (ld (expand-file-name dir))
-         (var (loaddefs-read lf))
+         (lf (or lf (expand-file-name ldfs dir)))
+         (ld (or ld (expand-file-name dir)))
+         (var (or var (loaddefs-read lf)))
          (ld-files (mapcar (lambda(x)(car x)) var))
          (files (directory-files ld nil "\\.el\\'"))
          (df (compare-sets-s ld-files files))
          (d0 (car df))(d1 (nth 1 df))(d2 (nth 2 df)))
     (mapc (lambda(x)(setq var (remove (assoc x var) var))) d1)
     (mapcar
-     (lambda(x)(setq var
-                 (cons
-                  ;; (loaddefs-prase x dir)
-                  var))) d0)
+     (lambda(x)
+       (let ((n (assoc x var)))
+         (if (null
+              (time-less-p
+               (loaddefs-file-mtime (expand-file-name x ld))
+               (nth 1 n)))
+             (setq
+              var (remove n var)
+              var (cons (loaddefs-prase x ld base) var)))))
+     d0)
     (mapc (lambda(x)(setq var (cons (loaddefs-prase x ld base) var))) d2)
-    (setq var (remove nil var))
-    (loaddefs-save lf var)))
+    (prog1
+        (setq var (remove nil var))
+      (loaddefs-save lf var))))
+
+(defun loaddefs-update (dir &optional base ldfs)
+  (let* ((base (or base '*init-dir*))
+         (ldfs (or ldfs "_loaddefs"))
+         (lf (expand-file-name ldfs dir))
+         (lfm (loaddefs-file-mtime lf))
+         (ld (expand-file-name dir))
+         (var (loaddefs-read lf))
+         (files (directory-files ld t "\\.el\\'")))
+    (while
+        (and
+         files
+         (null
+          (and
+           (time-less-p
+            lfm
+            (loaddefs-file-mtime (car files)))
+           (setq var (loaddefs-update-1 dir base ldfs lf ld var)))))
+      (setq files (cdr files)))
+    (loaddefs-eval var)))
 
 ;(test-times 1       (loaddefs-update (expand-file-name "_autoload" *init-dir*) '*init-dir*))
