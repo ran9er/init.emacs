@@ -36,23 +36,23 @@
     (with-current-buffer
         (let ((enable-local-variables nil))
           (find-file-noselect ldfs))
-      (goto-char (point-min))
-      (setq var
-            (condition-case err
-                (read (current-buffer))
-              (error
-               nil)))
-      (kill-buffer (current-buffer)))
-    var))
+      (prog2
+          (goto-char (point-min))
+          (setq var
+                (condition-case err
+                    (read (current-buffer))
+                  (error
+                   nil)))
+        (kill-buffer (current-buffer))))))
 
 (defun loaddefs-save (ldfs var)
-  (with-temp-file ldfs
-    (with-current-buffer
-        (let ((enable-local-variables nil))
-          (find-file-noselect ldfs))
-      (insert (pp-to-string var))
-      (message (concat "Save " ldfs))
-      (kill-buffer (current-buffer)))))
+  (with-temp-file
+      (let ((enable-local-variables nil)
+            (emacs-lisp-mode-hook nil)
+            (find-file-hook nil))
+        ldfs)
+    (insert (pp-to-string var))
+    (message (format "Save %s." ldfs))))
 
 (defun loaddefs-gen (fn file dir docstring interactive type)
   `(autoload ',fn
@@ -83,7 +83,7 @@
           (car (if (stringp (nth 3 lst))(nth 4 lst)(nth 3 lst))))
      ,(plist-get type-lst (nth 0 lst))))
 
-(defun loaddefs-prase (file dir base)
+(defun loaddefs-parse (file dir base)
   (let ((f (expand-file-name file dir))
         (type-lst '(defun nil defmacro t))
         var)
@@ -99,6 +99,7 @@
                      (loaddefs-gen x f base)
                      var)))))
       (kill-buffer (current-buffer)))
+    (message (format "Parse %s..." file))
     (setq ;; var (remove nil var)
      var (cons (current-time) (reverse var))
      var (cons file var))))
@@ -123,18 +124,19 @@
                (nth 1 n)))
              (setq
               var (remove n var)
-              var (cons (loaddefs-prase x ld base) var)))))
+              var (cons (loaddefs-parse x ld base) var)))))
      d0)
-    (mapc (lambda(x)(setq var (cons (loaddefs-prase x ld base) var))) d2)
+    (mapc (lambda(x)(setq var (cons (loaddefs-parse x ld base) var))) d2)
     (prog1
         (setq var (remove nil var))
       (loaddefs-save lf var))))
 
 (defun loaddefs-update (dir &optional base ldfs)
-  (let* ((base (or base '*init-dir*))
+  (let* ((st (float-time))
+         (base (or base '*init-dir*))
          (ldfs (or ldfs "_loaddefs"))
          (lf (expand-file-name ldfs dir))
-         (lfm (loaddefs-file-mtime lf))
+         (lfm (or (loaddefs-file-mtime lf) '(0 0 0)))
          (ld (expand-file-name dir))
          (var (loaddefs-read lf))
          (files (directory-files ld t "\\.el\\'")))
@@ -148,6 +150,7 @@
             (loaddefs-file-mtime (car files)))
            (setq var (loaddefs-update-1 dir base ldfs lf ld var)))))
       (setq files (cdr files)))
-    (loaddefs-eval var)))
+    (loaddefs-eval var)
+    (- (float-time) st)))
 
 ;(test-times 1 (loaddefs-update-1 (expand-file-name "_autoload" *init-dir*) '*init-dir*))

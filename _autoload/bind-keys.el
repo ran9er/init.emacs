@@ -1,9 +1,3 @@
-;; -*- encoding: utf-8-unix; -*-
-;; File-name:    <+bind-keys.el>
-;; Create:       <2012-08-05 01:08:35 ran9er>
-;; Time-stamp:   <2012-08-05 23:33:32 Administrator>
-;; Mail:         <2999am@gmail.com>
-
 ;;;###autoload
 (defun bind-keys (map &rest kd)
   "bind some key like \"C-m\" \"C-i\" \"C-[\""

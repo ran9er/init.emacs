@@ -20,18 +20,6 @@
                              (message (concat "New dir " f)))
                     (progn (find-file f)
                            (message (concat "New file " f))))))))
-           ;; (_autoload
-           ;;  (lambda (dir &optional loaddefs basedir)
-           ;;    (let* ((path
-           ;;            (expand-file-name dir (or basedir *init-dir*)))
-           ;;           (ldfs
-           ;;            (or loaddefs atld-df))
-           ;;           (generated-autoload-file
-           ;;            (expand-file-name ldfs path)))
-           ;;      (~ _check-directory path t basedir)
-           ;;      (update-directory-autoloads path)
-           ;;      (kill-buffer ldfs)
-           ;;      (load generated-autoload-file))))
            (_load
             (lambda (lst &optional var)
               (let* ((var (or var '*init-time*))
@@ -51,7 +39,7 @@
             (lambda(x)
               (message (concat "=======>" x)))))
       ;;;;;;
-      (setq atld-dir    "_autoload_/"
+      (setq atld-dir    "_autoload/"
             atld-df     "_loaddefs"
             ext-dir     "_extensions/"
             wk-dir      "sandbox/")
@@ -115,7 +103,8 @@
       ;; autoload
       (~ _message "Load autoloads")
       ;; (~ _autoload atld-dir)
-      (loaddefs-update (expand-file-name "_autoload" *init-dir*) '*init-dir*)
+      (~ _check-directory atld-dir t *init-dir*)
+      (loaddefs-update (expand-file-name atld-dir *init-dir*) '*init-dir*)
       ;; *feature-file-hash*
       (~ _message "Load _extensions")
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
