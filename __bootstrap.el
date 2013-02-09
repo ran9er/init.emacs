@@ -67,7 +67,7 @@
                               (or (locate-library site-run-file) tmp))))
         (setq
          init-name-match
-         "init.*emacs\\|emacs.*init"
+         "init.*el\\|init.*emacs\\|emacs.*init"
          base-dir
          (apply 'expand-file-name
                 (cond
