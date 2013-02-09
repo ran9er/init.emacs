@@ -69,6 +69,20 @@
 
 \(fn%s)" s a)))
 
+(defun loaddefs-gen (lst f base)
+  `(autoload
+     ',(nth 1 lst)
+     (expand-file-name
+      ,(file-name-sans-extension
+        (file-relative-name f (eval base)))
+      ,base)
+     ,(loaddefs-docstr
+       (if (stringp (nth 3 lst))(nth 3 lst)"Not documented.")
+       (nth 2 lst))
+     ,(eq 'interactive
+          (car (if (stringp (nth 3 lst))(nth 4 lst)(nth 3 lst))))
+     ,(plist-get type-lst (nth 0 lst))))
+
 (defun loaddefs-prase (file dir base)
   (let ((f (expand-file-name file dir))
         (type-lst '(defun nil defmacro t))
@@ -82,18 +96,7 @@
           (if (memq (car x) type-lst)
               (setq var
                     (cons
-                     (eval
-                      `(loaddefs-gen
-                        (nth 1 x)
-                        (file-name-sans-extension
-                         (file-relative-name f (eval base)))
-                        ',base
-                        (loaddefs-docstr
-                         (if (stringp (nth 3 x))(nth 3 x)"Not documented.")
-                         (nth 2 x))
-                        (eq 'interactive
-                            (car (if (stringp (nth 3 x))(nth 4 x)(nth 3 x))))
-                        (plist-get type-lst (nth 0 x))))
+                     (loaddefs-gen x f base)
                      var)))))
       (kill-buffer (current-buffer)))
     (setq ;; var (remove nil var)
@@ -147,4 +150,4 @@
       (setq files (cdr files)))
     (loaddefs-eval var)))
 
-;(test-times 1       (loaddefs-update (expand-file-name "_autoload" *init-dir*) '*init-dir*))
+;(test-times 1 (loaddefs-update-1 (expand-file-name "_autoload" *init-dir*) '*init-dir*))
