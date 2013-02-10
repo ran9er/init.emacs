@@ -104,7 +104,13 @@
       (~ _message "Load autoloads")
       ;; (~ _autoload atld-dir)
       (~ _check-directory atld-dir t *init-dir*)
-      (loaddefs-update (expand-file-name atld-dir *init-dir*) '*init-dir*)
+      (setq
+       *init-time*
+       (cons
+        (cons
+         'autoloads
+         (loaddefs-update (expand-file-name atld-dir *init-dir*) '*init-dir*))
+        *init-time*))
       ;; *feature-file-hash*
       (~ _message "Load _extensions")
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
