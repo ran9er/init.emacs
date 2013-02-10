@@ -47,6 +47,10 @@
  save-abbrevs          nil
  )
 
+;; narrow
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+
 ;; * 缩进
 (setq-default            ;; 使用空格缩进
  indent-tabs-mode    nil ;; t 使用 TAB 作格式化字符  nil 使用空格作格式化字符
@@ -54,9 +58,12 @@
  tab-width           4)
 
 ;; * 作为单词的一部分
-(modify-syntax-entry ?_ "w")
-(modify-syntax-entry ?[ "w")
-(modify-syntax-entry ?] "w")
+(mapc
+ (lambda(x)(modify-syntax-entry (car x)(cdr x)))
+ (to-alist
+  '(?_ "w" ?[ "w" ?] "w"
+    ?（ "(" ?） ")" ?， "." ?。 "." ?“ "(" ?” ")"
+   )))
 
 ;; * auto-mode-alist
 (add-to-list 'auto-mode-alist '("_loaddefs\\'" . emacs-lisp-mode))
