@@ -1,0 +1,4 @@
+("d:/apps/emacs/init.el/_extensions/"
+ (("evil-mode.el"
+   (20760 60132 997000)
+   (autoload 'evil-mode "evil-mode" nil t))))

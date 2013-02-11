@@ -28,7 +28,8 @@
     "C-x c"     my-clean-buffer                     ;;
     "C-x C"     desktop-clear                       ;;
     "C-x g"     magit-status
-    "C-x C-r"   recentf-open-files-compl            ;; 最近打开的文件
+    ;; "C-x C-r"   recentf-open-files-compl            ;; 最近打开的文件
+    "C-x C-r"   recentf-open-files                  ;; 最近打开的文件
     "C-."       undo-tree-visualize
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
     "C-x i"     expand-abbrev                       ;; ido-insert-file
