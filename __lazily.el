@@ -82,10 +82,17 @@
           (car (if (stringp (nth 3 lst))(nth 4 lst)(nth 3 lst))))
      ,(plist-get type-lst (nth 0 lst))))
 
+(defun loaddefs-gen-a (lst f)
+  `(autoload
+     ,(nth 1 lst)
+     ,(file-name-sans-extension
+       (file-name-nondirectory f))
+     ,@(nthcdr 3 lst)))
+
 (defun loaddefs-parse (file dir)
   (let ((f (expand-file-name file dir))
         (type-lst '(defun nil defmacro t))
-        var)
+        var y)
     (with-current-buffer
         (let ((enable-local-variables nil))
           (find-file-noselect f))
@@ -93,15 +100,20 @@
       (while (search-forward-regexp ";;;###autoload" nil t)
         (let ((x (read (current-buffer))))
           (setq var (cons
-                     (if (memq (car x) type-lst)
-                         (loaddefs-gen x f)
-                       x)
-                 var))))
+                     (setq
+                      y
+                      (cond
+                       ((memq (car x) type-lst)
+                        (loaddefs-gen x f))
+                       ((eq (car x) 'autoload)
+                        (loaddefs-gen-a x f))
+                       (t x)))
+                     var))))
       (kill-buffer (current-buffer)))
     (message (format "Parse %s..." f))
-    (setq ;; var (remove nil var)
-     var (cons (current-time) (reverse var))
-     var (cons file var))))
+    (if y (setq ;; var (remove nil var)
+           var (cons (current-time) (reverse var))
+           var (cons file var)))))
 
 (defun loaddefs-update (dir &optional ldfs lf ld var)
   (let* ((v (cadr var))
@@ -130,6 +142,7 @@
               var (list ld v))
       (loaddefs-save lf var))))
 
+;;;###autoload
 (defun lazily (dir &optional ldfs)
   (let* ((st (float-time))
          (ldfs (or ldfs "_loaddefs"))

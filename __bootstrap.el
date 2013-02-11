@@ -35,6 +35,15 @@
                           (- (float-time) tm))
                          (eval var))))
                  lst))))
+           (_autoload
+            (lambda (dir &optional var)
+              (let ((var (or var '*init-time*)))
+                (set var
+                     (cons
+                      (cons
+                       (format "gen autoload for %s" dir)
+                       (lazily (expand-file-name dir *init-dir*)))
+                      (eval var))))))
            (_message
             (lambda(x)
               (message (concat "=======>" x)))))
@@ -104,13 +113,7 @@
       (~ _message "Load autoloads")
       ;; (~ _autoload atld-dir)
       (~ _check-directory atld-dir t *init-dir*)
-      (setq
-       *init-time*
-       (cons
-        (cons
-         'autoloads
-         (lazily (expand-file-name atld-dir *init-dir*)))
-        *init-time*))
+      (~ _autoload atld-dir)
       ;; *feature-file-hash*
       (~ _message "Load _extensions")
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
@@ -127,6 +130,7 @@
        (lambda (x y)
          (eval-after-load x `(load ,y)))
        *feature-file-hash*)
+      (~ _autoload ext-dir)
       ;; byte-compile
       (when nil
         (~ _message "byte-compile")
