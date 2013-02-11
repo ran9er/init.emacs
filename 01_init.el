@@ -16,7 +16,6 @@
     (mapc (lambda (p)(add-exec-path p))
           (list
            (expand-file-name "../../git/bin/" exec-directory)
-           (expand-file-name "../other/sdcv/" exec-directory)
            (expand-file-name "../other/mpg123/" exec-directory)
            exec-directory)))
 

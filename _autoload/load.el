@@ -1,10 +1,9 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <+load.el>
 ;; Create:       <2012-03-10 22:13:02 ran9er>
-;; Time-stamp:   <2012-03-10 22:13:24 ran9er>
+;; Time-stamp:   <2013-02-11 10:59:53 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
-;;;###autoload
 (defvar *load-times* (make-hash-table :test 'equal :size 20))
 ;;;###autoload
 (defmacro load-once (&rest s)

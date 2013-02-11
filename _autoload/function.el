@@ -1,4 +1,3 @@
-;;;###autoload
 (defvar temp-func-list
   '((let ((cnt 0)(acc nil))
       (mapc (lambda(x) (setq acc (concat acc "\n"

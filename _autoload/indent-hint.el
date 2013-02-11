@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <indent-hint.el>
 ;; Create:       <2012-09-10 12:04:07 ran9er>
-;; Time-stamp:   <2012-09-12 12:22:01 ran9er>
+;; Time-stamp:   <2013-02-11 09:25:45 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; *init
@@ -264,7 +264,8 @@ s1 ",\n" s2 "};"
     (ih-init l)
     (dolist (x lst)
       (indent-hint (car x) c (cadr x)))))
-;; example
+
+;;;###autoload
 (defun indent-hint-lisp ()
   (interactive)
   (indent-hint-mode
@@ -274,13 +275,14 @@ s1 ",\n" s2 "};"
      ("\\((setq\\|(defvar\\)" ih-img-dat)
      ("[,`#']+\\((\\)" ih-img-dat))))
 
-
+;;;###autoload
 (defun indent-hint-fixed(&optional img)
   (interactive)
   (indent-hint-mode
    `(( "^[ \t]*\\([^ \t]\\)"
        ,img))))
 
+;;;###autoload
 (defun indent-hint-js ()
   (interactive)
   (indent-hint-mode
@@ -290,6 +292,7 @@ s1 ",\n" s2 "};"
      ("^[ \t]*\\((\\)" ih-img-dat))
    #@2:t))
 
+;;;###autoload
 (defun indent-hint-test (&optional regexp)
   (interactive)
   (indent-hint (or regexp "\\(def\\|class\\|if\\)")

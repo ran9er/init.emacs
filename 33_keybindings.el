@@ -44,6 +44,7 @@
     ;;               (let ((p (point)))
     ;;                 (find-alternate-file (buffer-file-name))
     ;;                 (goto-char p)))
+    "C-c d"     sdcv-to-buffer
 ))
 
 (def-keys-low

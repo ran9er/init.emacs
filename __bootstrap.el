@@ -109,7 +109,7 @@
        (cons
         (cons
          'autoloads
-         (loaddefs-update (expand-file-name atld-dir *init-dir*) '*init-dir*))
+         (lazily (expand-file-name atld-dir *init-dir*)))
         *init-time*))
       ;; *feature-file-hash*
       (~ _message "Load _extensions")

@@ -47,6 +47,9 @@
   (load1 (expand-file-name "my-newsticker.el" work-dir)))
 (defalias 'news 'newsticker-treeview)
 
+(defadvice emms-play-playlist (before load-before-run activate)
+  (load (expand-file-name "_autoload/emms" *init-dir*)))
+
 (defmacro acc (x)
   `(progn (defvar ,x 0)
           (setq ,x (1+ ,x))))

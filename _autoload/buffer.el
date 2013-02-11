@@ -10,7 +10,6 @@
               (make-string n ?*))
              m n))
 
-;;;###autoload
 (defvar my-clean-buffers-names
   '("\\*Completions" "\\*Compile-Log" "\\*.*[Oo]utput\\*$"
     "\\*grep" "\\*magit" "\\*Kill"
@@ -20,7 +19,6 @@
     )
   "List of regexps matching names of buffers to kill.")
 
-;;;###autoload
 (defvar my-clean-buffers-modes
   '(help-mode );Info-mode)
   "List of modes whose buffers will be killed.")

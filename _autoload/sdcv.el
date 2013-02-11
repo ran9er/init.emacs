@@ -1,8 +1,12 @@
-;; -*- encoding: utf-8-unix; -*-
-;; File-name:    <+sdcv.el>
-;; Create:       <2011-12-28 23:49:57 ran9er>
-;; Time-stamp:   <2012-01-01 02:29:27 ran9er>
-;; Mail:         <2999am@gmail.com>
+(if (eq system-type 'windows-nt)
+    (progn 
+      (add-exec-path 
+       (expand-file-name "../other/sdcv/" exec-directory))
+      (setq 
+       sdcv-cmd
+       (format 
+        "sdcv --data-dir %s" 
+        (expand-file-name "../other/sdcv/dict/" exec-directory)))))
 
 ;;;###autoload
 (defun sdcv-to-buffer ()

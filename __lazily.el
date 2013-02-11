@@ -27,10 +27,12 @@
        (mapcar
         (lambda(y)
           (eval
+           (if (eq (nth 0 y) 'autoload)
            `(autoload
               ,(nth 1 y)
-              ,(expand-file-name (nth 2 y) (eval b))
-              ,@(nthcdr 3 y))))
+              ,(expand-file-name (nth 2 y) b)
+              ,@(nthcdr 3 y))
+           y)))
         (nthcdr 2 x)))
      v)))
 
@@ -68,11 +70,11 @@
 
 \(fn%s)" s a)))
 
-(defun loaddefs-gen (lst f base)
+(defun loaddefs-gen (lst f)
   `(autoload
      ',(nth 1 lst)
      ,(file-name-sans-extension
-       (file-relative-name f (eval base)))
+       (file-name-nondirectory f))
      ,(loaddefs-docstr
        (if (stringp (nth 3 lst))(nth 3 lst)"Not documented.")
        (nth 2 lst))
@@ -80,7 +82,7 @@
           (car (if (stringp (nth 3 lst))(nth 4 lst)(nth 3 lst))))
      ,(plist-get type-lst (nth 0 lst))))
 
-(defun loaddefs-parse (file dir base)
+(defun loaddefs-parse (file dir)
   (let ((f (expand-file-name file dir))
         (type-lst '(defun nil defmacro t))
         var)
@@ -90,20 +92,19 @@
       (goto-char (point-min))
       (while (search-forward-regexp ";;;###autoload" nil t)
         (let ((x (read (current-buffer))))
-          (if (memq (car x) type-lst)
-              (setq var
-                    (cons
-                     (loaddefs-gen x f base)
-                     var)))))
+          (setq var (cons
+                     (if (memq (car x) type-lst)
+                         (loaddefs-gen x f)
+                       x)
+                 var))))
       (kill-buffer (current-buffer)))
     (message (format "Parse %s..." f))
     (setq ;; var (remove nil var)
      var (cons (current-time) (reverse var))
      var (cons file var))))
 
-(defun loaddefs-update-1 (dir &optional base ldfs lf ld var)
-  (let* ((base (or base (car var) 'user-emacs-directory))
-         (v (cadr var))
+(defun loaddefs-update (dir &optional ldfs lf ld var)
+  (let* ((v (cadr var))
          (ldfs (or ldfs "_loaddefs"))
          (lf (or lf (expand-file-name ldfs dir)))
          (ld (or ld (expand-file-name dir)))
@@ -121,15 +122,15 @@
                (nth 1 n)))
              (setq
               v (remove n v)
-              v (cons (loaddefs-parse x ld base) v)))))
+              v (cons (loaddefs-parse x ld) v)))))
      d0)
-    (mapc (lambda(x)(setq v (cons (loaddefs-parse x ld base) v))) d2)
+    (mapc (lambda(x)(setq v (cons (loaddefs-parse x ld) v))) d2)
     (prog1
         (setq v (remove nil v)
-              var (list base v))
+              var (list ld v))
       (loaddefs-save lf var))))
 
-(defun loaddefs-update (dir &optional base ldfs)
+(defun lazily (dir &optional ldfs)
   (let* ((st (float-time))
          (ldfs (or ldfs "_loaddefs"))
          (lf (expand-file-name ldfs dir))
@@ -137,6 +138,9 @@
          (ld (expand-file-name dir))
          (var (loaddefs-read lf))
          (files (directory-files ld t "\\.el\\'")))
+    (if (equal ld (car var))
+        nil
+      (setq var (loaddefs-update dir ldfs lf ld var)))
     (while
         (and
          files
@@ -145,7 +149,7 @@
            (time-less-p
             lfm
             (loaddefs-file-mtime (car files)))
-           (setq var (loaddefs-update-1 dir base ldfs lf ld var)))))
+           (setq var (loaddefs-update dir ldfs lf ld var)))))
       (setq files (cdr files)))
     (loaddefs-eval var)
     (- (float-time) st)))
