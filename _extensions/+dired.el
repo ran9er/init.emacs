@@ -1,5 +1,8 @@
 ;; -*- encoding: utf-8-unix; -*-
 
+;;;###autoload
+(autoload 'dired "dired" "" t)
+
 (add-hook
  'dired-mode-hook
  (lambda ()

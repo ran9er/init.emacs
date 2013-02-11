@@ -1,5 +1,9 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; don't need load-once, because eshell-load-hook load only once
+
+;;;###autoload
+(autoload 'eshell "eshell" "" t)
+
 ;; * bash-completion
 ;+++++++++++++++++++++++++++++++++++++++
 (when nil
@@ -219,4 +223,3 @@
     ;; not the starting directory
     (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
 
-(load-once)

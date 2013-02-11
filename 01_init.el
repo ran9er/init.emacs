@@ -5,11 +5,6 @@
 ;;              (load (gethash "+eshell" *feature-file-hash*
 ;;                             (make-temp-name ""))
 ;;                    t)))
-(eval-after-load 'eshell
-  '(load (gethash '+eshell *feature-file-hash* (make-temp-name "")) t))
-
-(eval-after-load 'dired
-  '(load (gethash '+dired *feature-file-hash* (make-temp-name "")) t))
 
 ;; * environment
 (if (eq system-type 'windows-nt)
