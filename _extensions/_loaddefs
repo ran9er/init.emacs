@@ -1,10 +1,7 @@
 ("d:/apps/emacs/init.el/_extensions/"
- (("+dired.el"
-   (20761 1040 863000)
-   (autoload 'dired "+dired" "" t))
-  ("+eshell.el"
-   (20761 926 879000)
-   (autoload 'eshell "+eshell" "" t))
+ (("eshell.el"
+   (20761 1860 674000)
+   (autoload 'eshell "eshell" "" t))
   ("evil-mode.el"
    (20760 60132 997000)
    (autoload 'evil-mode "evil-mode" nil t))))
