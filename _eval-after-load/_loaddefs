@@ -1,5 +1,8 @@
 ("d:/apps/emacs/init.el/_extensions/"
- (("eshell.el"
+ (("linum-mode.el"
+   (20761 58113 325000)
+   (autoload 'linum-mode "linum-mode" "" t))
+  ("eshell.el"
    (20761 1860 674000)
    (autoload 'eshell "eshell" "" t))
   ("evil-mode.el"

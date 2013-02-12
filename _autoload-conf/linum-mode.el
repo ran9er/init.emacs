@@ -1,8 +1,5 @@
-;; -*- encoding: utf-8-unix; -*-
-;; File-name:    <22_linum.el>
-;; Create:       <2012-07-04 21:00:13 ran9er>
-;; Time-stamp:   <2012-07-05 21:10:38 ran9er>
-;; Mail:         <2999am@gmail.com>
+;;;###autoload
+(autoload 'linum-mode "linum" "" t)
 
 ;(global-linum-mode)
 

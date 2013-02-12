@@ -10,7 +10,7 @@
            (this-dir (file-name-directory load-file-name))
            (tmp (make-temp-name ""))
            init-name-match base-dir pre-init-files init-dir init-files
-           atld-dir atld-df ext-dir wk-dir ; default
+           lib-dir lib-df eal-dir wk-dir ; default
            (_check-directory
             (lambda (x &optional dir-p base)
               (let ((f (expand-file-name x (or base *init-dir*))))
@@ -48,9 +48,10 @@
             (lambda(x)
               (message (concat "=======>" x)))))
       ;;;;;;
-      (setq atld-dir    "_autoload/"
-            atld-df     "_loaddefs"
-            ext-dir     "_extensions/"
+      (setq lib-dir     "_lib/"
+            lib-df      "_loaddefs"
+            eal-dir     "_eval-after-load/"
+            alc-dir     "_autoload-conf/"
             wk-dir      "sandbox/")
       ;;
       (~ _message "Find *init-dir*")
@@ -109,15 +110,18 @@
          (if (file-directory-p p)
              (add-to-list 'load-path p)))
        (directory-files *init-dir* t "^_.*_\\'"))
-      ;; autoload
-      (~ _message "Load autoloads")
-      ;; (~ _autoload atld-dir)
-      (~ _check-directory atld-dir t *init-dir*)
-      (~ _autoload atld-dir)
+      ;; lib
+      (~ _message "Load lib")
+      (~ _check-directory lib-dir t *init-dir*)
+      (~ _autoload lib-dir)
+      ;; autoload-conf
+      (~ _message "Load autoload-conf")
+      (~ _autoload alc-dir)
       ;; *feature-file-hash*
-      (~ _message "Load _extensions")
+      (~ _message "Load eval-after-load")
+      (setq tmp (float-time))
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
-      (let ((dir ext-dir))
+      (let ((dir eal-dir))
         (~ _check-directory dir t *init-dir*)
         (mapc
          (lambda (x)
@@ -130,7 +134,11 @@
        (lambda (x y)
          (eval-after-load x `(load ,y)))
        *feature-file-hash*)
-      (~ _autoload ext-dir)
+      (setq *init-time* 
+            (cons 
+             (cons "gen eval-after-load" 
+                   (- (float-time) tmp))
+             *init-time*))
       ;; byte-compile
       (when nil
         (~ _message "byte-compile")
