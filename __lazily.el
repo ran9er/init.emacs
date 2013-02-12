@@ -111,7 +111,7 @@
                      var))))
       (kill-buffer (current-buffer)))
     (message (format "Parse %s..." f))
-    (if y (setq ;; var (remove nil var)
+    (if y (setq
            var (cons (current-time) (reverse var))
            var (cons file var)))))
 
@@ -119,51 +119,52 @@
   (let* ((v (cadr var))
          (ldfs (or ldfs "_loaddefs"))
          (lf (or lf (expand-file-name ldfs dir)))
+         (lfm (or (loaddefs-file-mtime lf) '(0 0 0)))
          (ld (or ld (expand-file-name dir)))
+         (dir-changed (if (equal ld (car var)) nil t))
          (ld-files (mapcar (lambda(x)(car x)) v))
          (files (directory-files ld nil "\\.el\\'"))
          (df (compare-sets-s ld-files files))
          (d0 (car df))(d1 (nth 1 df))(d2 (nth 2 df)))
-    (mapc (lambda(x)(setq v (remove (assoc x v) v))) d1)
-    (mapcar
-     (lambda(x)
-       (let ((n (assoc x v)))
-         (if (null
-              (time-less-p
-               (loaddefs-file-mtime (expand-file-name x ld))
-               (nth 1 n)))
-             (setq
-              v (remove n v)
-              v (cons (loaddefs-parse x ld) v)))))
-     d0)
-    (mapc (lambda(x)(setq v (cons (loaddefs-parse x ld) v))) d2)
-    (prog1
-        (setq v (remove nil v)
-              var (list ld v))
-      (loaddefs-save lf var))))
+    (if
+        (remove
+         nil
+         (list
+          dir-changed
+          ;; files don't exist
+          (mapcar (lambda(x)(setq v (remove (assoc x v) v))) d1)
+          ;; new files
+          (mapcar
+           (lambda(x)
+             (if (time-less-p lfm (loaddefs-file-mtime (expand-file-name x ld)))
+                 (setq v (cons (loaddefs-parse x ld) v)))) d2)
+          ;; old files
+          (remove
+           nil
+           (mapcar
+            (lambda(x)
+              (let (changed)
+                (if (time-less-p lfm (loaddefs-file-mtime (expand-file-name x ld)))
+                    (setq
+                     v (remove (assoc x v) v)
+                     v (cons (setq changed (loaddefs-parse x ld)) v)))
+                changed))
+            d0))))
+        (prog1
+            (setq v (remove nil v)
+                  var (list ld v))
+          (loaddefs-save lf var))
+      var)))
 
 ;;;###autoload
 (defun lazily (dir &optional ldfs)
   (let* ((st (float-time))
          (ldfs (or ldfs "_loaddefs"))
          (lf (expand-file-name ldfs dir))
-         (lfm (or (loaddefs-file-mtime lf) '(0 0 0)))
          (ld (expand-file-name dir))
          (var (loaddefs-read lf))
          (files (directory-files ld t "\\.el\\'")))
-    (if (equal ld (car var))
-        nil
-      (setq var (loaddefs-update dir ldfs lf ld var)))
-    (while
-        (and
-         files
-         (null
-          (and
-           (time-less-p
-            lfm
-            (loaddefs-file-mtime (car files)))
-           (setq var (loaddefs-update dir ldfs lf ld var)))))
-      (setq files (cdr files)))
+    (setq var (loaddefs-update dir ldfs lf ld var))
     (loaddefs-eval var)
     (- (float-time) st)))
 
