@@ -10,7 +10,7 @@
            (this-dir (file-name-directory load-file-name))
            (tmp (make-temp-name ""))
            init-name-match base-dir pre-init-files init-dir init-files
-           lib-dir lib-df eal-dir wk-dir ; default
+           lib-dir lib-df alc-dir eal-dir wk-dir ; default
            (_check-directory
             (lambda (x &optional dir-p base)
               (let ((f (expand-file-name x (or base *init-dir*))))
