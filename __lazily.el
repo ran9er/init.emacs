@@ -167,4 +167,4 @@
     (loaddefs-eval var)
     (- (float-time) st)))
 
-;(test-times 1 (loaddefs-update-1 (expand-file-name "_autoload" *init-dir*) '*init-dir*))
+;(test-times 1 (lazily (expand-file-name "_autoload" *init-dir*)))

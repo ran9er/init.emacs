@@ -1,5 +1,8 @@
-("d:/apps/emacs/init.el/_autoload/"
- (("arith.el"
+("d:/apps/emacs/init.el/_autoload"
+ (("sdcv.el"
+   (20761 54998 392000)
+   (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
+  ("arith.el"
    (20760 48849 395000)
    (autoload 'average "arith" "Not documented.\n\n(fn &rest lst)" nil nil))
   ("auto-pair.el"
@@ -11,7 +14,7 @@
    (autoload 'def-keys-low "bind-keys" "bind some key like \"C-m\" \"C-i\" \"C-[\"\n\n(fn map &rest kd)" nil nil))
   ("buffer.el"
    (20760 48849 351000)
-   (autoload 'substring-buffer-name "buffer" "Ê¹ÓÃ substring ½ØÈ¡ÎÄ¼şÃûÊ±£¬ÔÚ buffer-name ºóÃæ¼Ó¼¸¸ö×Ö·û£¬·ÀÖ¹ÎÄ¼şÃû¹ı¶ÌÒı·¢´íÎó¡£m n ²ÎÊıÍ¬`substring'µÄ from to£¬¿ÉÑ¡²ÎÊı x ´æÔÚÊ±½ØÈ¡´øÂ·¾¶µÄÎÄ¼şÃû¡£\n\n(fn m n &optional x)" nil nil)
+   (autoload 'substring-buffer-name "buffer" "ä½¿ç”¨ substring æˆªå–æ–‡ä»¶åæ—¶ï¼Œåœ¨ buffer-name åé¢åŠ å‡ ä¸ªå­—ç¬¦ï¼Œé˜²æ­¢æ–‡ä»¶åè¿‡çŸ­å¼•å‘é”™è¯¯ã€‚m n å‚æ•°åŒ`substring'çš„ from toï¼Œå¯é€‰å‚æ•° x å­˜åœ¨æ—¶æˆªå–å¸¦è·¯å¾„çš„æ–‡ä»¶åã€‚\n\n(fn m n &optional x)" nil nil)
    (autoload 'my-clean-buffer "buffer" "Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.\n\n(fn)" t nil))
   ("column.el"
    (20760 48849 332000)
@@ -100,13 +103,10 @@
    (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
   ("script.el"
    (20760 48849 30000)
-   (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call ¡°perl x.pl¡± in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
+   (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call â€œperl x.plâ€ in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
-  ("sdcv.el"
-   (20760 48849 13000)
-   (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
   ("skeleton-pair.el"
    (20760 48848 981000)
    (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn)" t nil))
@@ -117,7 +117,7 @@
    (defalias 'ss 'shell-command-symbol-to-string))
   ("test.el"
    (20760 48848 948000)
-   (autoload 'mklst "test" "´´½¨´óĞ¡Îª n µÄ×Ö·û´®ÁĞ±í\n\n(fn n)" nil nil)
+   (autoload 'mklst "test" "åˆ›å»ºå¤§å°ä¸º n çš„å­—ç¬¦ä¸²åˆ—è¡¨\n\n(fn n)" nil nil)
    (autoload 'eval-buffer-time "test" "\n\n(fn)" t nil)
-   (autoload 'test-list "test" "ÓÃ´óĞ¡Îª n µÄ×Ö·û´®ÁĞ±í£¬²âÊÔº¯Êı fn (fn ×îºóÒ»¸ö²ÎÊıÎªÁĞ±í)\n\n(fn n &rest fn)" nil t)
-   (autoload 'test-times "test" "¼ÆËã body ÔËĞĞ n ´ÎËùĞèÊ±¼ä\n\n(fn n &rest body)" nil t))))
+   (autoload 'test-list "test" "ç”¨å¤§å°ä¸º n çš„å­—ç¬¦ä¸²åˆ—è¡¨ï¼Œæµ‹è¯•å‡½æ•° fn (fn æœ€åä¸€ä¸ªå‚æ•°ä¸ºåˆ—è¡¨)\n\n(fn n &rest fn)" nil t)
+   (autoload 'test-times "test" "è®¡ç®— body è¿è¡Œ n æ¬¡æ‰€éœ€æ—¶é—´\n\n(fn n &rest body)" nil t))))
