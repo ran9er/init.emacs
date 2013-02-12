@@ -1,5 +1,26 @@
 ("d:/apps/emacs/init.el/_lib/"
- (("arith.el"
+ (("test.el"
+   (20762 33852 717000)
+   (autoload 'mklst "test" "创建大小为 n 的字符串列表\n\n(fn n)" nil nil)
+   (autoload 'eval-buffer-time "test" "\n\n(fn)" t nil)
+   (autoload 'test-list "test" "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)\n\n(fn n &rest fn)" nil t)
+   (autoload 'test-times "test" "计算 body 运行 n 次所需时间\n\n(fn n &rest body)" nil t))
+  ("sdcv.el"
+   (20762 32815 469000)
+   (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
+  ("parse.el"
+   (20762 32815 449000)
+   (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
+  ("edit.el"
+   (20762 32071 279000)
+   (autoload 'resize-horizontal-space "edit" "Not documented.\n\n(fn &optional backward-only)" t nil)
+   (autoload 'smart-backward-kill "edit" "Not documented.\n\n(fn)" t nil)
+   (autoload 'string-expand "edit" "Not documented.\n\n(fn s)" t nil))
+  ("beacon.el"
+   (20762 31231 789000)
+   (autoload 'swap-point "beacon" "Not documented.\n\n(fn)" t nil)
+   (autoload 'beacon "beacon" "Not documented.\n\n(fn)" t nil))
+  ("arith.el"
    (20761 59801 82000)
    (autoload 'average "arith" "Not documented.\n\n(fn &rest lst)" nil nil))
   ("auto-pair.el"
@@ -33,12 +54,6 @@
    (20761 59800 931000)
    (autoload 'outside "edit-lisp" "up list N level, append PRE ahead and SUF behind, backward M char\n\n(fn o b s &optional n)" t nil)
    (autoload 'outside-kill "edit-lisp" "up list N level, append PRE ahead and SUF behind, backward M char\n\n(fn &optional n)" t nil))
-  ("edit.el"
-   (20761 59800 886000)
-   (autoload 'swap-point "edit" "Not documented.\n\n(fn)" t nil)
-   (autoload 'beacon "edit" "Not documented.\n\n(fn)" t nil)
-   (autoload 'resize-horizontal-space "edit" "Not documented.\n\n(fn &optional backward-only)" t nil)
-   (autoload 'smart-backward-kill "edit" "Not documented.\n\n(fn)" t nil))
   ("file.el"
    (20761 59800 873000)
    (autoload 'read-lines "file" "Return a list of lines in FILEPATH.\n\n(fn filePath)" nil nil)
@@ -95,18 +110,12 @@
   ("loop.el"
    (20761 59800 629000)
    (autoload 'elf "loop" "&optional verb pred &rest form\n\n\n(fn &rest form)" nil t))
-  ("parse.el"
-   (20761 59800 607000)
-   (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
   ("script.el"
    (20761 59800 592000)
    (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
-  ("sdcv.el"
-   (20761 59800 558000)
-   (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
   ("skeleton-pair.el"
    (20761 59800 527000)
    (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn)" t nil))
@@ -114,10 +123,4 @@
    (20761 59800 507000)
    (autoload 'join-string "string" "(mapconcat 'identity lst s)\n\n(fn lst s)" nil nil)
    (autoload 'shell-command-symbol-to-string "string" "Not documented.\n\n(fn &rest s)" nil t)
-   (defalias 'ss 'shell-command-symbol-to-string))
-  ("test.el"
-   (20761 59800 479000)
-   (autoload 'mklst "test" "创建大小为 n 的字符串列表\n\n(fn n)" nil nil)
-   (autoload 'eval-buffer-time "test" "\n\n(fn)" t nil)
-   (autoload 'test-list "test" "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)\n\n(fn n &rest fn)" nil t)
-   (autoload 'test-times "test" "计算 body 运行 n 次所需时间\n\n(fn n &rest body)" nil t))))
+   (defalias 'ss 'shell-command-symbol-to-string))))

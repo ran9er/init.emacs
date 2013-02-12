@@ -157,6 +157,17 @@
       var)))
 
 ;;;###autoload
+(defun lazily-update-next-emacs()
+  (interactive)
+  (with-temp-file
+      (let ((enable-local-variables nil)
+            (find-file-hook nil))
+        (expand-file-name "update-lazily-loaddefs" user-emacs-directory))
+    (message "lazily will update when emacs init next time")))
+
+(defvar lazily-force-update nil)
+
+;;;###autoload
 (defun lazily (dir &optional ldfs)
   (let* ((st (float-time))
          (ldfs (or ldfs "_loaddefs"))
@@ -164,7 +175,13 @@
          (ld (expand-file-name dir))
          (var (loaddefs-read lf))
          (files (directory-files ld t "\\.el\\'")))
-    (setq var (loaddefs-update dir ldfs lf ld var))
+    (let ((f (expand-file-name "update-lazily-loaddefs" user-emacs-directory)))
+      (if (or
+           lazily-force-update
+           (file-exists-p f))
+          (progn 
+            (setq var (loaddefs-update dir ldfs lf ld var))
+            (delete-file f))))
     (loaddefs-eval var)
     (- (float-time) st)))
 

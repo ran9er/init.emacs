@@ -15,8 +15,8 @@
            exec-directory)))
 
 ;; * working dir
-(~ _check-directory wk-dir t)
-(setq work-dir (expand-file-name wk-dir *init-dir*))
+(~ _check-directory (cdr (assoc 'wk-dir *init-dirs*)) t)
+(setq work-dir (cdr (assoc 'wk-dir *init-dirs*)))
 (cd work-dir)
 
 ;; * time-stamp-format

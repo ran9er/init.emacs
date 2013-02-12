@@ -10,7 +10,7 @@
            (this-dir (file-name-directory load-file-name))
            (tmp (make-temp-name ""))
            init-name-match base-dir pre-init-files init-dir init-files
-           lib-dir lib-df alc-dir eal-dir wk-dir ; default
+           dirs ; default
            (_check-directory
             (lambda (x &optional dir-p base)
               (let ((f (expand-file-name x (or base *init-dir*))))
@@ -48,11 +48,13 @@
             (lambda(x)
               (message (concat "=======>" x)))))
       ;;;;;;
-      (setq lib-dir     "_lib/"
-            lib-df      "_loaddefs"
-            eal-dir     "_eval-after-load/"
-            alc-dir     "_autoload-conf/"
-            wk-dir      "sandbox/")
+      (setq dirs 
+            '((lib-dir   .   "_lib/")
+              (lib-df    .   "_loaddefs")
+              (eal-dir   .   "_eval-after-load/")
+              (alc-dir   .   "_autoload-conf/")
+              (wk-dir    .   "sandbox/")))
+
       ;;
       (~ _message "Find *init-dir*")
       (cond
@@ -86,6 +88,13 @@
       ;; export
       (defvar *init-time* nil)
       (defvar *init-dir* init-dir)
+      (defvar *init-dirs* 
+        (mapcar
+         (lambda(x)
+           (cons 
+            (car x)
+            (expand-file-name (cdr x) *init-dir*)))
+         dirs))
       ;;;;;;
       (if (null (file-exists-p *init-dir*))
           (throw 'quit "can't found *init-dir*"))
@@ -112,16 +121,16 @@
        (directory-files *init-dir* t "^_.*_\\'"))
       ;; lib
       (~ _message "Load lib")
-      (~ _check-directory lib-dir t *init-dir*)
-      (~ _autoload lib-dir)
+      (~ _check-directory (cdr (assoc 'lib-dir dirs)) t *init-dir*)
+      (~ _autoload (cdr (assoc 'lib-dir dirs)))
       ;; autoload-conf
       (~ _message "Load autoload-conf")
-      (~ _autoload alc-dir)
+      (~ _autoload (cdr (assoc 'alc-dir dirs)))
       ;; *feature-file-hash*
       (~ _message "Load eval-after-load")
       (setq tmp (float-time))
       (defvar *feature-file-hash* (make-hash-table :test 'equal :size 20))
-      (let ((dir eal-dir))
+      (let ((dir (cdr (assoc 'eal-dir dirs))))
         (~ _check-directory dir t *init-dir*)
         (mapc
          (lambda (x)
