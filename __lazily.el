@@ -36,6 +36,29 @@
         (nthcdr 2 x)))
      v)))
 
+(defun loaddefs-to-direct-format (file)
+  (let* ((var (loaddefs-read file))
+         (ld (car var))
+         (v (cadr var))
+         r)
+    (mapc
+     (lambda(x)
+       (mapc
+        (lambda(y)
+          (setq
+           r
+           (cons
+            (if (eq (nth 0 y) 'autoload)
+                `(autoload
+                   ,(nth 1 y)
+                   ,(expand-file-name (nth 2 y) ld)
+                   ,@(nthcdr 3 y))
+              y)
+            r)))
+        (nthcdr 2 x)))
+     v)
+    (setq r (cons ld r))))
+
 (defun loaddefs-file-mtime (file)
   (nth 5 (file-attributes file)))
 
@@ -165,10 +188,8 @@
         (expand-file-name "update-lazily-loaddefs" user-emacs-directory))
     (message "lazily will update when emacs init next time")))
 
-(defvar lazily-force-update nil)
-
 ;;;###autoload
-(defun lazily (dir &optional ldfs)
+(defun lazily (dir &optional force ldfs)
   (let* ((st (float-time))
          (ldfs (or ldfs "_loaddefs"))
          (lf (expand-file-name ldfs dir))
@@ -176,12 +197,13 @@
          (var (loaddefs-read lf))
          (files (directory-files ld t "\\.el\\'")))
     (let ((f (expand-file-name "update-lazily-loaddefs" user-emacs-directory)))
-      (if (or
-           lazily-force-update
-           (file-exists-p f))
-          (progn 
+      (if (or force (file-exists-p f))
+          (progn
             (setq var (loaddefs-update dir ldfs lf ld var))
-            (delete-file f))))
+            (add-hook
+             'emacs-startup-hook
+             `(lambda()(if (file-exists-p ,f)
+                       (delete-file ,f)))))))
     (loaddefs-eval var)
     (- (float-time) st)))
 

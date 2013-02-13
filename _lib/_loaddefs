@@ -1,66 +1,54 @@
 ("d:/apps/emacs/init.el/_lib/"
- (("test.el"
-   (20762 33852 717000)
-   (autoload 'mklst "test" "创建大小为 n 的字符串列表\n\n(fn n)" nil nil)
-   (autoload 'eval-buffer-time "test" "\n\n(fn)" t nil)
-   (autoload 'test-list "test" "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)\n\n(fn n &rest fn)" nil t)
-   (autoload 'test-times "test" "计算 body 运行 n 次所需时间\n\n(fn n &rest body)" nil t))
-  ("sdcv.el"
-   (20762 32815 469000)
-   (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
-  ("parse.el"
-   (20762 32815 449000)
-   (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
-  ("edit.el"
-   (20762 32071 279000)
-   (autoload 'resize-horizontal-space "edit" "Not documented.\n\n(fn &optional backward-only)" t nil)
-   (autoload 'smart-backward-kill "edit" "Not documented.\n\n(fn)" t nil)
-   (autoload 'string-expand "edit" "Not documented.\n\n(fn s)" t nil))
-  ("beacon.el"
-   (20762 31231 789000)
-   (autoload 'swap-point "beacon" "Not documented.\n\n(fn)" t nil)
-   (autoload 'beacon "beacon" "Not documented.\n\n(fn)" t nil))
-  ("arith.el"
-   (20761 59801 82000)
+ (("arith.el"
+   (20763 35260 289000)
    (autoload 'average "arith" "Not documented.\n\n(fn &rest lst)" nil nil))
   ("auto-pair.el"
-   (20761 59801 66000)
+   (20763 35260 274000)
    (autoload 'my-auto-pair "auto-pair" "Not documented.\n\n(fn)" t nil))
+  ("beacon.el"
+   (20763 35260 258000)
+   (autoload 'swap-point "beacon" "Not documented.\n\n(fn)" t nil)
+   (autoload 'beacon "beacon" "Not documented.\n\n(fn)" t nil))
   ("bind-keys.el"
-   (20761 59801 52000)
+   (20763 35260 242000)
    (autoload 'bind-keys "bind-keys" "bind some key like \"C-m\" \"C-i\" \"C-[\"\n\n(fn map &rest kd)" nil nil)
    (autoload 'def-keys-low "bind-keys" "bind some key like \"C-m\" \"C-i\" \"C-[\"\n\n(fn map &rest kd)" nil nil))
   ("buffer.el"
-   (20761 59801 37000)
+   (20763 35260 227000)
    (autoload 'substring-buffer-name "buffer" "使用 substring 截取文件名时，在 buffer-name 后面加几个字符，防止文件名过短引发错误。m n 参数同`substring'的 from to，可选参数 x 存在时截取带路径的文件名。\n\n(fn m n &optional x)" nil nil)
    (autoload 'my-clean-buffer "buffer" "Kill buffers as per `my-clean-buffer-list' and `my-clean-buffer-modes'.\n\n(fn)" t nil))
   ("column.el"
-   (20761 59801 19000)
+   (20763 35260 211000)
    (autoload 'copy-word-on-column "column" "Not documented.\n\n(fn &optional n)" t nil)
    (autoload 'copy-sexp-on-column "column" "Not documented.\n\n(fn &optional n)" t nil)
    (autoload 'calc-column "column" "Not documented.\n\n(fn fn)" t nil))
   ("dired.el"
-   (20761 59800 992000)
+   (20763 35260 196000)
    (autoload 'rename-file-specify-extension "dired" "Not documented.\n\n(fn &optional suf)" t nil))
   ("dos2unix.el"
-   (20761 59800 976000)
+   (20763 35260 180000)
    (autoload 'dos2unix "dos2unix" "Convert a DOS formatted text buffer to UNIX format\n\n(fn)" t nil)
    (autoload 'unix2dos "dos2unix" "Convert a UNIX formatted text buffer to DOS format\n\n(fn)" t nil)
    (autoload 'del^M "dos2unix" "Not documented.\n\n(fn)" t nil))
   ("edit-ad.el"
-   (20761 59800 960000)
+   (20763 35260 164000)
    (autoload 'parallel-edit "edit-ad" "Not documented.\n\n(fn position-list &optional prt)" t nil))
   ("edit-lisp.el"
-   (20761 59800 931000)
+   (20763 35260 133000)
    (autoload 'outside "edit-lisp" "up list N level, append PRE ahead and SUF behind, backward M char\n\n(fn o b s &optional n)" t nil)
    (autoload 'outside-kill "edit-lisp" "up list N level, append PRE ahead and SUF behind, backward M char\n\n(fn &optional n)" t nil))
+  ("edit.el"
+   (20763 35260 133000)
+   (autoload 'resize-horizontal-space "edit" "Not documented.\n\n(fn &optional backward-only)" t nil)
+   (autoload 'smart-backward-kill "edit" "Not documented.\n\n(fn)" t nil)
+   (autoload 'string-expand "edit" "Not documented.\n\n(fn s)" t nil))
   ("file.el"
-   (20761 59800 873000)
+   (20763 35260 118000)
    (autoload 'read-lines "file" "Return a list of lines in FILEPATH.\n\n(fn filePath)" nil nil)
    (autoload 'find-temp "file" "Not documented.\n\n(fn &optional suffix)" t nil)
    (autoload 'write-temp "file" "Not documented.\n\n(fn filename &optional confirm)" t nil))
   ("font.el"
-   (20761 59800 851000)
+   (20763 35260 102000)
    (autoload 'usage-font "font" "Not documented.\n\n(fn &rest fonts)" nil nil)
    (autoload 'set-my-font0 "font" "Not documented.\n\n(fn &rest lst)" nil nil)
    (autoload 'set-font "font" "Not documented.\n\n(fn script font &optional size)" nil nil)
@@ -70,57 +58,69 @@
    (autoload 'my-buffer-face-mode "font" "Not documented.\n\n(fn &optional ls)" nil nil)
    (autoload 'custom-buffer-face-mode "font" "Not documented.\n\n(fn)" t nil))
   ("function.el"
-   (20761 59800 831000)
+   (20763 35260 24000)
    (autoload 'temp-func-add "function" "Not documented.\n\n(fn &optional beg end)" t nil)
    (autoload 'temp-func-call "function" "Not documented.\n\n(fn &optional n)" t nil)
    (autoload 'set-local-variable "function" "Not documented.\n\n(fn &optional v)" t nil))
   ("hash.el"
-   (20761 59800 806000)
+   (20763 35260 8000)
    (autoload 'cons2hash "hash" "Not documented.\n\n(fn lst)" nil nil)
    (autoload 'build-hash-table "hash" "Not documented.\n\n(fn &rest lst)" nil nil)
    (autoload 'list-hash "hash" "Not documented.\n\n(fn hash-table &optional with-value)" nil nil))
   ("indent-hint.el"
-   (20761 59800 778000)
+   (20763 35259 993000)
    (autoload 'indent-hint-lisp "indent-hint" "Not documented.\n\n(fn)" t nil)
    (autoload 'indent-hint-fixed "indent-hint" "Not documented.\n\n(fn &optional img)" t nil)
    (autoload 'indent-hint-js "indent-hint" "Not documented.\n\n(fn)" t nil)
    (autoload 'indent-hint-test "indent-hint" "Not documented.\n\n(fn &optional regexp)" t nil))
   ("insert.el"
-   (20761 59800 753000)
+   (20763 35259 993000)
    (autoload 'comment-block "insert" "Not documented.\n\n(fn &optional beg end)" t nil)
    (autoload 'insert-autoload-magic-comment "insert" "Not documented.\n\n(fn)" t nil)
    (autoload 'insert-time "insert" "Not documented.\n\n(fn &optional time format)" t nil)
    (autoload 'insert-delimit-line "insert" "Not documented.\n\n(fn &optional n time)" t nil)
    (autoload 'insert-doc-head "insert" "Not documented.\n\n(fn)" t nil))
   ("list.el"
-   (20761 59800 720000)
+   (20763 35259 977000)
    (autoload 'to-alist-l "list" "(to-alist-l '(1 2 3 4 5 6)) => ((1 . 2) (3 . 4) (5 . 6))\n\n(fn &rest lst)" nil nil)
    (autoload 'mkal "list" "(mkal 1 2 3 4 5 6) => ((1 . 2) (3 . 4) (5 . 6))\n\n(fn &rest rest)" nil t)
    (autoload 'zip-lists "list" "(zip-lists '(1 3 5) '(2 4 6)) => ((1 . 2) (3 . 4) (5 . 6))\n\n(fn f a &optional b)" nil nil)
    (autoload 'merge-lists "list" "(merge-lists '(1 2) '(3 4) '(5 6)) => ((1 3 5) (2 4 6))\n\n(fn &rest lists)" nil nil)
    (autoload 'add-to-list-p "list" "See also `add-to-list-x'\n\n(fn LIST-VAR &optional BASE &rest REST)" nil nil))
   ("load.el"
-   (20761 59800 688000)
+   (20763 35259 962000)
    (autoload 'load-once "load" "Not documented.\n\n(fn &rest s)" nil t)
    (autoload 'load1 "load" "Not documented.\n\n(fn file)" nil nil))
   ("logic.el"
-   (20761 59800 658000)
+   (20763 35259 930000)
    (autoload 'xor "logic" "like find-if\n\n(fn fn &rest lst)" nil t)
    (autoload 'xand "logic" "Not documented.\n\n(fn fn &rest lst)" nil t))
   ("loop.el"
-   (20761 59800 629000)
+   (20763 35259 915000)
    (autoload 'elf "loop" "&optional verb pred &rest form\n\n\n(fn &rest form)" nil t))
+  ("parse.el"
+   (20763 35259 899000)
+   (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
   ("script.el"
-   (20761 59800 592000)
+   (20763 35259 884000)
    (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
+  ("sdcv.el"
+   (20763 35259 868000)
+   (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
   ("skeleton-pair.el"
-   (20761 59800 527000)
+   (20763 35259 852000)
    (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn)" t nil))
   ("string.el"
-   (20761 59800 507000)
+   (20763 35259 837000)
    (autoload 'join-string "string" "(mapconcat 'identity lst s)\n\n(fn lst s)" nil nil)
    (autoload 'shell-command-symbol-to-string "string" "Not documented.\n\n(fn &rest s)" nil t)
-   (defalias 'ss 'shell-command-symbol-to-string))))
+   (defalias 'ss 'shell-command-symbol-to-string))
+  ("test.el"
+   (20763 35259 821000)
+   (autoload 'mklst "test" "创建大小为 n 的字符串列表\n\n(fn n)" nil nil)
+   (autoload 'eval-buffer-time "test" "\n\n(fn)" t nil)
+   (autoload 'test-list "test" "用大小为 n 的字符串列表，测试函数 fn (fn 最后一个参数为列表)\n\n(fn n &rest fn)" nil t)
+   (autoload 'test-times "test" "计算 body 运行 n 次所需时间\n\n(fn n &rest body)" nil t))))
