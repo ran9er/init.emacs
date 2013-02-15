@@ -1,6 +1,4 @@
-                a
-				a
-
+(setq v load-file-name)
 (setq x (make-overlay 1 1))
 (move-overlay x 3894 3898)
 (delete-overlay x)
