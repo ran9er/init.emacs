@@ -1,7 +1,7 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; File-name:    <indent-hint.el>
 ;; Create:       <2012-09-10 12:04:07 ran9er>
-;; Time-stamp:   <2013-02-11 09:25:45 ran9er>
+;; Time-stamp:   <2013-02-17 00:35:27 ran9er>
 ;; Mail:         <2999am@gmail.com>
 
 ;; *init
@@ -63,11 +63,14 @@ s1 ",\n" s2 "};"
 (defun ih-make-overlay (b e)
   (let* ((p 'ih-overlay-pool)
          (q (eval p))
-         (ov (car (prog1 q (set p (cdr q))))))
+         (ov (car q)))
     (if ov
-        (move-overlay ov b e)
+        (progn
+          (set p (cdr-safe q))
+          (move-overlay ov b e))
       (setq ov (make-overlay b e)))
     ov))
+
 (defun ih-delete-overlay (o)
   (let ((ov o)
         (p 'ih-overlay-pool))
