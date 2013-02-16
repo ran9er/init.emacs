@@ -37,18 +37,20 @@
                  lst))))
            (_autoload
             (lambda (dir &optional var)
-              (let ((var (or var '*init-time*)))
+              (let* ((var (or var '*init-time*))
+                     (d (expand-file-name dir *init-dir*))
+                     (load-file-name (expand-file-name tmp d)))
                 (set var
                      (cons
                       (cons
                        (format "gen autoload for %s" dir)
-                       (lazily (expand-file-name dir *init-dir*)))
+                       (lazily d))
                       (eval var))))))
            (_message
             (lambda(x)
               (message (concat "=======>" x)))))
       ;;;;;;
-      (setq dirs 
+      (setq dirs
             '((lib-dir   .   "_lib/")
               (lib-df    .   "_loaddefs")
               (eal-dir   .   "_eval-after-load/")
@@ -88,10 +90,11 @@
       ;; export
       (defvar *init-time* nil)
       (defvar *init-dir* init-dir)
-      (defvar *init-dirs* 
+      (message (format "*init-dir* is %s" *init-dir*))
+      (defvar *init-dirs*
         (mapcar
          (lambda(x)
-           (cons 
+           (cons
             (car x)
             (expand-file-name (cdr x) *init-dir*)))
          dirs))
@@ -117,7 +120,9 @@
       (mapc
        (lambda (p)
          (if (file-directory-p p)
-             (add-to-list 'load-path p)))
+             (and
+              (add-to-list 'load-path p)
+              (message (format "Add %s to load-path" p)))))
        (directory-files *init-dir* t "^_.*_\\'"))
       ;; lib
       (~ _message "Load lib")
@@ -141,11 +146,12 @@
       ;;;;;;
       (maphash
        (lambda (x y)
-         (eval-after-load x `(load ,y)))
+         (eval-after-load x `(load ,y))
+         (message (format "eval-after-load %s" y)))
        *feature-file-hash*)
-      (setq *init-time* 
-            (cons 
-             (cons "gen eval-after-load" 
+      (setq *init-time*
+            (cons
+             (cons "gen eval-after-load"
                    (- (float-time) tmp))
              *init-time*))
       ;; byte-compile
