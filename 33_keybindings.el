@@ -40,6 +40,7 @@
     "C-x w"     write-temp
     "<C-return>" temp-func-call
     "<M-return>" temp-func-add
+    "M-g g"     goto-char
     ;; "C-x f"     (lambda()                                ;; set-fill-column
     ;;               (interactive)
     ;;               (let ((p (point)))
