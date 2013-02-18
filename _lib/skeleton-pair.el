@@ -1,7 +1,6 @@
-(defvar skeleton-pair-cond-alist)
-(setq skeleton-pair-cond-alist
+(defvar skeleton-pair-cond-alist
   '(
-    ((char-bf ?=) . (?\{ _ "}"))
+    ((or (char-bf ?$) (char-bf ?=)) . (?\{ _ "}"))
     ((char-bf '(?+ ?-)) . (?\\ "+"  _  "+\\"))
     ((or (char-bf ?/)(char-bf ?=)) . (?\[ n _ n "]"))
     ((bolp) . (?/ "*" n  _  n "*/"))

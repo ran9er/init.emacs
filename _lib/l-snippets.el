@@ -47,12 +47,21 @@ l-interactive set to nil."
 
 (defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
+(defvar l-snippets-syntax-table
+  '(head "\\$" open "{" close "}" delimiter ":" path-separator "%%"))
+
+(defvar l-snippets-token-regexp
+  (format "\\(%s%s[[:digit:]]+\\)\\|\\(%s[[:digit:]]+\\)"
+          (plist-get l-snippets-syntax-table 'head)
+          (plist-get l-snippets-syntax-table 'open)
+          (plist-get l-snippets-syntax-table 'head)))
+
 (defvar l-snippets-enable-overlays-pool nil)
 
 (defvar l-snippets-overlays-pool nil)
 
 (defvar l-snippets-cache
-  (make-hash-table :size 100 :test 'equal))
+  (make-hash-table :test 'equal))
 
 (defvar l-snippets-repo
   (expand-file-name
@@ -60,6 +69,9 @@ l-interactive set to nil."
    (file-name-directory
     (or load-file-name
         buffer-file-name))))
+
+(defvar l-snippets-index-file "_index")
+
 ;; * overlay
 
 (defun l-snippets-make-overlay (b e)
@@ -87,51 +99,6 @@ l-interactive set to nil."
     nil))
 
 ;(defvar
-(setq
- l-snippets-roles
- '(
-   control
-   ((role . control)
-    (evaporate . t)
-    (keymap . l-snippets-keymap))
-   field
-   ((role . field)
-    (owner . nil)
-    (mirrors . nil)
-    (modification-hooks  l-snippets-field)
-    (insert-in-front-hooks l-snippets-field)
-    (insert-behind-hooks l-snippets-field)
-    (keymap . l-snippets-keymap)
-    (face . tempo-snippets-editable-face))
-   mirror
-   ((role . mirror)
-    (face . tempo-snippets-auto-face))
-   ))
-
-(defun l-snippets-overlay-appoint (b e role &rest properties)
-  (let  ((inhibit-modification-hooks t)
-         (ov (l-snippets-make-overlay b e)))
-    (mapc
-     (lambda(x)
-       (overlay-put ov (car x)
-                    (or (cdr x)
-                        (plist-get properties (car x)))))
-     (plist-get l-snippets-roles role))
-    ov))
-
-(defun l-snippets-overlay-add-to (memb ov p)
-  (overlay-put ov p (cons memb (overlay-get ov p))))
-
-(defun l-snippets-overlay-update-text (ov text)
-  (let ((beg (overlay-start ov)))
-    ;; (goto-char beg)
-    ;; (insert text)
-    ;; (delete-region (point) (overlay-end ov))
-    (goto-char beg)
-    (delete-char (- (overlay-end ov) beg))
-    (insert text)
-    (move-overlay ov beg (point))))
-
 (defun l-snippets-field (overlay after? beg end &optional length)
   (let ((inhibit-modification-hooks t)
         (text (buffer-substring-no-properties
@@ -144,12 +111,64 @@ l-interactive set to nil."
          (l-snippets-overlay-update-text x text))
        mirrors))))
 
+(defvar l-snippets-roles
+ '(
+   control
+   ((role . control)
+    (evaporate . t)
+    (keymap . l-snippets-keymap))
+   field
+   ((role . field)
+    (owner . nil)
+    ;; (prompt . nil)
+    (link . nil)
+    (mirrors . nil)
+    (rest . nil)
+    (modification-hooks  l-snippets-field)
+    (insert-in-front-hooks l-snippets-field)
+    (insert-behind-hooks l-snippets-field)
+    (keymap . l-snippets-keymap)
+    (face . tempo-snippets-editable-face))
+   mirror
+   ((role . mirror)
+    ;; (prompt . nil)
+    (face . tempo-snippets-auto-face))
+   ))
+
+(defun l-snippets-overlay-update-text (ov text)
+  (let ((beg (overlay-start ov)))
+    ;; (goto-char beg)
+    ;; (insert text)
+    ;; (delete-region (point) (overlay-end ov))
+    (goto-char beg)
+    (delete-char (- (overlay-end ov) beg))
+    (insert text)
+    (move-overlay ov beg (point))))
+
+(defun l-snippets-overlay-appoint (b prompt role &rest properties)
+  (let* ((inhibit-modification-hooks t)
+         (e (prog1 (+ b (length prompt))
+              (goto-char b)(insert prompt)))
+         (ov (l-snippets-make-overlay b e)))
+    (mapc
+     (lambda(x)
+       (overlay-put ov (car x)
+                    (or (cdr x)
+                        (plist-get properties (car x)))))
+     (plist-get l-snippets-roles role))
+    ov))
+
 (defun l-snippets-overlay-release (ov)
   (mapc
    (lambda(x)
      (l-snippets-delete-overlay x))
    (overlay-get ov 'mirrors))
   (l-snippets-delete-overlay ov))
+
+;; ** stuction
+(defun l-snippets-overlay-add-to (memb ov p)
+  (overlay-put ov p (cons memb (overlay-get ov p))))
+
 
 ;; * keymap
 (defun l-snippets-next-field ()
@@ -159,56 +178,11 @@ l-interactive set to nil."
   (interactive))
 
 ;; * prase
-(defun l-snippets-gen-token (file &optional regexp)
-  (let* ((regexp (or regexp "\\(\\${[[:digit:]]+\\)\\|\\(\\$[[:digit:]]+\\)"))
-         (var (l-snippets-read-file file regexp))
-         (str (nth 0 var))
-         (len (length str))
-         (lst (nth 1 var))
-         (last (cdar (last lst)))
-         (mkr '(0)))
-    (mapc
-     (lambda(x)
-       (setq mkr (cons (car x) mkr)
-             mkr (cons (car x) mkr)
-             mkr (cons (cdr x) mkr)
-             mkr (cons (cdr x) mkr)))
-     lst)
-    (if (> len last)
-      (setq mkr (cons len mkr))
-    (setq mkr (cdr mkr)))
-    (setq mkr (reverse mkr)
-          mkr (l-snippets-to-alist mkr))
-    (mapcar
-     (lambda(x)
-       (if (assoc (car x) lst)
-           (l-snippets-prase-token)
-         (substring-no-properties str (car x) (cdr x))))
-     mkr)))
-
-(defun l-snippets-prase-token ())
-
-(defun l-snippets-read-file (file regexp)
-  (with-temp-buffer
-    (when (file-readable-p file)
-      (insert-file-contents file nil nil nil t)
-      (goto-char (point-max))
-      (list
-       (buffer-substring-no-properties
-        (point-min)
-        (point-max))
-       (let (a)
-         (while (re-search-backward regexp nil t)
-           (setq
-            a
-            (cons
-             (cons
-              (match-beginning 0)
-              (if (match-beginning 1)
-                  (l-snippets-find-close-parenthesis "{" "}")
-                (match-end 2))) a)))
-         a)
-       ))))
+(defun l-snippets-to-alist (lst)
+  (if lst
+      (cons
+       (cons (nth 0 lst) (nth 1 lst))
+       (l-snippets-to-alist (nthcdr 2 lst)))))
 
 (defun l-snippets-find-close-parenthesis (x y)
   (let ((count 1)
@@ -227,8 +201,136 @@ l-interactive set to nil."
         (setq close (match-end 2))))
     close))
 
-(defun l-snippets-to-alist (lst)
-  (if lst
-      (cons
-       (cons (nth 0 lst) (nth 1 lst))
-       (l-snippets-to-alist (nthcdr 2 lst)))))
+(defun l-snippets-read-file (file regexp)
+  (with-temp-buffer
+    (when (file-readable-p file)
+      (insert-file-contents file nil nil nil t)
+      (goto-char (point-max))
+      (list
+       (buffer-substring-no-properties
+        (point-min)
+        (point-max))
+       (let (a)
+         (while (re-search-backward regexp nil t)
+           (setq
+            a
+            (cons
+             (cons
+              (match-beginning 0)
+              (if (match-beginning 1)
+                  (l-snippets-find-close-parenthesis
+                   (plist-get l-snippets-syntax-table 'open)
+                   (plist-get l-snippets-syntax-table 'close))
+                (match-end 2))) a)))
+         a)))))
+
+(defun l-snippets-prase-token (str)
+  (let ((str (substring-no-properties str 1))
+        (s1 (substring-no-properties str 1)))
+    (cond
+     ((equal s1 (plist-get l-snippets-syntax-table 'open))
+      )
+     )))
+
+(defun l-snippets-gen-token (file &optional regexp)
+  (let* ((regexp l-snippets-token-regexp)
+         (var (l-snippets-read-file file regexp))
+         (str (nth 0 var))
+         (len (length str))
+         (lst (nth 1 var))
+         (last (cdar (last lst)))
+         (mkr '(1)))
+    (mapc
+     (lambda(x)
+       (setq mkr (cons (car x) mkr)
+             mkr (cons (car x) mkr)
+             mkr (cons (cdr x) mkr)
+             mkr (cons (cdr x) mkr)))
+     lst)
+    (if (> len last)
+      (setq mkr (cons len mkr))
+    (setq mkr (cdr mkr)))
+    (setq mkr (reverse mkr)
+          mkr (l-snippets-to-alist mkr))
+    (mapcar
+     (lambda(x)
+       (let* ((k (car x))(a (1- k))(b (1- (cdr x))))
+        (if (assoc x lst)
+           (l-snippets-prase-token
+            (substring-no-properties str a b))
+         (substring-no-properties str a b))))
+     mkr)))
+
+;; * index
+(defun l-snippets-read-index (idx)
+  (let (var)
+    (with-current-buffer
+        (let ((enable-local-variables nil))
+          (find-file-noselect idx))
+      (prog2
+          (goto-char (point-min))
+          (setq var
+                (condition-case err
+                    (read (current-buffer))
+                  (error
+                   nil)))
+        (kill-buffer (current-buffer))))))
+
+(defun l-snippets-update-index ()
+  (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
+        (l-snippets-index-file
+         (expand-file-name
+          l-snippets-index-file
+          (file-name-directory
+           l-snippets-repo))))
+    (if (time-less-p
+         (or (funcall mtime l-snippets-index-file)
+             '(0 0 0))
+         (funcall mtime l-snippets-repo))
+        (with-temp-file
+            (let ((enable-local-variables nil)
+                  (find-file-hook nil))
+              l-snippets-index-file)
+          (insert (pp-to-string
+                   (directory-files l-snippets-repo nil "^[^_].*\\'")))
+          (message (format "Save %s." l-snippets-index-file))))
+    (l-snippets-read-index l-snippets-index-file)))
+
+(setq l-snippets-index
+  (l-snippets-update-index))
+
+(defun l-snippets-convert-to-snippet-name (abbrev)
+  (mapconcat 'symbol-name
+             (list major-mode abbrev)
+             (plist-get
+              l-snippets-syntax-table
+              'path-separator)))
+
+(defun l-snippets-get-snippet (snippet)
+  (or
+   (gethash snippet l-snippets-cache)
+   (if (member snippet l-snippets-index)
+       (puthash snippet
+                (l-snippets-gen-token
+                 (expand-file-name snippet l-snippets-repo))
+                l-snippets-cache)
+     (message (format "%s is not define" snippet)))))
+
+;; * insert
+(defun l-snippets-insert (snippet)
+  (let* ((snippet (l-snippets-get-snippet snippet))
+         idx lst)
+    (mapc
+     (lambda (x)
+       (if (stringp x)
+           (insert x)
+         (let ((id (car x))
+               (args (cdr x)))
+           (if id
+               (let ((o (apply 'l-snippets-overlay-appoint args)))
+                 (setq lst (cons o lst))
+                 (if (memq id idx)
+                     (l-snippets-overlay-add-to "...")
+                   (setq idx (cons id idx))))
+             (insert (format "%s" x))))))
+     snippet)))
