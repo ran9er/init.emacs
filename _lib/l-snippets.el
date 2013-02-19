@@ -61,8 +61,8 @@ l-interactive set to nil."
 
 (defvar l-snippets-token-regexp-open
   (l-snippets-gen-regexp
-   "\\(%s%s%s\\)\\|\\(%s%s\\)"
-   head open id head id))
+   "\\(%s%s\\)\\|\\(%s%s\\)"
+   head open head id))
 
 (defvar l-snippets-enable-overlays-pool nil)
 
@@ -252,19 +252,6 @@ l-interactive set to nil."
       (setq i (1- i)))
     x))
 
-(defun l-snippets-search-str (regexp str &rest sub)
-  (let (result)
-    (with-temp-buffer
-      (insert str)
-      (goto-char (point-min))
-      (while (re-search-forward regexp nil t)
-        (setq
-         result
-         (cons
-          (mapcar (lambda(x)(match-string x)) sub)
-          result))))
-    result))
-
 (defun l-snippets-find-close-paren (x y)
   (let ((count 1)
         open close)
@@ -307,36 +294,24 @@ l-interactive set to nil."
          a)))))
 
 (defvar l-snippets-token-defines
-  (list
+  (list ;; idx 1=>id 2=>prompt 3=>exp 4=>rest
    ;; "${1:$(eval)}"
-   (list
-    2
+   (cons
+    '(t nil t)
     (l-snippets-gen-regexp "%s%s\\(%s\\)%s%s\\(.*\\)%s" head open id delimiter head close))
    ;; "${1:prompt}"
-   (list
-    2
+   (cons
+    '(t t)
     (l-snippets-gen-regexp "%s%s\\(%s\\)%s\\(.*\\)%s" head open id delimiter close))
    ;; ${(eval)}
-   (list
-    1
+   (cons
+    '(nil nil t)
     (l-snippets-gen-regexp "%s%s\\(.*\\)%s" head open close))
    ;; "$1"
-   (list
-    1
+   (cons
+    '(t)
     (l-snippets-gen-regexp "%s\\(%s\\)" head id))
    ))
-
-(defun mk-lg-lst (x)
-  (let ((l (lambda(i n r)
-             (if (< i n)
-                 (funcall l (1+ i) n (cons (* (car r) 2) r))
-               r))))
-    (funcall l 1 x '(1))))
-
-(defun l-snippets-token-property (n)
-  ;; I=>id P=>prompt E=>exp R=>rest
-  (mapcar (lambda(x) (if (zerop (logand n x)) nil t))
-          (mk-lg-lst 8)))
 
 (defun l-snippets-prase-token (str)
   (let ((len (length l-snippets-token-defines))
@@ -345,14 +320,19 @@ l-interactive set to nil."
       (insert str)
       (while (and (< x len) (null result))
         (goto-char (point-min))
-        (re-search-forward (nth 1 (nth x l-snippets-token-defines)) nil t)
-        (setq
-         result
-         (remove nil
-                 (mapcar (lambda(x)(match-string x))
-                         (l-snippets-make-lst
-                          (nth 0 (nth x l-snippets-token-defines)))))
-         x (1+ x))))
+        (let ((s (cdr (nth x l-snippets-token-defines)))
+              (p (car (nth x l-snippets-token-defines))))
+            (re-search-forward s nil t)
+          (setq
+           result
+           (remove
+            nil
+            (mapcar (lambda(x)(match-string x))
+                    (l-snippets-make-lst
+                     (length p))))
+           result
+           (if result (cons p result))
+           x (1+ x)))))
     result))
 
 
@@ -376,14 +356,19 @@ l-interactive set to nil."
     (setq mkr (cdr mkr)))
     (setq mkr (reverse mkr)
           mkr (l-snippets-to-alist mkr))
-    (mapcar
-     (lambda(x)
-       (let* ((k (car x))(a (1- k))(b (1- (cdr x))))
-        (if (assoc x lst)
-           (l-snippets-prase-token
-            (substring-no-properties str a b))
-         (substring-no-properties str a b))))
-     mkr)))
+    (remove
+     nil
+     (mapcar
+      (lambda(x)
+        (let* ((k (car x))(a (1- k))(b (1- (cdr x)))
+               (s (substring-no-properties str a b)))
+          (if (zerop (length s))
+              nil
+            (if (assoc k lst)
+                ;; (l-snippets-prase-token s)
+                (read (concat "[ " s " ]"))
+              s))))
+      mkr))))
 
 ;; * insert
 (defun l-snippets-insert (snippet)
