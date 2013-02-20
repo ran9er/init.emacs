@@ -32,8 +32,8 @@
                    (cons
                     (match-beginning 0)
                     k))))))
-      (setq k (l-snippets-to-alist
-               (l-snippets-to-alist
+      (setq k (to-alist
+               (to-alist
                 (cdr (reverse (cons (point-max) k))))))
       (mapcar
        (lambda(x)

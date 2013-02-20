@@ -100,7 +100,7 @@
 ;; * exntension
 (mapcar
  'require
- '(;eshell-ls
+ '(eshell-ls
    eshell-user-key
    eshell-cmpl
    eshell-bmk))
