@@ -1,8 +1,9 @@
-;; 可自定义语法
-;; 可选字段，不定长字段(动态生成field；分隔符，镜像分隔符)
-;; 按需加载
-;; 嵌套 snippets （按缩进）
-;;
+;; [X] 可自定义语法
+;; [ ] 可选字段，不定长字段(动态生成field；分隔符，镜像分隔符)
+;; [X] 按需加载
+;; [ ] 嵌套 snippets （按缩进）
+;; [X] 自动缩进/原格式 
+;; [ ] 智能选择 snippets
 
 (defun l-snippets-to-alist (lst)
   (if lst
@@ -72,8 +73,12 @@ l-interactive set to nil."
   '(head "\\$" open "{" close "}" path-separator "%%" id "[[:digit:]]+"))
 
 (defvar l-snippets-syntax-delimiter
-  '((":" insert)
-    ("\\$" eval)))
+  '((":" (lambda(s p o)(insert s)(move-overlay o p (+ p (length s)))))
+    ("\\$" (lambda(s p o)(eval (read s)))))
+  "((delimiter(regexp) (lambda(string position overlay)(...)))(delimiter(regexp) (lambda(string position overlay)(...))) (...))")
+;; (mapc
+;;  (lambda(x) (funcall (nth 1 x) string overlay))
+;;  l-snippets-syntax-delimiter)
 
 (defmacro l-snippets-gen-regexp (str &rest tags)
   `(format
@@ -100,6 +105,12 @@ l-interactive set to nil."
 (defvar l-snippets-enable-overlays-pool nil)
 
 (defvar l-snippets-overlays-pool nil)
+
+(defvar l-snippets-instance nil)
+(make-local-variable 'l-snippets-instance)
+
+(defvar l-snippets-enable-indent t)
+(make-local-variable 'l-snippets-enable-indent)
 
 (defvar l-snippets-cache
   (make-hash-table :test 'equal))
@@ -158,12 +169,11 @@ l-interactive set to nil."
    ((role . control)
     (evaporate . t)
     (keymap . l-snippets-keymap))
-   field
-   ((role . field)
+   major
+   ((role . major)
     (id . nil)
     (owner . nil)
-    ;; (prompt . nil)
-    (link . (nil))
+    (group . l-snippets-instance)
     (mirrors . nil)
     ;; (more . nil)
     (modification-hooks  l-snippets-field)
@@ -173,14 +183,13 @@ l-interactive set to nil."
     (face . tempo-snippets-editable-face))
    mirror
    ((role . mirror)
-    ;; (prompt . nil)
     (face . tempo-snippets-auto-face))
    test
    ((role . test)
     (id . nil)
     (owner . nil)
     (prompt . "this is a test string")
-    (link . (nil))
+    (group . nil)
     (mirrors . nil)
     (more . nil)
     (modification-hooks  l-snippets-field)
@@ -197,20 +206,19 @@ l-interactive set to nil."
     (insert text)
     (move-overlay ov beg (point))))
 
-(defun l-snippets-overlay-appoint (role b &optional prompt &rest properties)
+(defun l-snippets-overlay-appoint (role &optional b  &rest properties)
   (let* ((inhibit-modification-hooks t)
-         (prompt (or prompt
-                     (cdr (assq 'prompt
-                                (plist-get l-snippets-roles role)))))
-         (e (prog1 (+ b (length prompt))
-              (goto-char b)(insert prompt)))
+         (b (or b (point)))
+         (e b)
          (ov (l-snippets-make-overlay b e)))
+    (run-hooks 'l-snippets-before-overlay-appoint-hook)
     (mapc
      (lambda(x)
        (overlay-put ov (car x)
                     (or (cdr x)
                         (plist-get properties (car x)))))
      (plist-get l-snippets-roles role))
+    (run-hooks 'l-snippets-after-overlay-appoint-hook)
     ov))
 
 (defun l-snippets-overlay-release (ov)
@@ -220,18 +228,29 @@ l-interactive set to nil."
    (overlay-get ov 'mirrors))
   (l-snippets-delete-overlay ov))
 
+(defun get-overlay (&optional property position)
+  (let* ((pro (or property 'major))
+         (pos (or position (point)))
+         (olst (overlay-at pos))
+         r)
+    (while olst
+      (if (overlay-get (car olst) pro)
+          (setq r (car olst)))
+      (setq olst (cdr olst)))
+    r))
+
 ;; ** stuction
 (defun l-snippets-overlay-push-to (to from &optional p)
-  (let ((p (or p 'mirror)))
+  (let ((p (or p 'group)))
    (overlay-put to p (cons from (overlay-get to p)))))
 
-(defun l-snippets-overlay-setprev (to from &optional p)
-  (let ((p (or p 'link)))
-   (overlay-put to p (cons from (cdr (overlay-get to p))))))
+;; (defun l-snippets-overlay-setprev (to from &optional p)
+;;   (let ((p (or p 'link)))
+;;    (overlay-put to p (cons from (cdr (overlay-get to p))))))
 
-(defun l-snippets-overlay-setnext (to from &optional p)
-  (let ((p (or p 'link)))
-   (overlay-put to p (cons (car (overlay-get to p)) from))))
+;; (defun l-snippets-overlay-setnext (to from &optional p)
+;;   (let ((p (or p 'link)))
+;;    (overlay-put to p (cons (car (overlay-get to p)) from))))
 
 
 ;; * keymap
@@ -396,11 +415,20 @@ l-interactive set to nil."
             (point-max)))))
        result))))
 
+(defun l-snippets-role-appoint (str)
+  'major)
+
 (defun l-snippets-prase-token (str)
   (let* ((lst (l-snippets-fetch-str str))
          (id (car lst))
-         (result (l-snippets-split-str (cdr lst))))
-    (setq result (cons id result))))
+         (act (l-snippets-split-str (cdr lst))))
+    (apply
+     'list
+     id
+     (l-snippets-role-appoint x)
+     (mapcar
+      (lambda(x) (cons (car x) (cdr x)))
+      act))))
 
 (defun l-snippets-gen-token (file &optional regexp)
   (let* ((regexp l-snippets-token-regexp-open)
@@ -436,20 +464,43 @@ l-interactive set to nil."
       mkr))))
 
 ;; * insert
+(defun l-snippets-insert-str (str)
+  (if l-snippets-enable-indent
+      (insert (replace-regexp-in-string "\n\\([ \t]+\\)" "\t" str nil nil 1))
+    (insert str)))
+
 (defun l-snippets-insert (snippet)
   (let* ((snippet (l-snippets-get-snippet snippet))
-         idx lst)
+         (top (eq (current-indentation) 0))
+         (lst 'l-snippets-instance))
     (mapc
      (lambda (x)
        (if (stringp x)
-           (insert x)
-         (let ((id (car x))
-               (args (cdr x)))
+           (l-snippets-insert-str x)
+         (let ((id (nth 0 x))
+               (role (nth 1 x))
+               (args (nthcdr 2 x))
+               (n (make-temp-name "")))
+           (if top
+               "...clear" )
            (if id
-               (let ((o (apply 'l-snippets-overlay-appoint args)))
-                 (setq lst (cons o lst))
-                 (if (memq id idx)
-                     (l-snippets-overlay-push-to "...")
-                   (setq idx (cons id idx))))
-             (insert (format "%s" x))))))
+               (let* ((o (l-snippets-overlay-appoint role))
+                      (p (point)))
+                 (cond
+                  ((eq role 'major)
+                   ;; (eval (overlay-get o 'group))
+                   (set lst (cons (cons (cons n id) o) (eval lst))))
+                  ((eq role 'mirror)
+                   (l-snippets-overlay-push-to
+                    (cdr (assoc id (cdr (assoc n (eval lst)))))
+                    o 'mirror)))
+                 (mapc
+                  (lambda(x)(funcall (car x) (cdr x) p o))
+                  args))
+             (mapc
+              (lambda(x)(funcall (car x) (cdr x) nil nil))
+              args))
+           )))
      snippet)))
+
+;(l-snippets-insert "python-mode%%class")
