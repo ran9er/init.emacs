@@ -2,7 +2,7 @@
 ;; [ ] 可选字段，不定长字段(动态生成field；分隔符，镜像分隔符)
 ;; [X] 按需加载
 ;; [ ] 嵌套 snippets （按缩进）
-;; [X] 自动缩进/原格式 
+;; [X] 自动缩进/原格式
 ;; [ ] 智能选择 snippets
 
 (defun l-snippets-to-alist (lst)
@@ -109,11 +109,15 @@ l-interactive set to nil."
 (defvar l-snippets-instance nil)
 (make-local-variable 'l-snippets-instance)
 
-(defvar l-snippets-enable-indent t)
+(defvar l-snippets-enable-indent nil)
 (make-local-variable 'l-snippets-enable-indent)
 
 (defvar l-snippets-cache
   (make-hash-table :test 'equal))
+
+(defun l-snippets-clear-cache()
+  (interactive)
+  (clrhash l-snippets-cache))
 
 (defvar l-snippets-repo
   (expand-file-name
@@ -228,13 +232,13 @@ l-interactive set to nil."
    (overlay-get ov 'mirrors))
   (l-snippets-delete-overlay ov))
 
-(defun get-overlay (&optional property position)
-  (let* ((pro (or property 'major))
+(defun l-snippets-get-overlay (&optional rl position)
+  (let* ((rl (or rl 'major))
          (pos (or position (point)))
-         (olst (overlay-at pos))
+         (olst (overlays-at pos))
          r)
     (while olst
-      (if (overlay-get (car olst) pro)
+      (if (eq (overlay-get (car olst) 'role) rl)
           (setq r (car olst)))
       (setq olst (cdr olst)))
     r))
@@ -277,6 +281,7 @@ l-interactive set to nil."
         (kill-buffer (current-buffer))))))
 
 (defun l-snippets-update-index ()
+  (interactive)
   (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
         (l-snippets-index-file
          (expand-file-name
@@ -415,17 +420,17 @@ l-interactive set to nil."
             (point-max)))))
        result))))
 
-(defun l-snippets-role-appoint (str)
-  'major)
-
 (defun l-snippets-prase-token (str)
   (let* ((lst (l-snippets-fetch-str str))
          (id (car lst))
          (act (l-snippets-split-str (cdr lst))))
+    ;; (role (cond
+    ;;        ((null id) nil)
+    ;;        ((and act id) 'major)
+    ;;        ((or act id) 'mirror)))
     (apply
      'list
      id
-     (l-snippets-role-appoint x)
      (mapcar
       (lambda(x) (cons (car x) (cdr x)))
       act))))
@@ -466,33 +471,42 @@ l-interactive set to nil."
 ;; * insert
 (defun l-snippets-insert-str (str)
   (if l-snippets-enable-indent
-      (insert (replace-regexp-in-string "\n\\([ \t]+\\)" "\t" str nil nil 1))
+      (insert
+       (replace-regexp-in-string
+        "\n\\([ \t]+\\)" "\t"
+        str nil nil 1))
     (insert str)))
 
 (defun l-snippets-insert (snippet)
   (let* ((snippet (l-snippets-get-snippet snippet))
          (top (eq (current-indentation) 0))
-         (lst 'l-snippets-instance))
+         (lst 'l-snippets-instance)
+         (n (make-temp-name ""))
+         l)
     (mapc
      (lambda (x)
        (if (stringp x)
            (l-snippets-insert-str x)
-         (let ((id (nth 0 x))
-               (role (nth 1 x))
-               (args (nthcdr 2 x))
-               (n (make-temp-name "")))
+         (let ((id (car x))
+               (args (cdr x))
+               role)
+           (setq role
+                 (cond
+                  ((assoc id l) 'mirror)
+                  (t 'major)))
+           ;; (set lst (cons (eval lst)))
            (if top
                "...clear" )
            (if id
-               (let* ((o (l-snippets-overlay-appoint role))
-                      (p (point)))
+               (let* ((p (point))
+                      (o (l-snippets-overlay-appoint role)))
                  (cond
                   ((eq role 'major)
                    ;; (eval (overlay-get o 'group))
-                   (set lst (cons (cons (cons n id) o) (eval lst))))
+                   (setq l (cons (cons id o) l)))
                   ((eq role 'mirror)
                    (l-snippets-overlay-push-to
-                    (cdr (assoc id (cdr (assoc n (eval lst)))))
+                    (cdr (assoc id l))
                     o 'mirror)))
                  (mapc
                   (lambda(x)(funcall (car x) (cdr x) p o))
@@ -501,6 +515,9 @@ l-interactive set to nil."
               (lambda(x)(funcall (car x) (cdr x) nil nil))
               args))
            )))
-     snippet)))
+     snippet)
+    (set lst (cons (cons n l)(eval lst)))))
+;; End of file during parsing
 
-;(l-snippets-insert "python-mode%%class")
+;(setq l-snippets-instance nil)
+;(l-snippets-insert "emacs-lisp-mode%%defun")
