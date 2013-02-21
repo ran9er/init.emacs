@@ -1,10 +1,3 @@
-;; [X] 可自定义语法
-;; [ ] 可选字段，不定长字段(动态生成field；分隔符，镜像分隔符)
-;; [X] 按需加载
-;; [ ] 嵌套 snippets （按缩进）
-;; [X] 自动缩进/原格式
-;; [ ] 智能选择 snippets
-
 (defun l-snippets-to-alist (lst)
   (if lst
       (cons
@@ -23,7 +16,9 @@
 ;; * init
 (add-to-list 'debug-ignored-errors "^Beginning of buffer$")
 (add-to-list 'debug-ignored-errors "^End of buffer$")
+;; (add-to-list 'debug-ignored-errors "^End of file during parsing$")
 
+;; ** face
 (defgroup l-snippets nil
   "Visual insertion of tempo templates."
   :group 'abbrev
@@ -46,6 +41,12 @@
   "*Face used for text in tempo snippets that is re-evaluated on input."
   :group 'l-snippets)
 
+(defface l-snippets-tail-face
+  '((((background dark)) (:underline "white"))
+    (((background light)) (:underline "white")))
+  "*Face used for text in tempo snippets that is re-evaluated on input."
+  :group 'l-snippets)
+
 (defcustom l-snippets-interactive t
   "*Insert prompts for snippets.
 If this variable is nil, snippets work just like ordinary l-templates with
@@ -60,6 +61,7 @@ l-interactive set to nil."
   :type '(choice (const :tag "Off" nil)
                  (const :tag "On" t)))
 
+;; * keymap
 (defvar l-snippets-keymap
   (let ((keymap (make-sparse-keymap)))
     (define-key keymap "\M-n" 'l-snippets-next-field)
@@ -67,18 +69,65 @@ l-interactive set to nil."
     keymap)
   "*Keymap used for l-nippets input fields.")
 
-(defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
+;; * roles
+(setq l-snippets-roles
+ `(
+   control
+   ((role . control)
+    (evaporate . t)
+    (keymap . ,l-snippets-keymap)
+    (insert-in-front-hooks l-snippets-tail)
+    (face . tempo-snippets-auto-face))
+   major
+   ((role . major)
+    ;; (id . nil)
+    (tail . nil)
+    (prompt . t)
+    (group . l-snippets-instance)
+    (mirrors . nil)
+    ;; (more . nil)
+    (modification-hooks  l-snippets-field)
+    (insert-in-front-hooks l-snippets-field)
+    (insert-behind-hooks l-snippets-field)
+    (local-map . ,l-snippets-keymap)
+    (face . tempo-snippets-editable-face))
+   tail
+   ((role . tail)
+    (owner . nil)
+    ;; (priority . 1)
+    (insert-in-front-hooks l-snippets-tail))
+   mirror
+   ((role . mirror)
+    (face . tempo-snippets-auto-face))
+   test
+   ((role . test)
+    (id . nil)
+    (owner . nil)
+    (prompt . "this is a test string")
+    (group . nil)
+    (mirrors . nil)
+    (more . nil)
+    (modification-hooks  l-snippets-field)
+    (insert-in-front-hooks l-snippets-field)
+    (insert-behind-hooks l-snippets-field)
+    (keymap . ,l-snippets-keymap)
+    (face . tempo-snippets-editable-face))))
 
 (defvar l-snippets-syntax-meta
   '(head "\\$" open "{" close "}" path-separator "%%" id "[[:digit:]]+"))
 
 (defvar l-snippets-syntax-delimiter
-  '((":" (lambda(s p o)(insert s)(move-overlay o p (+ p (length s)))))
+  '((":" (lambda(s p o)
+           (let (be)
+             (insert s)
+             (move-overlay o p (+ p (length s)))
+             (setq be (1+ (overlay-end o)))
+             (move-overlay (overlay-get o 'tail) be (1+ be)))
+           ))
     ("\\$" (lambda(s p o)(eval (read s)))))
   "((delimiter(regexp) (lambda(string position overlay)(...)))(delimiter(regexp) (lambda(string position overlay)(...))) (...))")
-;; (mapc
-;;  (lambda(x) (funcall (nth 1 x) string overlay))
-;;  l-snippets-syntax-delimiter)
+
+(defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
 (defmacro l-snippets-gen-regexp (str &rest tags)
   `(format
@@ -155,7 +204,7 @@ l-interactive set to nil."
     nil))
 
 ;(defvar
-(defun l-snippets-field (overlay after? beg end &optional length)
+(defun l-snippets-field (overlay after-p beg end &optional length)
   (let ((inhibit-modification-hooks t)
         (text (buffer-substring-no-properties
                (overlay-start overlay)
@@ -167,40 +216,24 @@ l-interactive set to nil."
          (l-snippets-overlay-update-text x text))
        mirrors))))
 
-(setq l-snippets-roles
- `(
-   control
-   ((role . control)
-    (evaporate . t)
-    (keymap . l-snippets-keymap))
-   major
-   ((role . major)
-    (id . nil)
-    (owner . nil)
-    (group . l-snippets-instance)
-    (mirrors . nil)
-    ;; (more . nil)
-    (modification-hooks  l-snippets-field)
-    (insert-in-front-hooks l-snippets-field)
-    (insert-behind-hooks l-snippets-field)
-    (local-map . l-snippets-keymap)
-    (face . tempo-snippets-editable-face))
-   mirror
-   ((role . mirror)
-    (face . tempo-snippets-auto-face))
-   test
-   ((role . test)
-    (id . nil)
-    (owner . nil)
-    (prompt . "this is a test string")
-    (group . nil)
-    (mirrors . nil)
-    (more . nil)
-    (modification-hooks  l-snippets-field)
-    (insert-in-front-hooks l-snippets-field)
-    (insert-behind-hooks l-snippets-field)
-    (keymap . ,l-snippets-keymap)
-    (face . tempo-snippets-editable-face))))
+(defun l-snippets-tail (overlay after-p beg end &optional length)
+  (let ((own (overlay-get overlay 'owner))
+        move)
+    (if after-p
+        (progn
+          (setq move (- (overlay-end overlay)(overlay-start overlay) 1))
+          (move-overlay overlay
+                        (+ (overlay-start overlay) move)
+                        (overlay-end overlay))
+          (move-overlay own
+                        (overlay-start own)
+                        (+ (overlay-end own) move)))
+      (if (overlay-get own 'prompt)
+          (progn
+            (delete-region
+             (overlay-start own)
+             (overlay-end own))
+            (overlay-put own 'prompt nil))))))
 
 (defun l-snippets-overlay-update-text (ov text)
   (let ((beg (overlay-start ov)))
@@ -210,10 +243,10 @@ l-interactive set to nil."
     (insert text)
     (move-overlay ov beg (point))))
 
-(defun l-snippets-overlay-appoint (role &optional b  &rest properties)
+(defun l-snippets-overlay-appoint (role &optional b e &rest properties)
   (let* ((inhibit-modification-hooks t)
          (b (or b (point)))
-         (e b)
+         (e (or e b))
          (ov (l-snippets-make-overlay b e)))
     (run-hooks 'l-snippets-before-overlay-appoint-hook)
     (mapc
@@ -242,6 +275,20 @@ l-interactive set to nil."
           (setq r (car olst)))
       (setq olst (cdr olst)))
     r))
+
+;; debug
+(defun what-overlays (&optional p)
+  (interactive)
+  (print
+   (let ((pt (or p (point))))
+     (cons (list 'position pt '& 'column (current-column))
+           (mapcar
+            (lambda(x) (remove-if
+                    nil
+                    (list
+                     (overlay-start x)(overlay-end x)
+                     (overlay-get x 'role))))
+            (overlays-in pt (1+ pt)))))))
 
 ;; ** stuction
 (defun l-snippets-overlay-push-to (to from &optional p)
@@ -471,10 +518,16 @@ l-interactive set to nil."
 ;; * insert
 (defun l-snippets-insert-str (str)
   (if l-snippets-enable-indent
-      (insert
-       (replace-regexp-in-string
-        "\n\\([ \t]+\\)" "\t"
-        str nil nil 1))
+      (let ((str (split-string str "\n"))(l 0))
+        (while str
+          (if (> l 0)
+              (forward-line))
+          (insert (car str))
+          (beginning-of-line)
+          (delete-horizontal-space t)
+          (indent-according-to-mode)
+          (setq str (cdr str)
+                l (1+ l))))
     (insert str)))
 
 (defun l-snippets-insert (snippet)
@@ -494,7 +547,6 @@ l-interactive set to nil."
                  (cond
                   ((assoc id l) 'mirror)
                   (t 'major)))
-           ;; (set lst (cons (eval lst)))
            (if top
                "...clear" )
            (if id
@@ -503,11 +555,13 @@ l-interactive set to nil."
                  (cond
                   ((eq role 'major)
                    ;; (eval (overlay-get o 'group))
+                   (overlay-put o 'tail
+                                (l-snippets-overlay-appoint 'tail p (1+ p) 'owner o))
                    (setq l (cons (cons id o) l)))
                   ((eq role 'mirror)
                    (l-snippets-overlay-push-to
                     (cdr (assoc id l))
-                    o 'mirror)))
+                    o 'mirrors)))
                  (mapc
                   (lambda(x)(funcall (car x) (cdr x) p o))
                   args))
@@ -516,8 +570,11 @@ l-interactive set to nil."
               args))
            )))
      snippet)
-    (set lst (cons (cons n l)(eval lst)))))
+    (set lst (cons (cons n l)(eval lst)))
+    (goto-char (overlay-end (cdr (car (last l)))))))
 ;; End of file during parsing
 
 ;(setq l-snippets-instance nil)
+;(setq l-snippets-enable-indent nil)
 ;(l-snippets-insert "emacs-lisp-mode%%defun")
+;(l-snippets-insert "python-mode%%class")
