@@ -12,7 +12,8 @@
     x))
 
 
-(setq l-snippets-repo (expand-file-name "sandbox/repo" *init-dir*))
+(setq l-snippets-dir (expand-file-name "sandbox/l-snippets" *init-dir*))
+(setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
 ;; * init
 (add-to-list 'debug-ignored-errors "^Beginning of buffer$")
 (add-to-list 'debug-ignored-errors "^End of buffer$")
@@ -76,7 +77,7 @@ l-interactive set to nil."
    ((role . control)
     (evaporate . t)
     (keymap . ,l-snippets-keymap)
-    (insert-in-front-hooks l-snippets-tail)
+    (insert-in-front-hooks l-snippets-move-major)
     (face . tempo-snippets-auto-face))
    major
    ((role . major)
@@ -86,16 +87,16 @@ l-interactive set to nil."
     (group . l-snippets-instance)
     (mirrors . nil)
     ;; (more . nil)
-    (modification-hooks  l-snippets-field)
-    (insert-in-front-hooks l-snippets-field)
-    (insert-behind-hooks l-snippets-field)
+    (modification-hooks  l-snippets-update-mirror)
+    (insert-in-front-hooks l-snippets-update-mirror)
+    (insert-behind-hooks l-snippets-update-mirror)
     (local-map . ,l-snippets-keymap)
     (face . tempo-snippets-editable-face))
    tail
    ((role . tail)
     (owner . nil)
     ;; (priority . 1)
-    (insert-in-front-hooks l-snippets-tail))
+    (insert-in-front-hooks l-snippets-move-major))
    mirror
    ((role . mirror)
     (face . tempo-snippets-auto-face))
@@ -107,9 +108,9 @@ l-interactive set to nil."
     (group . nil)
     (mirrors . nil)
     (more . nil)
-    (modification-hooks  l-snippets-field)
-    (insert-in-front-hooks l-snippets-field)
-    (insert-behind-hooks l-snippets-field)
+    (modification-hooks  l-snippets-update-mirror)
+    (insert-in-front-hooks l-snippets-update-mirror)
+    (insert-behind-hooks l-snippets-update-mirror)
     (keymap . ,l-snippets-keymap)
     (face . tempo-snippets-editable-face))))
 
@@ -204,7 +205,7 @@ l-interactive set to nil."
     nil))
 
 ;(defvar
-(defun l-snippets-field (overlay after-p beg end &optional length)
+(defun l-snippets-update-mirror (overlay after-p beg end &optional length)
   (let ((inhibit-modification-hooks t)
         (text (buffer-substring-no-properties
                (overlay-start overlay)
@@ -216,18 +217,12 @@ l-interactive set to nil."
          (l-snippets-overlay-update-text x text))
        mirrors))))
 
-(defun l-snippets-tail (overlay after-p beg end &optional length)
-  (let ((own (overlay-get overlay 'owner))
-        move)
+(defun l-snippets-move-major (overlay after-p beg end &optional length)
+  (let ((own (overlay-get overlay 'owner)))
     (if after-p
-        (progn
-          (setq move (- (overlay-end overlay)(overlay-start overlay) 1))
-          (move-overlay overlay
-                        (+ (overlay-start overlay) move)
-                        (overlay-end overlay))
-          (move-overlay own
-                        (overlay-start own)
-                        (+ (overlay-end own) move)))
+        (let ((pos (1- (overlay-end overlay))))
+          (move-overlay overlay pos (overlay-end overlay))
+          (move-overlay own (overlay-start own) pos))
       (if (overlay-get own 'prompt)
           (progn
             (delete-region
@@ -555,8 +550,14 @@ l-interactive set to nil."
                  (cond
                   ((eq role 'major)
                    ;; (eval (overlay-get o 'group))
-                   (overlay-put o 'tail
-                                (l-snippets-overlay-appoint 'tail p (1+ p) 'owner o))
+                   (overlay-put 
+                    o 
+                    'tail
+                    (l-snippets-overlay-appoint 
+                     'tail 
+                     (overlay-end o)
+                     (1+ (overlay-end o))
+                     'owner o))
                    (setq l (cons (cons id o) l)))
                   ((eq role 'mirror)
                    (l-snippets-overlay-push-to
@@ -572,6 +573,26 @@ l-interactive set to nil."
      snippet)
     (set lst (cons (cons n l)(eval lst)))
     (goto-char (overlay-end (cdr (car (last l)))))))
+
+
+
+(defun l-snippets-fetch-word ()
+  )
+(defun l-snippets-clear-region ()
+  )
+(defun l-snippets-match ()
+  ;; defvar l-snippets-match-strategy
+  ;; smart-match strict-match(by file-name)
+  )
+
+;;;###autoload
+(defun l-snippets-expand ()
+  (interactive)
+  (l-snippets-insert 
+   (l-snippets-match 
+    (prog1 
+        (l-snippets-fetch-word)
+      (l-snippets-clear-region)))))
 ;; End of file during parsing
 
 ;(setq l-snippets-instance nil)
