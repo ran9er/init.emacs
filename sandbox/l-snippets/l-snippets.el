@@ -273,7 +273,11 @@ l-interactive set to nil."
           (move-overlay tail beg end)))))
 
 (defun l-snippets-this-overlay (overlay after-p beg end &optional length)
-  (setq l-snippets-current-overlay overlay))
+  (if after-p
+      nil
+      (condition-case err
+          (throw 'current-overlay overlay)
+        (error nil))))
 
 ;; * debug
 (defun what-overlays (&optional p)
@@ -306,11 +310,7 @@ l-interactive set to nil."
 ;; * keymap
 (defun l-snippets-get-overlay()
   (interactive)
-  (save-excursion
-    (save-restriction
-      (insert " ")
-      (backward-delete-char 1)))
-  l-snippets-current-overlay)
+  (catch 'current-overlay (insert "I hold not zhu!")))
 
 (defun l-snippets-goto-field (&optional n)
   (interactive)
