@@ -70,6 +70,7 @@ l-interactive set to nil."
     (define-key keymap "\M-p" 'l-snippets-previous-field)
     (define-key keymap [remap move-beginning-of-line] 'l-snippets-beginning-of-field)
     (define-key keymap [remap move-end-of-line] 'l-snippets-end-of-field)
+    (define-key keymap (kbd "C-x =") (lambda()(interactive)(setq current-overlay (l-snippets-get-overlay))))
     keymap)
   "*Keymap used for l-nippets input fields.")
 
@@ -102,7 +103,7 @@ l-interactive set to nil."
     (face . l-snippets-tail-face)
     ;; (modification-hooks l-snippets-this-overlay)
     (local-map . ,l-snippets-keymap)
-    (insert-in-front-hooks l-snippets-this-overlay l-snippets-move-primary l-snippets-update-mirror))
+    (insert-in-front-hooks l-snippets-this-overlay l-snippets-delete-prompt l-snippets-move-primary l-snippets-update-mirror))
    mirror
    ((role . mirror)
     (face . l-snippets-auto-face))
@@ -118,9 +119,7 @@ l-interactive set to nil."
 
 (defun l-snippets-action-prompt (s p o)
   (insert s)
-  (l-snippets-move-overlay o p (point))
-  ;; (overlay-put o 'prompt t)
-  )
+  (l-snippets-move-overlay o p (point)))
 
 (defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
@@ -254,15 +253,17 @@ l-interactive set to nil."
            (l-snippets-overlay-update-text x text))
          mirrors))))
 
+(defun l-snippets-delete-prompt (overlay after-p beg end &optional length)
+  (let ((ov (l-snippets-get-primary overlay)))
+   (if (null (overlay-get ov 'prompt))
+      nil
+    (delete-region (overlay-start ov)(overlay-end ov))
+    (overlay-put ov 'prompt nil))))
 (defun l-snippets-move-primary (overlay after-p beg end &optional length)
   (let ((own (overlay-get overlay 'primary))
         (pos (1- (overlay-end overlay))))
     (if after-p
-        (l-snippets-move-overlay overlay (overlay-start own) pos)
-      (if (null (overlay-get own 'prompt))
-          nil
-        (delete-region (overlay-start own)(overlay-end own))
-        (overlay-put own 'prompt nil)))))
+        (l-snippets-move-overlay overlay (overlay-start own) pos))))
 
 ;; (defun l-snippets-move-tail (overlay after-p beg end &optional length)
 ;;   (if after-p
@@ -333,10 +334,8 @@ l-interactive set to nil."
          (o (l-snippets-get-primary (l-snippets-get-overlay)))
          (lst (cdr (assoc (overlay-get o 'group) l-snippets-instance)))
          (oo (cdr (nth (- (- (length lst) (length (member (rassoc o lst) lst)))n)lst))))
-    (overlay-put o 'offset (- (point)(overlay-start o)))
-    (if (overlay-get oo 'prompt)
-        (goto-char (overlay-end oo))
-      (goto-char (+ (overlay-start oo)(overlay-get oo 'offset))))))
+    (overlay-put o 'offset (- (overlay-end o)(point)))
+    (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))))
 
 (defun l-snippets-previous-field ()
   (interactive)
@@ -593,6 +592,7 @@ l-interactive set to nil."
             args)
            )))
      snippet)
+    (mapc (lambda(x)(overlay-put (cdr x) 'prompt t)) l)
     (set lst (cons (cons n l)(eval lst)))
     (goto-char (overlay-end (cdr (car (last l)))))))
 
