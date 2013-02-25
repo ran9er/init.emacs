@@ -119,7 +119,7 @@ l-interactive set to nil."
 (defun l-snippets-action-prompt (s p o)
   (insert s)
   (l-snippets-move-overlay o p (point))
-  (overlay-put o 'prompt t)
+  ;; (overlay-put o 'prompt t)
   )
 
 (defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
