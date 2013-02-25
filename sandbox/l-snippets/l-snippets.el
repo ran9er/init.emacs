@@ -43,8 +43,8 @@
   :group 'l-snippets)
 
 (defface l-snippets-tail-face
-  '((((background dark)) (:underline "green"))
-    (((background light)) (:underline "green")))
+  '((((background dark)) (:underline "dim gray"))
+    (((background light)) (:underline "dim gray")))
   "*Face used for text in tempo snippets that is re-evaluated on input."
   :group 'l-snippets)
 
@@ -87,7 +87,7 @@ l-interactive set to nil."
     (id . nil)
     (offset . 0)
     (tail . nil)
-    (prompt . t)
+    (prompt . nil)
     (group . nil)
     (mirrors . nil)
     (modification-hooks l-snippets-this-overlay l-snippets-update-mirror)
@@ -118,7 +118,9 @@ l-interactive set to nil."
 
 (defun l-snippets-action-prompt (s p o)
   (insert s)
-  (l-snippets-move-overlay o p (point)))
+  (l-snippets-move-overlay o p (point))
+  (overlay-put o 'prompt t)
+  )
 
 (defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
@@ -185,17 +187,12 @@ l-interactive set to nil."
         (setq ov (make-overlay b e))))
     ov))
 
-(defun l-snippets-move-overlay (o b e)
-  (cond
-   ((eq 'primary (overlay-get o 'role))
-    (progn
-      (move-overlay (overlay-get o 'tail) e (1+ e))
-      (move-overlay o b e)))
-   ((eq 'tail (overlay-get o 'role))
-    (let ((p (overlay-get o 'primary)))
-      (move-overlay o (1- e) e)
-      (move-overlay p (overlay-start p)(overlay-start o))))
-   (t (move-overlay o b e))))
+(defun l-snippets-move-overlay (o b e &optional nontail)
+  (let* ((primary (l-snippets-get-primary o))
+         (tail (l-snippets-get-tail o))
+         (te (if nontail e (1+ e))))
+    (move-overlay tail e te)
+    (move-overlay primary b e)))
 
 (defun l-snippets-delete-overlay (ov)
   (let ((p 'l-snippets-overlays-pool))
@@ -261,7 +258,7 @@ l-interactive set to nil."
   (let ((own (overlay-get overlay 'primary))
         (pos (1- (overlay-end overlay))))
     (if after-p
-        (l-snippets-move-overlay overlay pos (overlay-end overlay))
+        (l-snippets-move-overlay overlay (overlay-start own) pos)
       (if (null (overlay-get own 'prompt))
           nil
         (delete-region (overlay-start own)(overlay-end own))
@@ -538,10 +535,10 @@ l-interactive set to nil."
   (let* ((ov (l-snippets-get-overlay))
          st end)
     (if ov (progn
-             (setq ov (l-snippets-get-tail (l-snippets-get-overlay))
+             (setq ov (l-snippets-get-primary ov)
                    st (overlay-start ov)
                    end (overlay-end ov))
-             (l-snippets-move-overlay ov st st)))
+             (l-snippets-move-overlay ov st end t)))
     (if l-snippets-enable-indent
         (let ((str (split-string str "\n"))(l 0))
           (while str
