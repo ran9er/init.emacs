@@ -27,7 +27,7 @@
     (insert " ")
     (set-text-properties
      (1- (point)) (point)
-     `(font-lock-face 
+     `(font-lock-face
        (:background
         ,(adjust-color "gray20" x)))))
 
@@ -63,14 +63,13 @@
 
 ;; \(fn)" t nil)
 
-(global-set-key 
+(global-set-key
  (kbd "C-j")
  (lambda()(interactive)
    (condition-case err
        (l-snippets-expand)
-     (error 
+     (error
       (if (equal err '(void-function l-snippets-expand))
-          (load (expand-file-name "l-snippets/l-snippets.el" *init-dir*)))))))
-
-
-
+          (progn
+            (load (expand-file-name "l-snippets/l-snippets.el" *init-dir*))
+            (l-snippets-expand)))))))

@@ -12,7 +12,7 @@
     x))
 
 
-(defvar l-snippets-dir (expand-file-name "sandbox/l-snippets" *init-dir*))
+(defvar l-snippets-dir (expand-file-name (file-name-directory load-file-name)))
 (setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
 (setq l-snippets-extension (expand-file-name "extensions" l-snippets-dir))
 ;; * init
