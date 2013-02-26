@@ -12,8 +12,9 @@
     x))
 
 
-(setq l-snippets-dir (expand-file-name "sandbox/l-snippets" *init-dir*))
+(defvar l-snippets-dir (expand-file-name "sandbox/l-snippets" *init-dir*))
 (setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
+(setq l-snippets-extension (expand-file-name "extensions" l-snippets-dir))
 ;; * init
 (add-to-list 'debug-ignored-errors "^Beginning of buffer$")
 (add-to-list 'debug-ignored-errors "^End of buffer$")
@@ -106,11 +107,12 @@ l-interactive set to nil."
     (insert-in-front-hooks l-snippets-this-overlay l-snippets-delete-prompt l-snippets-move-primary l-snippets-update-mirror))
    mirror
    ((role . mirror)
+    (primary . nil)
     (face . l-snippets-auto-face))
    ))
 
 (defvar l-snippets-syntax-meta
-  '(head "\\$" open "{" close "}" path-separator "%%" id "[[:digit:]]+"))
+  '(head "\\$" open "{" close "}" path-separator "%" id "[[:digit:]]+"))
 
 (defvar l-snippets-syntax-delimiter
   '((":" l-snippets-action-prompt)
@@ -226,8 +228,8 @@ l-interactive set to nil."
     (mapc
      (lambda(x)
        (overlay-put ov (car x)
-                    (or (cdr x)
-                        (plist-get properties (car x)))))
+                    (or (plist-get properties (car x))
+                        (cdr x))))
      rl)
     (run-hooks 'l-snippets-after-overlay-appoint-hook)
     ov))
@@ -393,13 +395,6 @@ l-interactive set to nil."
 
 (setq l-snippets-index
   (l-snippets-update-index))
-
-(defun l-snippets-convert-to-snippet-name (abbrev)
-  (mapconcat 'symbol-name
-             (list major-mode abbrev)
-             (plist-get
-              l-snippets-syntax-meta
-              'path-separator)))
 
 (defun l-snippets-get-snippet (snippet)
   (or
@@ -571,9 +566,17 @@ l-interactive set to nil."
            (cond
             ((assoc id l) (setq role 'mirror
                                 o (l-snippets-overlay-appoint role p p 'group n))
-             (l-snippets-overlay-push-to
-              (cdr (assoc id l))
-              o 'mirrors))
+             (let ((prim (cdr (assoc id l)))(p (point)))
+               (l-snippets-overlay-push-to prim o 'mirrors)
+               (overlay-put o 'primary prim)
+               (insert
+                (buffer-substring-no-properties
+                 (overlay-start prim)
+                 (overlay-end prim)))
+               (move-overlay o p (point))))
+            ;; endpos
+            ((eq id 0)
+             )
             (id (setq role 'primary
                       o (l-snippets-overlay-appoint role p p 'group n))
                 (overlay-put
@@ -598,25 +601,64 @@ l-interactive set to nil."
 
 ;; * interface
 (defun l-snippets-fetch-word ()
-  )
-(defun l-snippets-clear-region ()
-  )
-(defun l-snippets-match ()
-  ;; defvar l-snippets-match-strategy
-  ;; smart-match strict-match(by file-name)
-  )
+  (interactive)
+  (save-excursion
+    (buffer-substring-no-properties
+     (progn
+       (skip-chars-backward " \t\n")
+       (point))
+     (progn
+       (backward-sexp)
+       (point)))))
+
+(defun l-snippets-clear-word (str &optional back)
+  (let*  ((str (split-string str "[ \t\n]" t)))
+    (if back (setq str (reverse str)))
+    (while str
+      (if back 
+          (skip-chars-backward " \t\n")
+        (skip-chars-forward " \t\n"))
+      (let* ((p1 (point))
+             (p2 (if back (1+ (search-backward-regexp "[ \t\n]"))
+                   (1- (search-forward-regexp "[ \t\n]"))))
+             (s (buffer-substring-no-properties p1 p2)))
+        (if (equal (car str) s)
+            (delete-region p1 p2)))
+      (setq str (cdr str)))))
+
+(defun l-snippets-clear-region (snippet)
+  (let* ((s (l-snippets-get-snippet snippet))
+         (head (car s))
+         (tail (car (last s))))
+    (cond 
+     ((stringp head)
+      (l-snippets-clear-word head t))
+     ((stringp tail)
+      (l-snippets-clear-word tail)))))
+
+(defun l-snippets-match (str)
+  (mapconcat 'identity 
+             (list 
+              (symbol-name major-mode)
+              str)
+             (plist-get
+              l-snippets-syntax-meta
+              'path-separator)))
+
+(defvar l-snippets-match-strategy 'l-snippets-match)
 
 ;;;###autoload
 (defun l-snippets-expand ()
   (interactive)
-  (l-snippets-insert
-   (l-snippets-match
-    (prog1
-        (l-snippets-fetch-word)
-      (l-snippets-clear-region)))))
+  (let ((sp (funcall l-snippets-match-strategy
+              (l-snippets-fetch-word))))
+    (l-snippets-clear-region sp)
+    (l-snippets-insert sp)))
+
+(let ((f (directory-files l-snippets-repo nil ".*\\.el\\'")))
+  (if f (mapc (lambda(x)(load x)) f)))
+
 ;; End of file during parsing
 ;(setq l-snippets-instance nil)
 ;(setq l-snippets-enable-indent nil)
 ;(l-snippets-insert "python-mode%%class")
-(define-key-s 0 '("<f9>" eval-buffer
-                  "<f8>" (lambda()(interactive)(l-snippets-insert "emacs-lisp-mode%%defun"))))

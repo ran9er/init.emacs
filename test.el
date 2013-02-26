@@ -62,3 +62,15 @@
 
 
 ;; \(fn)" t nil)
+
+(global-set-key 
+ (kbd "C-j")
+ (lambda()(interactive)
+   (condition-case err
+       (l-snippets-expand)
+     (error 
+      (if (equal err '(void-function l-snippets-expand))
+          (load (expand-file-name "l-snippets/l-snippets.el" *init-dir*)))))))
+
+
+
