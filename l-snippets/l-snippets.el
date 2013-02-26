@@ -612,31 +612,31 @@ l-interactive set to nil."
 (defun l-snippets-clear-word (str &optional back)
   (let*  ((str (split-string str "[ \t\n]" t)))
     (if back (setq str (reverse str)))
-    (while str
-      (if back 
-          (skip-chars-backward " \t\n")
-        (skip-chars-forward " \t\n"))
-      (let* ((p1 (point))
-             (p2 (if back (1+ (search-backward-regexp "[ \t\n]"))
-                   (1- (search-forward-regexp "[ \t\n]"))))
-             (s (buffer-substring-no-properties p1 p2)))
-        (if (equal (car str) s)
-            (delete-region p1 p2)))
-      (setq str (cdr str)))))
+    (save-excursion
+      (while str
+        (if back
+            (skip-chars-backward " \t\n")
+          (skip-chars-forward " \t\n"))
+        (let* ((p1 (point))
+               (p2 (if back (1+ (search-backward-regexp "[ \t\n]"))
+                     (1- (search-forward-regexp "[ \t\n]"))))
+               (s (buffer-substring-no-properties p1 p2)))
+          (if (equal (car str) s)
+              (delete-region p1 p2)))
+        (setq str (cdr str))))))
 
 (defun l-snippets-clear-region (snippet)
   (let* ((s (l-snippets-get-snippet snippet))
          (head (car s))
          (tail (car (last s))))
-    (cond 
-     ((stringp head)
-      (l-snippets-clear-word head t))
-     ((stringp tail)
-      (l-snippets-clear-word tail)))))
+    (if (stringp head)
+        (l-snippets-clear-word head t))
+    (if (stringp tail)
+        (l-snippets-clear-word tail))))
 
 (defun l-snippets-match (str)
-  (mapconcat 'identity 
-             (list 
+  (mapconcat 'identity
+             (list
               (symbol-name major-mode)
               str)
              (plist-get
@@ -651,7 +651,8 @@ l-interactive set to nil."
   (let ((sp (funcall l-snippets-match-strategy
               (l-snippets-fetch-word))))
     (l-snippets-clear-region sp)
-    (l-snippets-insert sp)))
+    ;; (l-snippets-insert sp)
+    ))
 
 (let ((f (directory-files l-snippets-repo nil ".*\\.el\\'")))
   (if f (mapc (lambda(x)(load x)) f)))
