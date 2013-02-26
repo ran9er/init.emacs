@@ -534,13 +534,11 @@ l-interactive set to nil."
                    end (overlay-end ov))
              (l-snippets-move-overlay ov st end t)))
     (if l-snippets-enable-indent
-        (let ((str (split-string str "\n"))(l 0))
+        (let ((str (split-string str " \t\n" t))(l 0))
           (while str
             (if (> l 0)
                 (forward-line))
             (insert (car str))
-            (beginning-of-line)
-            (delete-horizontal-space t)
             (indent-according-to-mode)
             (setq str (cdr str)
                   l (1+ l))))

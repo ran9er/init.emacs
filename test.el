@@ -69,7 +69,7 @@
    (condition-case err
        (l-snippets-expand)
      (error
-      (if (equal err '(void-function l-snippets-expand))
+      (if (eq (car err) 'void-function)
           (progn
             (load (expand-file-name "l-snippets/l-snippets.el" *init-dir*))
             (l-snippets-expand)))))))
