@@ -1,20 +1,3 @@
-(defun l-snippets-to-alist (lst)
-  (if lst
-      (cons
-       (cons (nth 0 lst) (nth 1 lst))
-       (l-snippets-to-alist (nthcdr 2 lst)))))
-
-(defun l-snippets-make-lst (n)
-  (let* ((i n)(x nil))
-    (while (> i 0)
-      (setq x (cons i x))
-      (setq i (1- i)))
-    x))
-
-
-(defvar l-snippets-dir (expand-file-name (file-name-directory load-file-name)))
-(setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
-(setq l-snippets-extension (expand-file-name "extensions" l-snippets-dir))
 ;; * init
 (add-to-list 'debug-ignored-errors "^Beginning of buffer$")
 (add-to-list 'debug-ignored-errors "^End of buffer$")
@@ -22,31 +5,31 @@
 
 ;; ** face
 (defgroup l-snippets nil
-  "Visual insertion of tempo templates."
+  "Visual insertion of l-snippets."
   :group 'abbrev
   :group 'convenience)
 
 (defface l-snippets-editable-face
   '((((background dark)) (:background "steel blue"))
     (((background light)) (:background "light cyan")))
-  "*Face used for editable text in tempo snippets."
+  "*Face used for editable text in l-snippets."
   :group 'l-snippets)
 
 (defface l-snippets-auto-face
   '((((background dark)) (:underline "steel blue"))
     (((background light)) (:underline "light cyan")))
-  "*Face used for automatically updating text in tempo snippets."
+  "*Face used for automatically updating text in l-snippets."
   :group 'l-snippets)
 
 (defface l-snippets-auto-form-face
   '((default (:inherit 'l-snippets-auto-face)))
-  "*Face used for text in tempo snippets that is re-evaluated on input."
+  "*Face used for text in l-snippets that is re-evaluated on input."
   :group 'l-snippets)
 
 (defface l-snippets-tail-face
   '((((background dark)) (:underline "dim gray"))
     (((background light)) (:underline "dim gray")))
-  "*Face used for text in tempo snippets that is re-evaluated on input."
+  "*Face used for text in l-snippets that is re-evaluated on input."
   :group 'l-snippets)
 
 (defcustom l-snippets-interactive t
@@ -63,7 +46,16 @@ l-interactive set to nil."
   :type '(choice (const :tag "Off" nil)
                  (const :tag "On" t)))
 
-;; * keymap
+;; * customize
+(defvar l-snippets-dir
+  (file-name-directory
+   (or load-file-name
+       buffer-file-name)))
+
+(setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
+(setq l-snippets-extension (expand-file-name "extensions" l-snippets-dir))
+(defvar l-snippets-index-file "_index")
+
 (defvar l-snippets-keymap
   (let ((keymap (make-sparse-keymap)))
     (define-key keymap [?\t] 'l-snippets-next-field)
@@ -75,7 +67,18 @@ l-interactive set to nil."
     keymap)
   "*Keymap used for l-nippets input fields.")
 
-;; * roles
+(defvar l-snippets-syntax-meta
+  '(head "\\$" open "{" close "}" path-separator "%" id "[[:digit:]]+"))
+
+(defvar l-snippets-syntax-delimiter
+  '((":" l-snippets-action-prompt)
+    ("\\$" (lambda(s p o)(eval (read s)))))
+  "string position overlay lst")
+
+(defun l-snippets-action-prompt (s p o)
+  (insert s)
+  (l-snippets-move-overlay o p (point)))
+
 (setq l-snippets-roles
  `(
    control
@@ -111,20 +114,23 @@ l-interactive set to nil."
     (face . l-snippets-auto-face))
    ))
 
-(defvar l-snippets-syntax-meta
-  '(head "\\$" open "{" close "}" path-separator "%" id "[[:digit:]]+"))
+;; * func
+(defun l-snippets-to-alist (lst)
+  (if lst
+      (cons
+       (cons (nth 0 lst) (nth 1 lst))
+       (l-snippets-to-alist (nthcdr 2 lst)))))
 
-(defvar l-snippets-syntax-delimiter
-  '((":" l-snippets-action-prompt)
-    ("\\$" (lambda(s p o)(eval (read s)))))
-  "string position overlay lst")
-
-(defun l-snippets-action-prompt (s p o)
-  (insert s)
-  (l-snippets-move-overlay o p (point)))
+(defun l-snippets-make-lst (n)
+  (let* ((i n)(x nil))
+    (while (> i 0)
+      (setq x (cons i x))
+      (setq i (1- i)))
+    x))
 
 (defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
+;; * init
 (defmacro l-snippets-gen-regexp (str &rest tags)
   `(format
     ,str
@@ -163,15 +169,6 @@ l-interactive set to nil."
 (defun l-snippets-clear-cache()
   (interactive)
   (clrhash l-snippets-cache))
-
-(defvar l-snippets-repo
-  (expand-file-name
-   "repo/"
-   (file-name-directory
-    (or load-file-name
-        buffer-file-name))))
-
-(defvar l-snippets-index-file "_index")
 
 ;; * overlay
 
@@ -239,7 +236,18 @@ l-interactive set to nil."
    (lambda(x)
      (l-snippets-delete-overlay x))
    (overlay-get ov 'mirrors))
+  (l-snippets-delete-overlay (overlay-get ov 'tail))
   (l-snippets-delete-overlay ov))
+
+(defun l-snippets-get-primary(ov)
+  (if (eq 'primary (overlay-get ov 'role))
+      ov
+    (overlay-get ov 'primary)))
+
+(defun l-snippets-get-tail(ov)
+  (if (eq 'tail (overlay-get ov 'role))
+      ov
+    (overlay-get ov 'tail)))
 
 ;; ** hooks
 (defun l-snippets-update-mirror (overlay after-p beg end &optional length)
@@ -320,16 +328,6 @@ l-interactive set to nil."
       (insert " ")
       (delete-char -1))))
 
-(defun l-snippets-get-primary(ov)
-  (if (eq 'primary (overlay-get ov 'role))
-      ov
-    (overlay-get ov 'primary)))
-
-(defun l-snippets-get-tail(ov)
-  (if (eq 'tail (overlay-get ov 'role))
-      ov
-    (overlay-get ov 'tail)))
-
 (defun l-snippets-goto-field (&optional n)
   (interactive)
   (let* ((n (or n 1))
@@ -374,27 +372,27 @@ l-interactive set to nil."
 
 (defun l-snippets-update-index ()
   (interactive)
-  (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
-        (l-snippets-index-file
-         (expand-file-name
-          l-snippets-index-file
-          (file-name-directory
-           l-snippets-repo))))
-    (if (time-less-p
-         (or (funcall mtime l-snippets-index-file)
-             '(0 0 0))
-         (funcall mtime l-snippets-repo))
-        (with-temp-file
-            (let ((enable-local-variables nil)
-                  (find-file-hook nil))
-              l-snippets-index-file)
-          (insert (pp-to-string
-                   (directory-files l-snippets-repo nil "^[^_].*\\'")))
-          (message (format "Save %s." l-snippets-index-file))))
-    (l-snippets-read-index l-snippets-index-file)))
+  (setq
+   l-snippets-index
+   (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
+         (l-snippets-index-file
+          (expand-file-name
+           l-snippets-index-file
+           l-snippets-repo)))
+     (if (time-less-p
+          (or (funcall mtime l-snippets-index-file)
+              '(0 0 0))
+          (funcall mtime l-snippets-repo))
+         (with-temp-file
+             (let ((enable-local-variables nil)
+                   (find-file-hook nil))
+               l-snippets-index-file)
+           (insert (pp-to-string
+                    (directory-files l-snippets-repo nil "^[^_].*\\'")))
+           (message (format "Save %s." l-snippets-index-file))))
+     (l-snippets-read-index l-snippets-index-file))))
 
-(setq l-snippets-index
-  (l-snippets-update-index))
+(l-snippets-update-index)
 
 (defun l-snippets-get-snippet (snippet)
   (or
@@ -651,10 +649,10 @@ l-interactive set to nil."
   (let ((sp (funcall l-snippets-match-strategy
               (l-snippets-fetch-word))))
     (l-snippets-clear-region sp)
-    ;; (l-snippets-insert sp)
+    (l-snippets-insert sp)
     ))
 
-(let ((f (directory-files l-snippets-repo nil ".*\\.el\\'")))
+(let ((f (directory-files l-snippets-extension t ".*\\.el\\'")))
   (if f (mapc (lambda(x)(load x)) f)))
 
 ;; End of file during parsing

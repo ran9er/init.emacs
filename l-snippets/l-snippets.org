@@ -1,0 +1,150 @@
+* todo
+** l-snippets-gen-token l-snippets-read-file => l-snippets-gen-token
+(defun l-snippets-gen-token (file &optional regexp)
+  (let ((regexp l-snippets-token-regexp-open)
+        beg mid end result)
+    (with-temp-buffer
+      (when (file-readable-p file)
+        (insert-file-contents file nil nil nil t)
+        (setq end (point-max))
+        (goto-char end)
+        (while (re-search-backward regexp nil t)
+          (setq 
+           beg 
+           (match-beginning 0)
+           mid 
+           (if (match-beginning 1)
+               (cdr (l-snippets-find-close-paren
+                     (plist-get l-snippets-syntax-meta 'open)
+                     (plist-get l-snippets-syntax-meta 'close)))
+             (match-end 2))
+           result 
+           (cons
+            (l-snippets-prase-token 
+             (buffer-substring-no-properties beg mid))
+            (cons
+             (buffer-substring-no-properties mid end)
+             result))
+           end 
+           beg))
+        (if (eq beg (point-min))
+            result
+          (setq 
+           result 
+           (cons 
+            (substring-no-properties (point-min) beg)
+            result)))))))
+** keymap 反射机制
+X 获取当前 overlay
+l-snippets-previous-field l-snippets-next-field 处理边界情况（跳至下一组）
+** 检查字符串处理函数
+*** split-str
+*** (l-snippets-fetch-str "${123as{ }{ }{ }{ }fd}")
+** 动态插入 模板扩展
+界定符 %
+keymap
+syntax-delimiter
+role => major => + (ext . nil)
+l-snippets-syntax-delimiter => +
+  "%" (lambda (s p o l)
+        addto o (ext . s)
+              o (modification-hooks ext-major)
+        )
+ext-major (if (eq last-command o.ext)
+           appoint o1 'major (gethash cache snippet id)
+           insert o1 l
+file => def ${% }
+** load-file-name => file-name
+** 抽象  roles (l-snippets-insert)
+** 文件格式
+------
+describe
+------
+文件描述
+  作者 邮箱……
+------
+environment
+------
+文件变量 
+表达式
+------
+keyword
+------
+关键词 供智能匹配
+------
+snippet
+------
+snippet ……
+
+
+** 智能匹配
+模式 环境 上下文
+    
+** M-w copy-things
+* 扩展
+** l-snippets-syntax-file
+** l-snippets-syntax-meta
+** l-snippets-syntax-delimiter
+** l-snippets-keymap
+** l-snippets-roles
+** l-snippets-match-strategy
+* 介绍
+** 名字
+暂时没想好，L 有 lite 之意，主要指体积小巧……当然，我会尽可能的保证其速度
+** 特性
+*** [ ] 动态插入 模板扩展
+可选字段，不定长字段(动态生成field；分隔符，镜像分隔符)
+通过插件系统扩展    
+*** [X] 按需加载
+*** [ ] 嵌套 snippets （按缩进）
+**** 清除 overlays
+*** [ ] 自动缩进/原格式
+**** l-snippets-insert-str
+*** [ ] 智能匹配
+**** 关键词
+* expand
+** fetch-word
+** clear-region
+** match
+*** smart strict
+** insert
+*** xxx
+*** insert-str
+        
+* 随录
+** l-snippets-split-str
+原始版本，
+(defun l-snippets-split-str (str &optional sep)
+  (let* ((sep (or sep l-snippets-token-regexp-delimiter))
+         (lst l-snippets-syntax-delimiter)
+         (elt (l-snippets-make-lst (length lst)))
+         k result)
+    (with-temp-buffer
+      (insert str)
+      (goto-char (point-min))
+      (while (re-search-forward sep nil t)
+        (mapcar
+         (lambda(x)
+           (if (match-end x)
+               (let ((m (cons
+                         (match-beginning x)
+                         (match-end x)))
+                     (n (nth 1 (nth (1- x) lst))))
+                 (setq result
+                       (cons
+                        (cons n m)
+                        result)))))
+         elt))
+      (setq result (reverse result))
+      (mapcar
+       (lambda(x)
+         (cons
+          (car x)
+          (buffer-substring-no-properties
+           (cdr (cdr x))
+           (or
+            (car (cdr (car (cdr (member x result)))))
+            (point-max)))))
+       result))))
+** (overlay-put o 'tail (l-snippets-overlay-appoint 'tail p (1+ p) 'owner o))
+(overlay-put o 'tail (l-snippets-overlay-appoint 'tail (overlay-end o)(1+ (overlay-end o)) 'owner o))
