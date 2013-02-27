@@ -1,3 +1,8 @@
+
+<------keywords
+
+<------environment
+<------snippet
 (defun ${1:FuncName} (${2%,})
   "this func's name is $1"
   (let (($2 ($3)))

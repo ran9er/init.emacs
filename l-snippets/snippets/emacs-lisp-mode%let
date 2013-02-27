@@ -1,0 +1,11 @@
+
+<------keywords
+
+<------environment
+(progn
+  (plist-put l-snippets-syntax-meta 'head "#")
+  (setq l-snippets-syntax-delimiter 
+        (cons '("\\$" l-snippets-action-prompt) nil)))
+<------snippet
+(let ((#{1$var}))
+  #2)
