@@ -82,12 +82,10 @@ l-interactive set to nil."
 
 (setq l-snippets-roles
  `(
-   control
-   ((role . control)
+   end
+   ((role . end)
     (evaporate . t)
-    (keymap . ,l-snippets-keymap)
-    (insert-in-front-hooks l-snippets-move-primary)
-    (face . l-snippets-auto-face))
+    (keymap . ,l-snippets-keymap))
    primary
    ((role . primary)
     (id . nil)
@@ -229,6 +227,15 @@ l-interactive set to nil."
                     (or (plist-get properties (car x))
                         (cdr x))))
      rl)
+    (if (eq role 'primary)
+        (overlay-put
+         ov
+         'tail
+         (l-snippets-overlay-appoint
+          'tail
+          (overlay-end ov)
+          (1+ (overlay-end ov))
+          'primary ov)))
     (run-hooks 'l-snippets-after-overlay-appoint-hook)
     ov))
 
@@ -603,19 +610,11 @@ l-interactive set to nil."
                  (overlay-start prim)
                  (overlay-end prim)))
                (move-overlay o p (point))))
-            ;; endpos
-            ((eq id 0)
-             )
+            ((eq id 0)(setq role 'end
+                                o (l-snippets-overlay-appoint role p p 'group n))
+             (setq l (cons (cons id o) l)))
             (id (setq role 'primary
                       o (l-snippets-overlay-appoint role p p 'group n))
-                (overlay-put
-                 o
-                 'tail
-                 (l-snippets-overlay-appoint
-                  'tail
-                  (overlay-end o)
-                  (1+ (overlay-end o))
-                  'primary o))
                 (overlay-put o 'id (list snippet-name n id))
                 (setq l (cons (cons id o) l)))
             (t (setq role 'void)))
