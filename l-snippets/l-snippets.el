@@ -240,6 +240,18 @@ l-interactive set to nil."
   (l-snippets-delete-overlay (overlay-get ov 'tail))
   (l-snippets-delete-overlay ov))
 
+(defun l-snippets-clear-instance ()
+  "l-snippets-clear-instance "
+  (interactive)
+  (mapc
+   (lambda(x)
+     (mapc
+      (lambda(y)
+        (l-snippets-overlay-release (cdr y)))
+      (cdr x)))
+   l-snippets-instance))
+
+
 (defun l-snippets-get-primary(ov)
   (if (eq 'primary (overlay-get ov 'role))
       ov
@@ -505,46 +517,43 @@ l-interactive set to nil."
               (re-search-forward
                (plist-get l-snippets-syntax-meta 'file-separator) nil t)
               (match-beginning 0)))))
-        (let ((l-snippets-syntax-meta l-snippets-syntax-meta)
-              (l-snippets-syntax-delimiter l-snippets-syntax-delimiter))
-          (if (> (length (replace-regexp-in-string "[ \t\n]" "" env)) 0)
-              (eval (read env)))
-          (setq regexp (or regexp (l-snippets-token-regexp-open)))
+        (if (> (length (replace-regexp-in-string "[ \t\n]" "" env)) 0)
+            (eval (read env)))
+        (setq regexp (or regexp (l-snippets-token-regexp-open)))
+        (setq
+         bound
+         (re-search-forward
+          (format "%ssnippet\n"
+                  (plist-get l-snippets-syntax-meta 'file-separator))
+          nil t))
+        (setq end (point-max))
+        (goto-char end)
+        (while (re-search-backward regexp bound t)
           (setq
-           bound
-           (re-search-forward
-            (format "%ssnippet\n"
-                    (plist-get l-snippets-syntax-meta 'file-separator))
-            nil t))
-          (setq end (point-max))
-          (goto-char end)
-          (while (re-search-backward regexp bound t)
-            (setq
-             beg
-             (match-beginning 0)
-             mid
-             (if (match-beginning 1)
-                 (cdr (l-snippets-find-close-paren
-                       (plist-get l-snippets-syntax-meta 'open)
-                       (plist-get l-snippets-syntax-meta 'close)))
-               (match-end 2))
-             result
-             (cons
-              (l-snippets-prase-token
-               (buffer-substring-no-properties beg mid))
-              (cons
-               (buffer-substring-no-properties mid end)
-               result))
-             end
-             beg))
-          (if (eq beg bound)
-              result
-            (setq
-             result
-             (cons
-              (buffer-substring-no-properties bound beg)
-              result)))
-          )))))
+           beg
+           (match-beginning 0)
+           mid
+           (if (match-beginning 1)
+               (cdr (l-snippets-find-close-paren
+                     (plist-get l-snippets-syntax-meta 'open)
+                     (plist-get l-snippets-syntax-meta 'close)))
+             (match-end 2))
+           result
+           (cons
+            (l-snippets-prase-token
+             (buffer-substring-no-properties beg mid))
+            (cons
+             (buffer-substring-no-properties mid end)
+             result))
+           end
+           beg))
+        (if (eq beg bound)
+            result
+          (setq
+           result
+           (cons
+            (buffer-substring-no-properties bound beg)
+            result)))))))
 
 ;; * insert
 (defun l-snippets-insert-str (str)

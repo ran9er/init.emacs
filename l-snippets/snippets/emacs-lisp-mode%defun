@@ -3,10 +3,6 @@
 
 <------environment
 <------snippet
-(defun ${1:FuncName} (${2%,})
-  "this func's name is $1"
-  (let (($2 ($3)))
-    ${$(insert (pp-to-string l-snippets-cache))})
-    $1=$1
-    ${1$(insert user-full-name)}
-$4)
+(defun ${1:FuncName} ($2)
+  "$1 $3"
+  $4)
