@@ -14,16 +14,25 @@
       (overlay-put ovl 'ext-templ str))))
 
 (defun l-snippets-ext-overlay (ov after-p beg end &optional length)
-  (if after-p 
-      (if (eq last-input-char (overlay-get ov 'dynamic-tigger)) ;; (overlay-get ov 'dynamic-tigger)
-          (let* ((id (read (make-temp-name "dy-")))
+  (if after-p
+      (if (eq last-input-char (overlay-get ov 'dynamic-tigger))
+          (let* ((ov (l-snippets-get-primary ov))
+                 (id (read (make-temp-name "dy-")))
                  (o (progn
                       (l-snippets-move-overlay ov beg end t)
-                      (l-snippets-overlay-appoint 'primary (point)(point) 'id id 
-                                                  'face l-snippets-editable-face)
-)))
-            
+                      (l-snippets-clone-field ov end id))))
+
             "insert ov to instence lst after dynamic-overlay"
             ;; insert mirror
             ))))
 
+(defun l-snippets-clone-primary (ov beg)
+  (l-snippets-insert-field
+   'primary
+   (overlay-get ov 'id)
+   (cdr
+    (assoc
+     (nth 1 id)
+     (l-snippets-get-snippet
+      (nth 0 id))))
+   beg))

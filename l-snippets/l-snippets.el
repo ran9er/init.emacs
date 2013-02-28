@@ -92,7 +92,8 @@ l-interactive set to nil."
     (offset . 0)
     (tail . nil)
     (prompt . nil)
-    (group . nil)
+    (previous . nil)
+    (next . nil)
     (mirrors . nil)
     (modification-hooks l-snippets-this-overlay l-snippets-update-mirror)
     (insert-in-front-hooks l-snippets-this-overlay l-snippets-update-mirror)
@@ -258,6 +259,11 @@ l-interactive set to nil."
       (cdr x)))
    l-snippets-instance))
 
+(defun l-snippets-get-prev (ov id)
+  (if (overlayp ov)
+      (if (eq id (nth 1 (overlay-get ov 'id)))
+          ov
+        (l-snippets-get-prev (overlay-get ov 'previous) id))))
 
 (defun l-snippets-get-primary(ov)
   (if (eq 'primary (overlay-get ov 'role))
@@ -348,22 +354,20 @@ l-interactive set to nil."
       (insert " ")
       (delete-char -1))))
 
-(defun l-snippets-goto-field (&optional n)
+(defun l-snippets-goto-field (p-or-n)
   (interactive)
-  (let* ((n (or n 1))
-         (o (l-snippets-get-primary (l-snippets-get-overlay)))
-         (lst (cdr (assoc (overlay-get o 'group) l-snippets-instance)))
-         (oo (cdr (nth (- (- (length lst) (length (member (rassoc o lst) lst)))n)lst))))
+  (let* ((o (l-snippets-get-primary (l-snippets-get-overlay)))
+         (oo (overlay-get o p-or-n)))
     (overlay-put o 'offset (- (overlay-end o)(point)))
     (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))))
 
 (defun l-snippets-previous-field ()
   (interactive)
-  (l-snippets-goto-field -1))
+  (l-snippets-goto-field 'previous))
 
 (defun l-snippets-next-field ()
   (interactive)
-  (l-snippets-goto-field 1))
+  (l-snippets-goto-field 'next))
 
 (defun l-snippets-beginning-of-field ()
   (interactive)
@@ -583,14 +587,37 @@ l-interactive set to nil."
       (insert str))
     (if ov (l-snippets-move-overlay ov st end))))
 
+(defun l-snippets-insert-field (role ids args pos &optional prev)
+  "l-snippets-insert-field "
+  (let* ((o (l-snippets-overlay-appoint role pos pos))
+         (id (nth 1 ids)))
+    (cond
+     ((eq role 'mirror)
+      (let* ((p (point))
+             (prim (l-snippets-get-prev prev id)))
+        (l-snippets-overlay-push-to prim o 'mirrors)
+        (overlay-put o 'primary prim)
+        (insert
+         (buffer-substring-no-properties
+          (overlay-start prim)
+          (overlay-end prim)))
+        (move-overlay o p (point))))
+     ((eq role 'end)
+      nil)
+     ((eq role 'primary)
+      (overlay-put o 'id ids))
+     (t))
+    (mapc
+     (lambda(x)(funcall (car x) (cdr x) pos o))
+     args)
+    o))
+
 (defun l-snippets-insert (snippet-name)
   (let* ((snippet (l-snippets-get-snippet snippet-name))
          (top (eq (current-indentation) 0))
-         (lst 'l-snippets-instance)
-         (n (make-temp-name ""))
-         l)
-    (if top
-        "...clear" )
+         prev)
+    ;; (if top
+    ;;     (l-snippets-clear-instance))
     (mapc
      (lambda (x)
        (if (stringp x)
@@ -598,34 +625,25 @@ l-interactive set to nil."
          (let* ((id (car x))
                 (args (cdr x))
                 (p (point))
+                (ids (list snippet-name id))
                 role o)
            (cond
-            ((assoc id l) (setq role 'mirror
-                                o (l-snippets-overlay-appoint role p p 'group n))
-             (let ((prim (cdr (assoc id l)))(p (point)))
-               (l-snippets-overlay-push-to prim o 'mirrors)
-               (overlay-put o 'primary prim)
-               (insert
-                (buffer-substring-no-properties
-                 (overlay-start prim)
-                 (overlay-end prim)))
-               (move-overlay o p (point))))
-            ((eq id 0)(setq role 'end
-                                o (l-snippets-overlay-appoint role p p 'group n))
-             (setq l (cons (cons id o) l)))
-            (id (setq role 'primary
-                      o (l-snippets-overlay-appoint role p p 'group n))
-                (overlay-put o 'id (list snippet-name n id))
-                (setq l (cons (cons id o) l)))
+            ((eq id 0)(setq role 'end))
+            ((l-snippets-get-prev prev id)
+             (setq role 'mirror))
+            (id (setq role 'primary))
             (t (setq role 'void)))
-           (mapc
-            (lambda(x)(funcall (car x) (cdr x) p o))
-            args)
-           )))
+           (setq o (l-snippets-insert-field role ids args p prev))
+           (if (eq 'primary (overlay-get o 'role))
+               (progn
+                 (overlay-put o 'previous prev)
+                 (if prev (overlay-put prev 'next o))
+                 (setq prev o))))))
      snippet)
-    (mapc (lambda(x)(overlay-put (cdr x) 'prompt t)) l)
-    (set lst (cons (cons n l)(eval lst)))
-    (goto-char (overlay-end (cdr (car (last l)))))))
+    (while (setq prev (overlay-get prev 'previous))
+      (if prev
+          (progn (goto-char (overlay-end prev))
+                 (overlay-put prev 'prompt t))))))
 
 ;; * interface
 (defun l-snippets-fetch-word ()
