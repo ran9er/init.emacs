@@ -81,8 +81,7 @@ l-interactive set to nil."
   (l-snippets-move-overlay o p (point)))
 
 (setq l-snippets-roles
- `(
-   end
+ `(end
    ((role . end)
     (evaporate . t)
     (keymap . ,l-snippets-keymap))
@@ -593,15 +592,15 @@ l-interactive set to nil."
          (id (nth 1 ids)))
     (cond
      ((eq role 'mirror)
-      (let* ((p (point))
-             (prim (l-snippets-get-prev prev id)))
+      (let* ((prim (l-snippets-get-prev prev id)))
         (l-snippets-overlay-push-to prim o 'mirrors)
         (overlay-put o 'primary prim)
+        (goto-char (overlay-end o))
         (insert
          (buffer-substring-no-properties
           (overlay-start prim)
           (overlay-end prim)))
-        (move-overlay o p (point))))
+        (move-overlay o pos (point))))
      ((eq role 'end)
       nil)
      ((eq role 'primary)
@@ -634,7 +633,7 @@ l-interactive set to nil."
             (id (setq role 'primary))
             (t (setq role 'void)))
            (setq o (l-snippets-insert-field role ids args p prev))
-           (if (eq 'primary (overlay-get o 'role))
+           (if (eq 'primary (if o (overlay-get o 'role)))
                (progn
                  (overlay-put o 'previous prev)
                  (if prev (overlay-put prev 'next o))
