@@ -1,0 +1,29 @@
+(setq l-snippets-syntax-delimiter
+      (cons
+       '("%" l-snippets-dynamic-overlay)
+       l-snippets-syntax-delimiter))
+
+(defun l-snippets-dynamic-overlay (str pos ovl)
+  (let ((tail (l-snippets-get-tail ovl)))
+    (if tail
+        (progn
+          (overlay-put tail 'insert-in-front-hooks
+                       (cons 'l-snippets-ext-overlay
+                             (overlay-get tail 'insert-in-front-hooks)))
+          (overlay-put tail 'dynamic-tigger (read str)))
+      (overlay-put ovl 'ext-templ str))))
+
+(defun l-snippets-ext-overlay (ov after-p beg end &optional length)
+  (if after-p 
+      (if (eq last-input-char (overlay-get ov 'dynamic-tigger)) ;; (overlay-get ov 'dynamic-tigger)
+          (let* ((id (read (make-temp-name "dy-")))
+                 (o (progn
+                      (l-snippets-move-overlay ov beg end t)
+                      (l-snippets-overlay-appoint 'primary (point)(point) 'id id 
+                                                  'face l-snippets-editable-face)
+)))
+            
+            "insert ov to instence lst after dynamic-overlay"
+            ;; insert mirror
+            ))))
+
