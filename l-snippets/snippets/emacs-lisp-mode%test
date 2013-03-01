@@ -1,0 +1,12 @@
+
+<------keywords
+
+<------environment
+<------snippet
+(defun ${1:FuncName} (${2:Args%? })
+  "this func's name is $1"
+  (let (${2%(^I (^F))})
+    ${$(insert "hello!")})
+    $1=$1
+    ${1$(insert user-full-name)}
+$4)
