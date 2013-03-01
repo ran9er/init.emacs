@@ -10,6 +10,12 @@
   :group 'convenience)
 
 (defface l-snippets-editable-face
+  '((((background dark)) (:background "dim gray"))
+    (((background light)) (:background "dim gray")))
+  "*Face used for editable text in l-snippets."
+  :group 'l-snippets)
+
+(defface l-snippets-active-face
   '((((background dark)) (:background "steel blue"))
     (((background light)) (:background "light cyan")))
   "*Face used for editable text in l-snippets."
@@ -64,6 +70,7 @@ l-interactive set to nil."
     (define-key keymap [remap move-beginning-of-line] 'l-snippets-beginning-of-field)
     (define-key keymap [remap move-end-of-line] 'l-snippets-end-of-field)
     (define-key keymap (kbd "C-x =") (lambda()(interactive)(setq current-overlay (l-snippets-get-overlay))))
+    (define-key keymap (kbd "C-x -") 'l-snippets-clear-instance)
     keymap)
   "*Keymap used for l-nippets input fields.")
 
@@ -96,20 +103,20 @@ l-interactive set to nil."
     (mirrors . nil)
     (modification-hooks l-snippets-this-overlay l-snippets-update-mirror)
     (insert-in-front-hooks l-snippets-this-overlay l-snippets-update-mirror)
-    ;; (insert-behind-hooks l-snippets-this-overlay)
     (local-map . ,l-snippets-keymap)
     (face . l-snippets-editable-face))
    tail
    ((role . tail)
     (primary . nil)
     (priority . 1)
-    (face . l-snippets-tail-face)
-    ;; (modification-hooks l-snippets-this-overlay)
+    ;; (face . l-snippets-tail-face) ;; debug
     (local-map . ,l-snippets-keymap)
     (insert-in-front-hooks l-snippets-this-overlay l-snippets-delete-prompt l-snippets-move-primary l-snippets-update-mirror))
    mirror
    ((role . mirror)
     (primary . nil)
+    (modification-hooks l-snippets-this-overlay)
+    (local-map . ,l-snippets-keymap) ;; debug
     (face . l-snippets-auto-face))
    ))
 
@@ -159,7 +166,7 @@ l-interactive set to nil."
 (defvar l-snippets-instance nil)
 (make-local-variable 'l-snippets-instance)
 
-(defvar l-snippets-enable-indent nil)
+(defvar l-snippets-enable-indent t)
 (make-local-variable 'l-snippets-enable-indent)
 
 (defvar l-snippets-cache
@@ -250,13 +257,16 @@ l-interactive set to nil."
 (defun l-snippets-clear-instance ()
   "l-snippets-clear-instance "
   (interactive)
-  (mapc
-   (lambda(x)
-     (mapc
-      (lambda(y)
-        (l-snippets-overlay-release (cdr y)))
-      (cdr x)))
-   l-snippets-instance))
+  (let* ((cur (l-snippets-get-primary (l-snippets-get-overlay)))
+         head)
+    (while (overlay-get cur 'previous)
+      (setq cur (overlay-get cur 'previous)
+            head cur))
+    (or head (setq head cur))
+    (while (overlay-get head 'next)
+      (setq cur head
+            head (overlay-get head 'next))
+      (l-snippets-overlay-release cur))))
 
 (defun l-snippets-get-prev (ov id)
   (if (overlayp ov)
@@ -358,7 +368,9 @@ l-interactive set to nil."
   (let* ((o (l-snippets-get-primary (l-snippets-get-overlay)))
          (oo (overlay-get o p-or-n)))
     (overlay-put o 'offset (- (overlay-end o)(point)))
-    (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))))
+    (overlay-put o 'face 'l-snippets-editable-face)
+    (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
+    (overlay-put oo 'face 'l-snippets-active-face)))
 
 (defun l-snippets-previous-field ()
   (interactive)
@@ -596,11 +608,12 @@ l-interactive set to nil."
         (l-snippets-overlay-push-to prim o 'mirrors)
         (overlay-put o 'primary prim)
         (goto-char (overlay-end o))
-        (insert
-         (buffer-substring-no-properties
-          (overlay-start prim)
-          (overlay-end prim)))
-        (move-overlay o pos (point))))
+        (if args nil
+          (insert
+           (buffer-substring-no-properties
+            (overlay-start prim)
+            (overlay-end prim)))
+          (move-overlay o pos (point)))))
      ((eq role 'end)
       nil)
      ((eq role 'primary)
@@ -614,7 +627,7 @@ l-interactive set to nil."
 (defun l-snippets-insert (snippet-name)
   (let* ((snippet (l-snippets-get-snippet snippet-name))
          (top (eq (current-indentation) 0))
-         prev)
+         prev first)
     ;; (if top
     ;;     (l-snippets-clear-instance))
     (mapc
@@ -641,8 +654,11 @@ l-interactive set to nil."
      snippet)
     (while (setq prev (overlay-get prev 'previous))
       (if prev
-          (progn (goto-char (overlay-end prev))
-                 (overlay-put prev 'prompt t))))))
+          (progn
+            (overlay-put prev 'prompt t)
+            (setq first prev))))
+    (overlay-put first 'face 'l-snippets-active-face)
+    (goto-char (overlay-end first))))
 
 ;; * interface
 (defun l-snippets-fetch-word ()
@@ -697,6 +713,7 @@ l-interactive set to nil."
   (interactive)
   (let ((sp (funcall l-snippets-match-strategy)))
     ;; (l-snippets-clear-region sp)
+    (kill-word -1)                      ;; debug
     (l-snippets-insert sp)))
 
 (let ((f (directory-files l-snippets-extension t ".*\\.el\\'")))

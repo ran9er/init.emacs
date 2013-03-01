@@ -4,15 +4,18 @@
        l-snippets-syntax-delimiter))
 
 (defun l-snippets-dynamic-overlay (str pos ovl)
-  (let ((tail (l-snippets-get-tail ovl)))
-    (overlay-put tail 'insert-in-front-hooks
-                 (cons 'l-snippets-ext-overlay
-                       (overlay-get tail 'insert-in-front-hooks)))
-    (overlay-put tail 'dynamic-tigger (read str))))
+  (if (null (eq (overlay-get ovl 'role) 'mirror))
+      (let ((tail (l-snippets-get-tail ovl)))
+        (overlay-put tail 'insert-in-front-hooks
+                     (cons 'l-snippets-ext-overlay
+                           (overlay-get tail 'insert-in-front-hooks)))
+        (overlay-put tail 'dynamic-trigger (read str)))
+    (overlay-put ovl 'dynamic-template str)
+    (l-snippets-insert-template str)))
 
 (defun l-snippets-ext-overlay (ov after-p beg end &optional length)
   (if after-p
-      (if (eq last-input-char (overlay-get ov 'dynamic-tigger))
+      (if (eq last-input-char (overlay-get ov 'dynamic-trigger))
           (let* ((ov (l-snippets-get-primary ov))
                  (b (overlay-start ov))
                  (e (overlay-end ov))
@@ -25,8 +28,9 @@
             (overlay-put o 'next (overlay-get ov 'next))
             (overlay-put ov 'next o)
             (overlay-put o 'previous ov)
-            ;; insert mirror
-            ))))
+            (overlay-put o 'prompt t)
+            (overlay-put ov 'face 'l-snippets-editable-face)
+            (overlay-put o 'face 'l-snippets-active-face)))))
 
 (defun l-snippets-clone-primary (ov beg)
   (let* ((ids (overlay-get ov 'id))
@@ -56,3 +60,7 @@
      (overlay-get ov 'mirrors))
     (goto-char (overlay-end o))
     o))
+
+(defun l-snippets-insert-template (str)
+  "l-snippets-insert-template "
+  )
