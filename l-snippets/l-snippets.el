@@ -85,7 +85,8 @@ l-interactive set to nil."
 
 (defun l-snippets-action-prompt (s p o)
   (insert s)
-  (l-snippets-move-overlay o p (point)))
+  (l-snippets-move-overlay o p (point))
+  (overlay-put o 'prompt t))
 
 (setq l-snippets-roles
  `(end
@@ -101,8 +102,11 @@ l-interactive set to nil."
     (previous . nil)
     (next . nil)
     (mirrors . nil)
-    (modification-hooks l-snippets-this-overlay l-snippets-update-mirror)
-    (insert-in-front-hooks l-snippets-this-overlay l-snippets-update-mirror)
+    (modification-hooks l-snippets-this-overlay
+                        l-snippets-update-mirror)
+    (insert-in-front-hooks l-snippets-this-overlay
+                           l-snippets-delete-prompt
+                           l-snippets-update-mirror)
     (local-map . ,l-snippets-keymap)
     (face . l-snippets-editable-face))
    tail
@@ -111,7 +115,9 @@ l-interactive set to nil."
     (priority . 1)
     ;; (face . l-snippets-tail-face) ;; debug
     (local-map . ,l-snippets-keymap)
-    (insert-in-front-hooks l-snippets-this-overlay l-snippets-delete-prompt l-snippets-move-primary l-snippets-update-mirror))
+    (insert-in-front-hooks l-snippets-this-overlay
+                           l-snippets-move-primary
+                           l-snippets-update-mirror))
    mirror
    ((role . mirror)
     (primary . nil)
@@ -299,16 +305,27 @@ l-interactive set to nil."
          mirrors))))
 
 (defun l-snippets-delete-prompt (overlay after-p beg end &optional length)
-  (let ((ov (l-snippets-get-primary overlay)))
-   (if (null (overlay-get ov 'prompt))
-      nil
-    (delete-region (overlay-start ov)(overlay-end ov))
-    (overlay-put ov 'prompt nil))))
+  (if after-p
+      (l-snippets-move-overlay overlay beg end)
+      (let ((ov (l-snippets-get-primary overlay)))
+        (if (null (overlay-get ov 'prompt))
+            nil
+          (delete-region beg (overlay-end ov))
+          (overlay-put ov 'prompt nil)))))
+
 (defun l-snippets-move-primary (overlay after-p beg end &optional length)
   (let ((own (overlay-get overlay 'primary))
         (pos (1- (overlay-end overlay))))
     (if after-p
         (l-snippets-move-overlay overlay (overlay-start own) pos))))
+
+;; (defun l-snippets-display-tail (overlay after-p beg end &optional length)
+;;   (let* ((pri (overlay-get overlay 'primary))
+;;          (len (- (overlay-end pri)(overlay-start pri)))
+;;          (tail (overlay-get pri 'tail)))
+;;     (if (zerop len)
+;;         (overlay-put tail 'face l-snippets-tail-face)
+;;       (overlay-put tail 'face nil))))
 
 ;; (defun l-snippets-move-tail (overlay after-p beg end &optional length)
 ;;   (if after-p
@@ -367,9 +384,9 @@ l-interactive set to nil."
   (interactive)
   (let* ((o (l-snippets-get-primary (l-snippets-get-overlay)))
          (oo (overlay-get o p-or-n)))
-    (overlay-put o 'offset (- (overlay-end o)(point)))
+    (overlay-put o 'offset (- (point)(overlay-start o)))
     (overlay-put o 'face 'l-snippets-editable-face)
-    (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
+    (goto-char (+ (overlay-start oo)(overlay-get oo 'offset)))
     (overlay-put oo 'face 'l-snippets-active-face)))
 
 (defun l-snippets-previous-field ()
@@ -653,12 +670,9 @@ l-interactive set to nil."
                  (setq prev o))))))
      snippet)
     (while (setq prev (overlay-get prev 'previous))
-      (if prev
-          (progn
-            (overlay-put prev 'prompt t)
-            (setq first prev))))
+      (if prev (setq first prev)))
     (overlay-put first 'face 'l-snippets-active-face)
-    (goto-char (overlay-end first))))
+    (goto-char (overlay-start first))))
 
 ;; * interface
 (defun l-snippets-fetch-word ()

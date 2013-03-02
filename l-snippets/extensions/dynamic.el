@@ -28,7 +28,6 @@
             (overlay-put o 'next (overlay-get ov 'next))
             (overlay-put ov 'next o)
             (overlay-put o 'previous ov)
-            (overlay-put o 'prompt t)
             (overlay-put ov 'face 'l-snippets-editable-face)
             (overlay-put o 'face 'l-snippets-active-face)))))
 
@@ -58,7 +57,7 @@
         'mirrors)
        (insert " 222\n"))
      (overlay-get ov 'mirrors))
-    (goto-char (overlay-end o))
+    (goto-char (overlay-start o))
     o))
 
 (defun l-snippets-insert-template (str)
