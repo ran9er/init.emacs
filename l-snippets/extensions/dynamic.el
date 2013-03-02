@@ -57,7 +57,7 @@
         'mirrors)
        (insert " 222\n"))
      (overlay-get ov 'mirrors))
-    (goto-char (overlay-start o))
+    (goto-char (overlay-end o))
     o))
 
 (defun l-snippets-insert-template (str)
