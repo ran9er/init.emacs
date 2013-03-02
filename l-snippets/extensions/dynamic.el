@@ -28,6 +28,7 @@
             (overlay-put o 'next (overlay-get ov 'next))
             (overlay-put ov 'next o)
             (overlay-put o 'previous ov)
+            (overlay-put o 'ready t)
             (overlay-put ov 'face 'l-snippets-editable-face)
             (overlay-put o 'face 'l-snippets-active-face)))))
 
