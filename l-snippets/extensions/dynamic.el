@@ -1,6 +1,6 @@
 (setq l-snippets-syntax-delimiter
       (cons
-       '("%" . l-snippets-dynamic-overlay)
+       '("\\(%\\)" . l-snippets-dynamic-overlay)
        l-snippets-syntax-delimiter))
 
 (defun l-snippets-dynamic-overlay (str pos ovl)

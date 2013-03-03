@@ -100,8 +100,8 @@ l-interactive set to nil."
 (defvar l-snippets-custom-meta nil)
 
 (defvar l-snippets-syntax-delimiter
-  '((":" . l-snippets-action-prompt)
-    ("\\$" . (lambda(s p o)(eval (read s)))))
+  '(("\\(:\\)" . l-snippets-action-prompt)
+    ("\\(\\$\\)(" . (lambda(s p o)(eval (read s)))))
   "string position overlay")
 
 (defvar l-snippets-custom-delimiter nil)
@@ -132,15 +132,13 @@ l-interactive set to nil."
   (or l-snippets-custom-delimiter l-snippets-syntax-delimiter))
 
 (defun l-snippets-token-regexp-delimiter()
-      (mapconcat
-       'identity
-       (mapcar
-        (lambda(x)
-          (if (equal (car x) "\\$")
-              (format "\\(%s\\)(" (car x)) ;; dirty
-            (format "\\(%s\\)" (car x))))
-        (l-snippets-token-delimiter))
-       "\\|"))
+  (mapconcat
+   'identity
+   (mapcar
+    (lambda(x)
+      (format "%s" (car x)))
+    (l-snippets-token-delimiter))
+   "\\|"))
 
 (defun l-snippets-action-prompt (s p o)
   (insert s)
@@ -609,6 +607,8 @@ l-interactive set to nil."
             (cons (buffer-substring-no-properties (cdr prev)(point-max))
                   (cons (car prev)
                         result))))
+    (setq l-snippets-custom-meta nil
+          l-snippets-custom-delimiter nil)
     (reverse result)))
 
 (defun l-snippets-get-token (file &optional regexp)
@@ -638,10 +638,7 @@ l-interactive set to nil."
                    (l-snippets-token-regexp 'file-separator))
            nil t)
           (point-max)))
-        (prog1
-            (l-snippets-gen-token str regexp)
-          (setq l-snippets-custom-meta nil
-                l-snippets-custom-delimiter nil))))))
+        (l-snippets-gen-token str regexp)))))
 
 ;; * insert
 (defun l-snippets-insert-str (str)
