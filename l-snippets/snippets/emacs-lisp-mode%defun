@@ -5,4 +5,4 @@
 <------snippet
 (defun ${1:FuncName} ($2)
   "$1 $3"
-  $4)
+  $0)

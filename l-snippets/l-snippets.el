@@ -148,7 +148,10 @@ l-interactive set to nil."
 (setq l-snippets-roles
  `(end
    ((role . end)
-    (evaporate . t)
+    (offset . 0)
+    ;; (evaporate . t)
+    (previous . nil)
+    (face . l-snippets-tail-face)
     (keymap . ,l-snippets-keymap))
    primary
    ((role . primary)
@@ -420,10 +423,16 @@ l-interactive set to nil."
   (interactive)
   (let* ((o (l-snippets-get-primary (l-snippets-get-overlay)))
          (oo (overlay-get o p-or-n)))
-    (overlay-put o 'offset (- (overlay-end o)(point)))
-    (overlay-put o 'face 'l-snippets-editable-face)
-    (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-    (overlay-put oo 'face 'l-snippets-active-face)))
+    (if (eq (overlay-get oo 'role) 'end)
+        (progn
+          (goto-char (overlay-end oo))
+          (save-excursion
+            (goto-char (overlay-end o))
+            (l-snippets-clear-instance)))
+      (overlay-put o 'offset (- (overlay-end o)(point)))
+      (overlay-put o 'face 'l-snippets-editable-face)
+      (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
+      (overlay-put oo 'face 'l-snippets-active-face))))
 
 (defun l-snippets-previous-field ()
   (interactive)
@@ -533,7 +542,9 @@ l-interactive set to nil."
         (setq end (car (l-snippets-find-close-paren
                         (l-snippets-token-regexp 'open)
                         (l-snippets-token-regexp 'close))))
-        (setq result (buffer-substring-no-properties beg end)))))
+        (setq result (buffer-substring-no-properties beg end)))
+       (t
+        (setq result str))))
     (cons id result)))
 
 (defun l-snippets-split-str (str delimiter elt)
@@ -678,7 +689,7 @@ l-interactive set to nil."
             (overlay-end prim)))
           (move-overlay o pos (point)))))
      ((eq role 'end)
-      nil)
+      (overlay-put o 'id ids))
      ((eq role 'primary)
       (overlay-put o 'id ids))
      (t))
@@ -709,11 +720,13 @@ l-interactive set to nil."
             (id (setq role 'primary))
             (t (setq role 'void)))
            (setq o (l-snippets-insert-field role ids args p prev))
-           (if (eq 'primary (if o (overlay-get o 'role)))
-               (progn
-                 (overlay-put o 'previous prev)
-                 (if prev (overlay-put prev 'next o))
-                 (setq prev o))))))
+           (let* ((r (if o (overlay-get o 'role)))
+                  (test (or (eq 'primary r)(eq 'end r))))
+             (if test
+                 (progn
+                   (overlay-put o 'previous prev)
+                   (if prev (overlay-put prev 'next o))
+                   (setq prev o)))))))
      snippet)
     (while (setq prev (overlay-get prev 'previous))
       (if prev

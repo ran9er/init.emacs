@@ -5,4 +5,4 @@
 (l-snippets-custom-syntax 'head "#" "\\(\\$\\)" 'l-snippets-action-prompt)
 <------snippet
 (let ((#{1$var}))
-  #2)
+  #0)

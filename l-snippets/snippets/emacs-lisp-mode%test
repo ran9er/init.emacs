@@ -5,7 +5,7 @@
 <------snippet
 (defun ${1:FuncName} (${2:Args%? })
   "this func's name is $1"
-  (let (${2%$$ is $1})
+  (let (${2%(${$(lsthis)} $11\n)})
     ${$(insert "hello!")})
     $1=$1
     ${1$(insert user-full-name)}

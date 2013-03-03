@@ -11,7 +11,8 @@
                            (overlay-get tail 'insert-in-front-hooks)))
         (overlay-put tail 'dynamic-trigger (read str)))
     (overlay-put ovl 'dynamic-template str)
-    (l-snippets-insert-template str)))
+    (l-snippets-ex-template ovl
+     (l-snippets-gen-token str))))
 
 (defun l-snippets-ext-overlay (ov after-p beg end &optional length)
   (if after-p
@@ -19,7 +20,6 @@
           (let* ((ov (l-snippets-get-primary ov))
                  (b (overlay-start ov))
                  (e (overlay-end ov))
-                 (id (read (make-temp-name "dy-")))
                  (o (progn
                       (l-snippets-move-overlay ov b e t)
                       (l-snippets-clone-primary ov end))))
@@ -46,21 +46,22 @@
     (mapc
      (lambda(x)
        (goto-char (overlay-end x))
-       (insert "\n111 ")
        (l-snippets-overlay-push-to
-        o
-        (l-snippets-insert-field
-         'mirror
-         ids
-         nil
-         (point)
-         o)
+        o 
+        (l-snippets-insert-field 'mirror ids nil (point) o)
         'mirrors)
-       (insert " 222\n"))
+       (l-snippets-ex-template 
+        x
+        (l-snippets-gen-token 
+         (overlay-get x 'dynamic-template))))
      (overlay-get ov 'mirrors))
     (goto-char (overlay-end o))
     o))
 
-(defun l-snippets-insert-template (str)
-  "l-snippets-insert-template "
+
+(defun l-snippets-ex-template (ov str)
+  "l-snippets-expand-template"
+  (l-snippets-custom-syntax "\\(\\$\\)(" (lambda(s p o)nil))
+  (l-snippets-gen-token (overlay-get x 'dynamic-template))
+  
   )
