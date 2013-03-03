@@ -576,37 +576,38 @@ l-interactive set to nil."
         (sep (or sep (l-snippets-token-regexp 'sep)))
         (delimiter (or delimiter (l-snippets-token-regexp-delimiter)))
         (elt (l-snippets-make-lst (length (l-snippets-token-delimiter))))
-        beg mid end result)
+        beg mid prev result)
     (with-temp-buffer
       (insert str)
-      (setq end (point-max))
-      (goto-char end)
-      (while (re-search-backward regexp nil t)
-        (setq
-         beg
-         (match-beginning 0)
-         mid
-         (if (match-beginning 1)
-             (cdr (l-snippets-find-close-paren
-                   (l-snippets-token-regexp 'open)
-                   (l-snippets-token-regexp 'close)))
-           (match-end 2))
-         result
-         (cons
-          (l-snippets-prase-token
-           (buffer-substring-no-properties beg mid) sep delimiter elt)
-          (cons
-           (buffer-substring-no-properties mid end)
-           result))
-         end
-         beg))
-      (if (eq beg (point-min))
-          result
-        (setq
-         result
-         (cons
-          (buffer-substring-no-properties (point-min) beg)
-          result))))))
+      (setq beg (point-min))
+      (goto-char beg)
+      (while (re-search-forward regexp nil t)
+        (setq beg (match-beginning 0)
+              mid (if (match-beginning 1)
+                      (progn (goto-char (match-beginning 1))
+                             (cdr (l-snippets-find-close-paren
+                                   (l-snippets-token-regexp 'open)
+                                   (l-snippets-token-regexp 'close))))
+                    (match-end 2)))
+        (if prev
+            (setq result
+                  (cons (buffer-substring-no-properties (cdr prev) beg)
+                        (cons (car prev)
+                              result)))
+          (setq result
+                (cons (buffer-substring-no-properties (point-min) beg)
+                      result)))
+        (setq prev
+              (cons
+               (l-snippets-prase-token
+                (buffer-substring-no-properties beg mid) sep delimiter elt)
+               mid))
+        (goto-char mid))
+      (setq result
+            (cons (buffer-substring-no-properties (cdr prev)(point-max))
+                  (cons (car prev)
+                        result))))
+    (reverse result)))
 
 (defun l-snippets-get-token (file &optional regexp)
   (let (str env)
