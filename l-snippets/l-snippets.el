@@ -148,7 +148,6 @@ l-interactive set to nil."
 (setq l-snippets-roles
  `(end
    ((role . end)
-    (offset . 0)
     ;; (evaporate . t)
     (previous . nil)
     (face . l-snippets-tail-face)
