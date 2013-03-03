@@ -3,6 +3,6 @@
 
 <------environment
 <------snippet
-(defun ${1:FuncName} ($2)
-  "$1 $3"
+(defun ${1:FuncName} (${2:args%? })
+  "$1 is writen by ${$(insert user-full-name)}"
   $0)

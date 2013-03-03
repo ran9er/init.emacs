@@ -697,10 +697,11 @@ l-interactive set to nil."
      args)
     o))
 
-(defun l-snippets-insert (snippet-name)
-  (let* ((snippet (l-snippets-get-snippet snippet-name))
+(defun l-snippets-insert (snippet-name &optional snippet-p)
+  (let* ((snippet (if snippet-p snippet-name
+                    (l-snippets-get-snippet snippet-name)))
          (top (eq (current-indentation) 0))
-         prev first)
+         prev first last)
     ;; (if top
     ;;     (l-snippets-clear-instance))
     (mapc
@@ -725,7 +726,7 @@ l-interactive set to nil."
                  (progn
                    (overlay-put o 'previous prev)
                    (if prev (overlay-put prev 'next o))
-                   (setq prev o)))))))
+                   (setq prev o last o)))))))
      snippet)
     (while (setq prev (overlay-get prev 'previous))
       (if prev
@@ -733,7 +734,8 @@ l-interactive set to nil."
             (overlay-put prev 'ready t)
             (setq first prev))))
     (overlay-put first 'face 'l-snippets-active-face)
-    (goto-char (overlay-end first))))
+    (goto-char (overlay-end first))
+    (cons first last)))
 
 ;; * interface
 (defun l-snippets-fetch-word ()
