@@ -136,7 +136,9 @@ l-interactive set to nil."
        'identity
        (mapcar
         (lambda(x)
-          (format "\\(%s\\)" (car x)))
+          (if (equal (car x) "\\$")
+              (format "\\(%s\\)(" (car x)) ;; dirty
+            (format "\\(%s\\)" (car x))))
         (l-snippets-token-delimiter))
        "\\|"))
 
