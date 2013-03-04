@@ -1,28 +1,30 @@
-VERSION=1.1.1
+VERSION=1.2.0
 EMACS=emacs
 PREFIX=/usr/local
 SYSCONFDIR=/etc
-ELS=magit.el magit-svn.el magit-topgit.el magit-stgit.el magit-key-mode.el magit-bisect.el
+ELS=magit.el magit-svn.el magit-topgit.el magit-stgit.el magit-key-mode.el magit-bisect.el magit-wip.el rebase-mode.el magit-blame.el
 ELS_CONTRIB=contrib/magit-simple-keys.el contrib/magit-classic-theme.el
 ELCS=$(ELS:.el=.elc)
 ELCS_CONTRIB=$(ELS_CONTRIB:.el=.elc)
-DIST_FILES=$(ELS) Makefile magit.texi magit.info README.md magit.spec.in magit-pkg.el.in 50magit.el
+DIST_FILES=$(ELS) Makefile magit.texi magit.info README.md magit.spec.in magit-pkg.el.in
 DIST_FILES_CONTRIB=$(ELS_CONTRIB) contrib/magit
-ELPA_FILES=$(ELS) magit.info magit-pkg.el
+ELPA_FILES=$(ELS) magit.info dir magit-pkg.el
 
 .PHONY=install
 
-BATCH=$(EMACS) -batch -q -no-site-file -eval \
+EFLAGS=
+BATCH=$(EMACS) $(EFLAGS) -batch -q -no-site-file -eval \
   "(setq load-path (cons (expand-file-name \".\") load-path))"
+
 
 %.elc: %.el
 	$(BATCH) --eval '(byte-compile-file "$<")'
 
 all: core docs contrib
 
-core: $(ELCS) magit.spec magit-pkg.el
+core: $(ELCS) magit.spec magit-pkg.el 50magit.el
 
-docs: magit.info
+docs: dir
 
 contrib: $(ELCS_CONTRIB)
 
@@ -32,19 +34,22 @@ magit.spec: magit.spec.in
 magit-pkg.el: magit-pkg.el.in
 	sed -e s/@VERSION@/$(VERSION)/ < $< > $@
 
+50magit.el: $(ELS) magit.elc
+	$(BATCH) -eval "(progn (defvar generated-autoload-file nil) (let ((generated-autoload-file \"$(CURDIR)/50magit.el\") (make-backup-files nil)) (update-directory-autoloads \".\")))"
+
 magit.elc: magit.el
-magit-key-mode.elc:
-magit-svn.elc:
-magit-topgit.elc:
-magit-stgit.elc:
+
+dir: magit.info
+	install-info --dir=$@ $<
+
 magit.info:
 
 dist: magit-$(VERSION).tar.gz
 
 magit-$(VERSION).tar.gz: $(DIST_FILES) $(DIST_FILES_CONTRIB)
 	mkdir -p magit-$(VERSION)/contrib
-	cp --preserve=timestamps $(DIST_FILES) magit-$(VERSION)
-	cp --preserve=timestamps $(DIST_FILES_CONTRIB) magit-$(VERSION)/contrib
+	cp -p $(DIST_FILES) magit-$(VERSION)
+	cp -p $(DIST_FILES_CONTRIB) magit-$(VERSION)/contrib
 	tar -cvzf magit-$(VERSION).tar.gz magit-$(VERSION)
 	rm -rf magit-$(VERSION)
 
@@ -52,7 +57,7 @@ elpa: magit-$(VERSION).tar
 
 magit-$(VERSION).tar: $(ELPA_FILES)
 	mkdir magit-$(VERSION)
-	cp --preserve=timestamps $(ELPA_FILES) magit-$(VERSION)
+	cp -p $(ELPA_FILES) magit-$(VERSION)
 	tar -cvf magit-$(VERSION).tar magit-$(VERSION)
 	rm -rf magit-$(VERSION)
 
@@ -77,5 +82,8 @@ install_contrib: contrib
 
 install_all: install install_contrib
 
+test: $(ELCS)
+	$(BATCH) -l tests/magit-tests.el -f ert-run-tests-batch-and-exit
+
 clean:
-	rm -fr magit-pkg.el magit.spec $(ELCS) $(ELCS_CONTRIB) *.tar.gz magit-$(VERSION)
+	rm -fr magit-pkg.el magit.spec 50magit.el $(ELCS) $(ELCS_CONTRIB) *.tar.gz magit-$(VERSION)
