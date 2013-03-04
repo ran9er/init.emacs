@@ -254,6 +254,13 @@ l-interactive set to nil."
         (set p (cons ov (eval p))))
     nil))
 
+
+(defun l-snippets-overlay-get-text (o)
+  "l-snippets-overlay-get-text is writen by ran9er"
+  (buffer-substring-no-properties
+   (overlay-start o)
+   (overlay-end o)))
+
 (defun l-snippets-overlay-update-text (ov text)
   (let ((beg (overlay-start ov)))
     (save-excursion
@@ -346,6 +353,40 @@ l-interactive set to nil."
     o))
 
 
+;; ** struction
+(defun l-snippets-overlay-push-to (to from &optional p)
+  (let ((p (or p 'group)))
+   (overlay-put to p (cons from (overlay-get to p)))))
+
+(defun l-snippets-overlay-link (front beg end)
+  (overlay-put (overlay-get front 'next) 'previous end)
+  (overlay-put end 'next (overlay-get front 'next))
+  (overlay-put front 'next beg)
+  (overlay-put beg 'previous front))
+
+;; (defun l-snippets-overlay-setprev (to from &optional p)
+;;   (let ((p (or p 'link)))
+;;    (overlay-put to p (cons from (cdr (overlay-get to p))))))
+
+;; (defun l-snippets-overlay-setnext (to from &optional p)
+;;   (let ((p (or p 'link)))
+;;    (overlay-put to p (cons (car (overlay-get to p)) from))))
+
+(defun l-snippets-clone-primary (ov beg)
+  (let* ((ids (overlay-get ov 'id))
+         (o (l-snippets-insert-field
+             'primary
+             ids
+             (cdr
+              (assoc
+               (nth 1 ids)
+               (l-snippets-get-snippet
+                (nth 0 ids))))
+             beg)))
+    (l-snippets-overlay-link ov o o)
+    (goto-char (overlay-end o))
+    o))
+
 ;; ** hooks
 (defun l-snippets-update-mirror (overlay after-p beg end &optional length)
   (if after-p
@@ -400,40 +441,6 @@ l-interactive set to nil."
       (error))))
 
 
-;; * debug
-(defun what-overlays (&optional p)
-  (interactive)
-  (print
-   (let ((pt (or p (point))))
-     (cons (list 'position pt '& 'column (current-column))
-           (mapcar
-            (lambda(x) (remove-if
-                    nil
-                    (list
-                     (overlay-start x)(overlay-end x)
-                     (overlay-get x 'role))))
-            (overlays-in pt (1+ pt)))))))
-
-;; ** stuction
-(defun l-snippets-overlay-push-to (to from &optional p)
-  (let ((p (or p 'group)))
-   (overlay-put to p (cons from (overlay-get to p)))))
-
-(defun l-snippets-overlay-link (front beg end)
-  (overlay-put (overlay-get front 'next) 'previous end)
-  (overlay-put end 'next (overlay-get front 'next))
-  (overlay-put front 'next beg)
-  (overlay-put beg 'previous front))
-
-;; (defun l-snippets-overlay-setprev (to from &optional p)
-;;   (let ((p (or p 'link)))
-;;    (overlay-put to p (cons from (cdr (overlay-get to p))))))
-
-;; (defun l-snippets-overlay-setnext (to from &optional p)
-;;   (let ((p (or p 'link)))
-;;    (overlay-put to p (cons (car (overlay-get to p)) from))))
-
-
 ;; * keymap
 (defun l-snippets-get-overlay()
   (interactive)
@@ -474,6 +481,20 @@ l-interactive set to nil."
   (interactive)
   (let ((o (l-snippets-get-primary (l-snippets-get-overlay))))
     (goto-char (overlay-end o))))
+
+;; * debug
+(defun what-overlays (&optional p)
+  (interactive)
+  (print
+   (let ((pt (or p (point))))
+     (cons (list 'position pt '& 'column (current-column))
+           (mapcar
+            (lambda(x) (remove-if
+                    nil
+                    (list
+                     (overlay-start x)(overlay-end x)
+                     (overlay-get x 'role))))
+            (overlays-in pt (1+ pt)))))))
 
 ;; * index
 (defun l-snippets-read-index (idx)
@@ -752,11 +773,11 @@ l-interactive set to nil."
                    (if prev (overlay-put prev 'next o))
                    (setq prev o last o)))))))
      snippet)
-    (while (setq prev (overlay-get prev 'previous))
+    (while (setq first prev prev (overlay-get prev 'previous))
       (if prev
           (progn
             (overlay-put prev 'ready t)
-            (setq first prev))))
+            )))
     (overlay-put first 'face 'l-snippets-active-face)
     (goto-char (overlay-end first))
     (cons first last)))
@@ -817,10 +838,6 @@ l-interactive set to nil."
     (kill-word -1)                      ;; debug
     (l-snippets-insert sp)))
 
+;; load extension
 (let ((f (directory-files l-snippets-extension t ".*\\.el\\'")))
   (if f (mapc (lambda(x)(load x)) f)))
-
-;; End of file during parsing
-;(setq l-snippets-instance nil)
-;(setq l-snippets-enable-indent nil)
-;(l-snippets-insert "python-mode%%class")

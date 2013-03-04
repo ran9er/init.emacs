@@ -1,6 +1,6 @@
 (setq l-snippets-syntax-delimiter
       (cons
-       '("\\(%\\)" . l-snippets-dynamic-overlay)
+       '("\\(%\\)\\?" . l-snippets-dynamic-overlay)
        l-snippets-syntax-delimiter))
 
 (defun l-snippets-dynamic-overlay (str pos ovl)
@@ -24,22 +24,10 @@
                       (l-snippets-move-overlay ov b e t)
                       (l-snippets-clone-primary ov end))))
             (l-snippets-move-overlay ov b e)
-            (l-snippets-overlay-link ov o o)
             (overlay-put o 'ready t)
             (overlay-put ov 'face 'l-snippets-editable-face)
             (overlay-put o 'face 'l-snippets-active-face)))))
 
-(defun l-snippets-clone-primary (ov beg)
-  (let* ((ids (overlay-get ov 'id))
-         (o (l-snippets-insert-field
-             'primary
-             ids
-             (cdr
-              (assoc
-               (nth 1 ids)
-               (l-snippets-get-snippet
-                (nth 0 ids))))
-             beg)))
     ;; (mapc
     ;;  (lambda(x)
     ;;    (goto-char (overlay-end x))
@@ -52,9 +40,6 @@
     ;;     (l-snippets-gen-token 
     ;;      (overlay-get x 'dynamic-template))))
     ;;  (overlay-get ov 'mirrors))
-    (goto-char (overlay-end o))
-    o))
-
 
 (defun l-snippets-ex-template (ov str)
   "l-snippets-expand-template"
