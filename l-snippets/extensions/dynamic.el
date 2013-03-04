@@ -3,12 +3,6 @@
        '("\\(%\\)" . l-snippets-dynamic-overlay)
        l-snippets-syntax-delimiter))
 
-(defun l-snippets-overlay-link (front beg end)
-  (overlay-put (overlay-get front 'next) 'previous end)
-  (overlay-put end 'next (overlay-get front 'next))
-  (overlay-put front 'next beg)
-  (overlay-put beg 'previous front))
-
 (defun l-snippets-dynamic-overlay (str pos ovl)
   (if (null (eq (overlay-get ovl 'role) 'mirror))
       (let ((tail (l-snippets-get-tail ovl)))

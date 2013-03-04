@@ -85,12 +85,13 @@ l-interactive set to nil."
        (if (symbolp (car x))
            (plist-put l-snippets-custom-meta (car x)(cdr x))
          (setq l-snippets-custom-delimiter
-               (rassq-delete-all
-                (cdr (rassq (cdr x) l-snippets-custom-delimiter))
-                l-snippets-custom-delimiter)
-               l-snippets-custom-delimiter
-               (cons (cons (car x)(cdr x))
-                     l-snippets-custom-delimiter))))
+               (cons
+                x
+                (remove
+                 (rassq (cdr x) l-snippets-custom-delimiter)
+                 (remove
+                  (assoc (car x) l-snippets-custom-delimiter)
+                  l-snippets-custom-delimiter))))))
      args)))
 
 (defvar l-snippets-syntax-meta
@@ -329,6 +330,22 @@ l-interactive set to nil."
       ov
     (overlay-get ov 'tail)))
 
+(defun l-snippets-get-first (ov)
+  "l-snippets-get-first is writen by ran9er"
+  (let ((o (l-snippets-get-primary ov)))
+    (while (overlay-get o 'previous)
+      (setq o (overlay-get o 'previous)))
+    o))
+
+(defun l-snippets-get-last (ov)
+  "l-snippets-get-last is writen by ran9er"
+  (let ((o (if (eq (overlay-get ov 'role) 'end)
+               o (l-snippets-get-primary ov))))
+    (while (overlay-get o 'next)
+      (setq o (overlay-get o 'next)))
+    o))
+
+
 ;; ** hooks
 (defun l-snippets-update-mirror (overlay after-p beg end &optional length)
   (if after-p
@@ -401,6 +418,12 @@ l-interactive set to nil."
 (defun l-snippets-overlay-push-to (to from &optional p)
   (let ((p (or p 'group)))
    (overlay-put to p (cons from (overlay-get to p)))))
+
+(defun l-snippets-overlay-link (front beg end)
+  (overlay-put (overlay-get front 'next) 'previous end)
+  (overlay-put end 'next (overlay-get front 'next))
+  (overlay-put front 'next beg)
+  (overlay-put beg 'previous front))
 
 ;; (defun l-snippets-overlay-setprev (to from &optional p)
 ;;   (let ((p (or p 'link)))
