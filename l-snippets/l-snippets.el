@@ -307,10 +307,11 @@ l-interactive set to nil."
       (setq cur (overlay-get cur 'previous)
             head cur))
     (or head (setq head cur))
-    (while (overlay-get head 'next)
-      (setq cur head
-            head (overlay-get head 'next))
-      (l-snippets-overlay-release cur))))
+    (while
+        (prog1 (overlay-get head 'next)
+          (setq cur head
+                head (overlay-get head 'next))
+          (l-snippets-overlay-release cur)))))
 
 (defun l-snippets-get-prev (ov id)
   (if (overlayp ov)
