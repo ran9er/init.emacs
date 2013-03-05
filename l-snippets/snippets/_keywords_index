@@ -1,4 +1,6 @@
-((("ol" "emacs-lisp-mode%ol")
+((("upcase" "emacs-lisp-mode%upcase")
+  ("uc" "emacs-lisp-mode%upcase")
+  ("ol" "emacs-lisp-mode%ol")
   ("lt" "emacs-lisp-mode%let")
   ("let" "emacs-lisp-mode%let")
   ("defun" "emacs-lisp-mode%defun")
