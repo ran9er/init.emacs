@@ -1,0 +1,27 @@
+((("ol" "emacs-lisp-mode%ol")
+  ("lt" "emacs-lisp-mode%let")
+  ("let" "emacs-lisp-mode%let")
+  ("defun" "emacs-lisp-mode%defun")
+  ("def" "emacs-lisp-mode%defun")
+  ("cond" "emacs-lisp-mode%cond")
+  ("co" "emacs-lisp-mode%cond")
+  ("cn" "emacs-lisp-mode%cond")
+  ("cd" "emacs-lisp-mode%cond"))
+ ("emacs-lisp-mode%cond"
+  ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil)
+ ("emacs-lisp-mode%defun"
+  ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil)
+ ("emacs-lisp-mode%let"
+  ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil)
+ ("emacs-lisp-mode%ol"
+  ("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  ("top"))
+ ("emacs-lisp-mode%test"
+  ("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  ("top"))
+ ("emacs-lisp-mode%upcase"
+  ("all")
+  nil))
