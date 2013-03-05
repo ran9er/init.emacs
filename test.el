@@ -63,13 +63,6 @@
 
 ;; \(fn)" t nil)
 
-(global-set-key
- (kbd "C-j")
- (lambda()(interactive)
-   (condition-case err
-       (l-snippets-expand)
-     (error
-      (if (eq (car err) 'void-function)
-          (progn
-            (load (expand-file-name "l-snippets/l-snippets.el" *init-dir*))
-            (l-snippets-expand)))))))
+(autoload 'l-snippets-expand-or-tab
+  (expand-file-name "l-snippets/l-snippets.el" *init-dir*) "" t)
+(global-set-key "\t" 'l-snippets-expand-or-tab)

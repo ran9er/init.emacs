@@ -562,8 +562,7 @@ l-interactive set to nil."
        (puthash snippet
                 (l-snippets-get-token
                  (expand-file-name snippet l-snippets-repo))
-                l-snippets-cache)
-     (message (format "%s is not define" snippet)))))
+                l-snippets-cache))))
 
 ;; * prase
 (defun l-snippets-find-close-paren (x y &optional back)
@@ -583,6 +582,35 @@ l-interactive set to nil."
              (setq count (1- count))))
         (setq close (cons (match-beginning 2) (match-end 2)))))
     close))
+
+(defun l-snippets-search-str (str &optional eof)
+  "with-temp-buffer"
+  (save-excursion
+    (goto-char (point-min))
+    (let ((start
+           (re-search-forward
+            (format "%s%s.*\n"
+                    (l-snippets-token-regexp 'file-separator)
+                    str)
+            nil t))
+          (end
+           (if eof (point-max)
+             (and
+              (re-search-forward
+               (l-snippets-token-regexp 'file-separator) nil t)
+              (match-beginning 0)))))
+      (if (and start end)
+          (buffer-substring-no-properties start end)))))
+
+(defun l-snippets-delete-tail-space (str)
+  (with-temp-buffer
+    (insert str)
+    (goto-char (point-max))
+    (buffer-substring-no-properties
+     (point-min)
+     (progn
+      (skip-chars-backward " \t\n")
+      (point)))))
 
 (defun l-snippets-fetch-str (str sep)
   (let (id result beg end)
@@ -679,9 +707,12 @@ l-interactive set to nil."
                mid))
         (goto-char mid))
       (setq result
-            (cons (buffer-substring-no-properties (cdr prev)(point-max))
-                  (cons (car prev)
-                        result))))
+            (cons
+             (l-snippets-delete-tail-space
+              (buffer-substring-no-properties
+               (cdr prev)(point-max)))
+             (cons (car prev)
+                   result))))
     (setq l-snippets-custom-meta nil
           l-snippets-custom-delimiter nil)
     (reverse result)))
@@ -693,26 +724,12 @@ l-interactive set to nil."
         (insert-file-contents file nil nil nil t)
         (setq
          env
-         (save-excursion
-           (buffer-substring-no-properties
-            (re-search-forward
-             (format "%senvironment\n"
-                     (l-snippets-token-regexp 'file-separator))
-             nil t)
-            (progn
-              (re-search-forward
-               (l-snippets-token-regexp 'file-separator) nil t)
-              (match-beginning 0)))))
+         (l-snippets-search-str "environment"))
         (if (> (length (replace-regexp-in-string "[ \t\n]" "" env)) 0)
             (eval (read env)))
         (setq
          str
-         (buffer-substring-no-properties
-          (re-search-forward
-           (format "%ssnippet\n"
-                   (l-snippets-token-regexp 'file-separator))
-           nil t)
-          (point-max)))
+         (l-snippets-search-str "snippet" t))
         (l-snippets-gen-token str regexp)))))
 
 ;; * insert
@@ -814,31 +831,6 @@ l-interactive set to nil."
        (backward-sexp)
        (point)))))
 
-(defun l-snippets-clear-word (str &optional back)
-  (let*  ((str (split-string str "[ \t\n]" t)))
-    (if back (setq str (reverse str)))
-    (save-excursion
-      (while str
-        (if back
-            (skip-chars-backward " \t\n")
-          (skip-chars-forward " \t\n"))
-        (let* ((p1 (point))
-               (p2 (if back (1+ (search-backward-regexp "[ \t\n]"))
-                     (1- (search-forward-regexp "[ \t\n]"))))
-               (s (buffer-substring-no-properties p1 p2)))
-          (if (equal (car str) s)
-              (delete-region p1 p2)))
-        (setq str (cdr str))))))
-
-(defun l-snippets-clear-region (snippet)
-  (let* ((s (l-snippets-get-snippet snippet))
-         (head (car s))
-         (tail (car (last s))))
-    (if (stringp head)
-        (l-snippets-clear-word head t))
-    (if (stringp tail)
-        (l-snippets-clear-word tail))))
-
 (defun l-snippets-match ()
   (mapconcat 'identity
              (list
@@ -853,10 +845,18 @@ l-interactive set to nil."
 ;;;###autoload
 (defun l-snippets-expand ()
   (interactive)
-  (let ((sp (funcall l-snippets-match-strategy)))
+  (let ((spn (funcall l-snippets-match-strategy)))
     ;; (l-snippets-clear-region sp)
-    (kill-word -1)                      ;; debug
-    (l-snippets-insert sp)))
+    (if (l-snippets-get-snippet spn)
+        (progn (kill-word -1)
+               (l-snippets-insert spn)))))
+
+;;;###autoload
+(defun l-snippets-expand-or-tab ()
+  "l-snippets-expand-or-tab is writen by ran9er"
+  (interactive)
+  (or (l-snippets-expand)
+      (indent-for-tab-command)))
 
 ;; load extension
 (let ((f (directory-files l-snippets-extension t ".*\\.el\\'")))

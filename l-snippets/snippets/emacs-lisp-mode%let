@@ -1,5 +1,8 @@
+<------alias
+let lt
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------keywords
-emacs-lisp-mode lisp-mode lisp-interaction-mode notop
 <------environment
 (l-snippets-custom-syntax 'head "#" "\\(\\$\\)" 'l-snippets-action-prompt)
 <------snippet
