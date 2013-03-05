@@ -6,6 +6,7 @@
 (defun l-snippets-dynamic-overlay (str pos ovl)
   (if (null (eq (overlay-get ovl 'role) 'mirror))
       (let ((tail (l-snippets-get-tail ovl)))
+        ;; add ext to head of hooks, then l-snippets-move-primary...
         (overlay-put tail 'insert-in-front-hooks
                      (cons 'l-snippets-ext-overlay
                            (overlay-get tail 'insert-in-front-hooks)))

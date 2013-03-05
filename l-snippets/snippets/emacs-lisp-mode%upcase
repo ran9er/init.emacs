@@ -1,0 +1,15 @@
+
+<------keywords
+all
+<------environment
+
+<------snippet
+${1:downcase$(lambda (ov after-p)
+  (if after-p
+      (let ((text (l-snippets-overlay-get-text ov)))
+        (mapc
+         (lambda(x)
+           (l-snippets-overlay-update-text x (upcase text)))
+         (overlay-get ov 'mirrors)))))}asdf upcase$1
+
+upcase  $1 $0

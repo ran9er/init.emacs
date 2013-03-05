@@ -358,11 +358,12 @@ l-interactive set to nil."
   (let ((p (or p 'group)))
    (overlay-put to p (cons from (overlay-get to p)))))
 
-(defun l-snippets-overlay-link (front beg end)
-  (overlay-put (overlay-get front 'next) 'previous end)
-  (overlay-put end 'next (overlay-get front 'next))
-  (overlay-put front 'next beg)
-  (overlay-put beg 'previous front))
+(defun l-snippets-overlay-link (front beg &optional end)
+  (let ((end (or end beg)))
+    (overlay-put (overlay-get front 'next) 'previous end)
+    (overlay-put end 'next (overlay-get front 'next))
+    (overlay-put front 'next beg)
+    (overlay-put beg 'previous front)))
 
 ;; (defun l-snippets-overlay-setprev (to from &optional p)
 ;;   (let ((p (or p 'link)))
@@ -371,6 +372,20 @@ l-interactive set to nil."
 ;; (defun l-snippets-overlay-setnext (to from &optional p)
 ;;   (let ((p (or p 'link)))
 ;;    (overlay-put to p (cons (car (overlay-get to p)) from))))
+
+(defun l-snippets-overlay-append-hooks (ov prop &rest hooks)
+  (overlay-put ov prop
+               (append (overlay-get ov prop)
+                       hooks)))
+
+(defun l-snippets-primary-append-hooks (ov &rest hooks)
+  "l-snippets-primary-append-hooks is writen by ran9er"
+  (apply 'l-snippets-overlay-append-hooks ov 'modification-hooks hooks)
+  (apply 'l-snippets-overlay-append-hooks ov 'insert-in-front-hooks hooks)
+  (if (overlay-get ov 'tail)
+      (apply 'l-snippets-overlay-append-hooks
+             (overlay-get ov 'tail) 'insert-in-front-hooks hooks)))
+
 
 (defun l-snippets-clone-primary (ov beg)
   (let* ((ids (overlay-get ov 'id))
@@ -383,7 +398,7 @@ l-interactive set to nil."
                (l-snippets-get-snippet
                 (nth 0 ids))))
              beg)))
-    (l-snippets-overlay-link ov o o)
+    (l-snippets-overlay-link ov o)
     (goto-char (overlay-end o))
     o))
 

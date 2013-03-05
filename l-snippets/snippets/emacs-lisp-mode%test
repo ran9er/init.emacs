@@ -1,6 +1,6 @@
 
 <------keywords
-
+emacs-lisp-mode lisp-mode lisp-interaction-mode top all
 <------environment
 <------snippet
 (defun ${1:FuncName} (${2:Args%? })

@@ -1,0 +1,7 @@
+
+<------keywords
+emacs-lisp-mode lisp-mode lisp-interaction-mode top all
+<------environment
+
+<------snippet
+(insert (concat "\n" (pp-to-string (overlay-properties ${1:current-overlay}))))$0
