@@ -1,4 +1,6 @@
-<------keywords
+<------alias
+cond cd co cn
+<------modes
 emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------environment
 <------snippet

@@ -60,7 +60,6 @@ l-interactive set to nil."
 
 (setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
 (setq l-snippets-extension (expand-file-name "extensions" l-snippets-dir))
-(defvar l-snippets-index-file "_index")
 
 (defvar l-snippets-keymap
   (let ((keymap (make-sparse-keymap)))
@@ -531,15 +530,13 @@ l-interactive set to nil."
                    nil)))
         (kill-buffer (current-buffer))))))
 
-(defun l-snippets-update-index ()
+(defun l-snippets-update-index (file str)
   (interactive)
   (setq
    l-snippets-index
    (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
          (l-snippets-index-file
-          (expand-file-name
-           l-snippets-index-file
-           l-snippets-repo)))
+          (expand-file-name file l-snippets-repo)))
      (if (time-less-p
           (or (funcall mtime l-snippets-index-file)
               '(0 0 0))
@@ -548,17 +545,21 @@ l-interactive set to nil."
              (let ((enable-local-variables nil)
                    (find-file-hook nil))
                l-snippets-index-file)
-           (insert (pp-to-string
-                    (directory-files l-snippets-repo nil "^[^_].*\\'")))
+           (insert str)
            (message (format "Save %s." l-snippets-index-file))))
      (l-snippets-read-index l-snippets-index-file))))
 
-(l-snippets-update-index)
+(defun l-snippets-snippet-exist-p (snippet)
+  (member snippet l-snippets-index))
+
+(l-snippets-update-index "_index"
+ (pp-to-string
+  (directory-files l-snippets-repo nil "^[^_].*\\'")))
 
 (defun l-snippets-get-snippet (snippet)
   (or
    (gethash snippet l-snippets-cache)
-   (if (member snippet l-snippets-index)
+   (if (l-snippets-snippet-exist-p snippet)
        (puthash snippet
                 (l-snippets-get-token
                  (expand-file-name snippet l-snippets-repo))
@@ -598,7 +599,7 @@ l-interactive set to nil."
              (and
               (re-search-forward
                (l-snippets-token-regexp 'file-separator) nil t)
-              (match-beginning 0)))))
+              (1- (match-beginning 0))))))
       (if (and start end)
           (buffer-substring-no-properties start end)))))
 
@@ -820,7 +821,7 @@ l-interactive set to nil."
     (cons first last)))
 
 ;; * interface
-(defun l-snippets-fetch-word ()
+(defun l-snippets-fetch-alias ()
   (interactive)
   (save-excursion
     (buffer-substring-no-properties
@@ -835,7 +836,7 @@ l-interactive set to nil."
   (mapconcat 'identity
              (list
               (symbol-name major-mode)
-              (l-snippets-fetch-word))
+              (l-snippets-fetch-alias))
              (plist-get
               l-snippets-syntax-meta
               'path-separator)))
@@ -846,9 +847,8 @@ l-interactive set to nil."
 (defun l-snippets-expand ()
   (interactive)
   (let ((spn (funcall l-snippets-match-strategy)))
-    ;; (l-snippets-clear-region sp)
     (if (l-snippets-get-snippet spn)
-        (progn (kill-word -1)
+        (progn (kill-word -1)        ;; (l-snippets-clear-region sp)
                (l-snippets-insert spn)))))
 
 ;;;###autoload

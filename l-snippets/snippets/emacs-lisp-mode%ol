@@ -1,6 +1,9 @@
-
+<------alias
+ol
+<------modes
+all emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------keywords
-emacs-lisp-mode lisp-mode lisp-interaction-mode top all
+ top
 <------environment
 
 <------snippet
