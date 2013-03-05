@@ -5,15 +5,16 @@ emacs-lisp-mode lisp-mode lisp-interaction-mode
 (cond
  (${1:TEST}
   ${2:FORM$(lambda(ov after-p)
-             (if after-p
-                 (if (eq last-command 13);enter
-                     (let* ((o (l-snippets-get-last ov)) e)
-                       (delete-char -1)
-                       (goto-char (overlay-end o))
-                       (insert "\n(")
-                       (setq e (l-snippets-clone-primary ov (point)))
-                       (indent-according-to-mode)
-                       (insert "\n)")
-                       (indent-according-to-mode)
-                       (goto-char (overlay-start e))))))}
+             (if after-p nil
+               (if (eq last-input-char 13)
+                   (let* ((o (l-snippets-get-last ov)) e)
+                     (goto-char (overlay-end o))
+                     (insert "\n(")
+                     (setq e (l-snippets-clone-primary ov (point)))
+                     (indent-according-to-mode)
+                     (insert "\n)")
+                     (indent-according-to-mode)
+                     (goto-char (overlay-start e))
+                     ;; (l-snippets-throw)
+                     ))))}
                        )$0)

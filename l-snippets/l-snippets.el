@@ -455,6 +455,11 @@ l-interactive set to nil."
         (throw 'current-overlay overlay)
       (error))))
 
+(defun l-snippets-throw ()
+  "l-snippets-virtual-edit is writen by ran9er"
+  (condition-case nil
+      (throw 'l-snippets-throw t)
+    (error)))
 
 ;; * keymap
 (defun l-snippets-get-overlay()
