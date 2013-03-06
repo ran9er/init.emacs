@@ -38,20 +38,6 @@
   "*Face used for text in l-snippets that is re-evaluated on input."
   :group 'l-snippets)
 
-(defcustom l-snippets-interactive t
-  "*Insert prompts for snippets.
-If this variable is nil, snippets work just like ordinary l-templates with
-l-interactive set to nil."
-  :group 'l-snippets
-  :type '(choice (const :tag "Off" nil)
-                 (const :tag "On" t)))
-
-(defcustom l-snippets-grow-in-front nil
-  "*If this is set, inserting text in front of a field will cause it to grow."
-  :group 'l-snippets
-  :type '(choice (const :tag "Off" nil)
-                 (const :tag "On" t)))
-
 ;; * customize
 (defvar l-snippets-dir
   (file-name-directory
@@ -206,9 +192,6 @@ l-interactive set to nil."
 (defvar l-snippets-enable-overlays-pool nil)
 
 (defvar l-snippets-overlays-pool nil)
-
-(defvar l-snippets-instance nil)
-(make-local-variable 'l-snippets-instance)
 
 (defvar l-snippets-enable-indent t)
 (make-local-variable 'l-snippets-enable-indent)
