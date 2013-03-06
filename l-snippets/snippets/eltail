@@ -1,0 +1,10 @@
+<------alias
+eltail
+<------modes
+emacs-lisp-mode
+<------keywords
+
+<------environment
+
+<------snippet
+;;; ${$(insert (buffer-name))} ends here

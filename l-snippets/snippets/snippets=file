@@ -1,0 +1,16 @@
+<------alias
+snip
+<------modes
+all
+<------environment
+<------snippet
+<------alias
+${1:alias}
+<------modes
+${2:all}
+<------keywords
+$3
+<------environment
+$4
+<------snippet
+$0

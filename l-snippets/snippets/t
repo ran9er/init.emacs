@@ -1,0 +1,12 @@
+<------alias
+t
+<------modes
+all
+<------keywords
+
+<------environment
+
+<------snippet
+${1:test$(progn (overlay-put ovl 'face 'l-snippets-auto-face))}
+
+

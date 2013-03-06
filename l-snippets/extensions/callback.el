@@ -1,3 +1,9 @@
+;; (define-key l-snippets-keymap "\C-l"
+;;   (lambda()(interactive)
+;;     (let* ((ov (l-snippets-get-overlay))
+;;           (f (overlay-get ov 'l-snippets-modifi-callback)))
+;;       (funcall f ov t))))
+
 (setq l-snippets-syntax-delimiter
       (cons
        (cons "\\(\\$\\)(" 'l-snippets-eval)
@@ -8,26 +14,21 @@
 (defun l-snippets-eval (s &optional p o)
   (let ((f (read s)))
     (if (and (listp f)(null (functionp f)))
-        (eval f)
-      (overlay-put o 'l-snippets-overlay-callback f)
-      (l-snippets-primary-append-hooks o 'l-snippets-call-when-modif))))
+        (eval
+         `(let ((str ,s)(pos ,p)(ovl ,o)) ,f))
+      (overlay-put o 'l-snippets-modifi-callback f)
+      (l-snippets-primary-append-hooks o 'l-snippets-call))))
 
-;; (define-key l-snippets-keymap "\C-l"
-;;   (lambda()(interactive)
-;;     (let* ((ov (l-snippets-get-overlay))
-;;           (f (overlay-get ov 'l-snippets-overlay-callback)))
-;;       (funcall f ov t))))
-
-(defun l-snippets-call-when-modif (ov after-p beg end &optional length)
+(defun l-snippets-call (ov after-p beg end &optional length)
   (let* ((prim (l-snippets-get-primary ov))
-         (pf (overlay-get prim 'l-snippets-overlay-callback)))
+         (pf (overlay-get prim 'l-snippets-modifi-callback)))
     (if (overlay-get prim 'ready)
         (let ((mirrors (overlay-get prim 'mirrors)))
           (if mirrors
               (mapc
                (lambda(mir)
-                 (let ((mf (overlay-get mir 'l-snippets-overlay-callback)))
+                 (let ((mf (overlay-get mir 'l-snippets-modifi-callback)))
                    (if mf (funcall mf prim after-p mir)
                      (funcall pf prim after-p mir))))
                mirrors)
-            (funcall pf prim after-p nil))))))
+            (funcall pf prim after-p mir))))))

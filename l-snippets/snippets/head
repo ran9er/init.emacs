@@ -1,0 +1,20 @@
+<------alias
+h
+<------modes
+all
+<------keywords
+head
+<------environment
+
+<------snippet
+$1-*- encoding: utf-8-unix; -*-
+File-name   : <${$(insert (if (buffer-file-name)(file-name-nondirectory (buffer-file-name))(buffer-name)))}>
+Create      : <${$(insert (format-time-string "%Y-%m-%d %H/%M/%S" (current-time)))} ${$(insert user-full-name)}>
+Time-stamp  : < >
+${0$(overlay-put ovl 'snippet-ready 
+                 (lambda(o) (let* ((ob (overlay-get o 'first))
+                               (e (overlay-end o))
+                               (b (overlay-start ob)))
+                          (comment-region b e)
+                          (goto-char e)
+                          (l-snippets-clear-instance ob))))}

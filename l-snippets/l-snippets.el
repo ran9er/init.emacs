@@ -137,6 +137,9 @@
     ;; (evaporate . t)
     (previous . nil)
     (face . l-snippets-tail-face)
+    (insert-in-front-hooks l-snippets-this-overlay)
+    (first . nil)
+    (snippet-ready . nil)
     (keymap . ,l-snippets-keymap))
    primary
    ((role . primary)
@@ -727,11 +730,12 @@
 
 ;; * insert
 (defun l-snippets-insert-str (str)
-  (let* ((ov (l-snippets-get-overlay))
+  (let* ((ov (l-snippets-get-primary
+              (or (l-snippets-get-overlay)
+                  l-snippets-null-ov)))
          st end)
     (if ov (progn
-             (setq ov (l-snippets-get-primary ov)
-                   st (overlay-start ov)
+             (setq st (overlay-start ov)
                    end (overlay-end ov))
              (l-snippets-move-overlay ov st end t)))
     (if l-snippets-enable-indent
@@ -811,11 +815,15 @@
      (end
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
+      (overlay-put end 'first first)
       (setq last end)))
     (overlay-put first 'face 'l-snippets-active-face)
-    (while (setq prev (overlay-get prev 'previous))
-      (overlay-put prev 'ready t))
+    (while (progn
+             (overlay-put prev 'ready t)
+             (setq prev (overlay-get prev 'previous))))
     (goto-char (overlay-end first))
+    (let ((f (overlay-get end 'snippet-ready)))
+      (if f (funcall f end)))
     (cons first last)))
 
 ;; * interface
