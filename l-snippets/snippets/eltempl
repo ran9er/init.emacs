@@ -1,5 +1,5 @@
 <------alias
-elhead
+eltempl et
 <------modes
 emacs-lisp-mode
 <------keywords
@@ -35,3 +35,5 @@ $3
 
 ;;; Code:
 $0
+
+;;; ${$(insert (buffer-name))} ends here

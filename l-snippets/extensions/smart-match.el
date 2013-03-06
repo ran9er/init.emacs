@@ -81,15 +81,17 @@
 (defun l-snippets-snippet-exist-p (snippet)
   (assoc snippet (cdr l-snippets-index)))
 
-(l-snippets-update-index "_keywords_index"
-                         (pp-to-string (l-snippets-gen-index-k)))
+(let (print-length print-level selective-display-ellipses)
+  (l-snippets-update-index "_keywords_index"
+                           (pp-to-string (l-snippets-gen-index-k))))
 
 (defun l-snippets-force-update-keyword ()
   (interactive)
-  (l-snippets-update-index
-   "_keywords_index"
-   (pp-to-string (l-snippets-gen-index-k))
-   t))
+  (let (print-length print-level selective-display-ellipses)
+    (l-snippets-update-index
+     "_keywords_index"
+     (pp-to-string (l-snippets-gen-index-k))
+     t)))
 
 ;; (insert (concat "\n" (pp-to-string (l-snippets-gen-index-k))))
 
