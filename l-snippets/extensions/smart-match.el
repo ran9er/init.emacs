@@ -84,6 +84,13 @@
 (l-snippets-update-index "_keywords_index"
                          (pp-to-string (l-snippets-gen-index-k)))
 
+(defun l-snippets-force-update-keyword ()
+  (interactive)
+  (l-snippets-update-index
+   "_keywords_index"
+   (pp-to-string (l-snippets-gen-index-k))
+   t))
+
 ;; (insert (concat "\n" (pp-to-string (l-snippets-gen-index-k))))
 
 

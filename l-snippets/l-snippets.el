@@ -521,17 +521,18 @@
                    nil)))
         (kill-buffer (current-buffer))))))
 
-(defun l-snippets-update-index (file str)
+(defun l-snippets-update-index (file str &optional force)
   (interactive)
   (setq
    l-snippets-index
    (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
          (l-snippets-index-file
           (expand-file-name file l-snippets-repo)))
-     (if (time-less-p
-          (or (funcall mtime l-snippets-index-file)
-              '(0 0 0))
-          (funcall mtime l-snippets-repo))
+     (if (or force
+             (time-less-p
+              (or (funcall mtime l-snippets-index-file)
+                  '(0 0 0))
+              (funcall mtime l-snippets-repo)))
          (with-temp-file
              (let ((enable-local-variables nil)
                    (find-file-hook nil))

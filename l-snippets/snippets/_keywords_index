@@ -1,5 +1,6 @@
 ((("upcase" "emacs-lisp-mode%upcase")
   ("uc" "emacs-lisp-mode%upcase")
+  ("test" "emacs-lisp-mode%test")
   ("ol" "emacs-lisp-mode%ol")
   ("lt" "emacs-lisp-mode%let")
   ("let" "emacs-lisp-mode%let")
@@ -7,9 +8,7 @@
   ("defun" "emacs-lisp-mode%defun")
   ("def" "emacs-lisp-mode%defun")
   ("cond" "emacs-lisp-mode%cond")
-  ("co" "emacs-lisp-mode%cond")
-  ("cn" "emacs-lisp-mode%cond")
-  ("cd" "emacs-lisp-mode%cond"))
+  ...)
  ("emacs-lisp-mode%cond"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   nil)

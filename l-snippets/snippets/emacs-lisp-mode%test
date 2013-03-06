@@ -1,3 +1,5 @@
+<------alias
+test
 <------modes
 emacs-lisp-mode lisp-mode lisp-interaction-mode all
 <------keywords
@@ -10,4 +12,5 @@ top
     ${$(insert "hello!")})
     $1=$1
     ${1$(insert user-full-name)}
-$4)
+    $0
+    $4)
