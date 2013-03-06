@@ -776,7 +776,7 @@
   (let* ((snippet (if snippet-p snippet-name
                     (l-snippets-get-snippet snippet-name)))
          (top (eq (current-indentation) 0))
-         prev first last)
+         prev first last end)
     ;; (if top
     ;;     (l-snippets-clear-instance))
     (mapc
@@ -795,17 +795,23 @@
             (id (setq role 'primary))
             (t (setq role 'void)))
            (setq o (l-snippets-insert-field role ids args p prev))
-           (let* ((r (if o (overlay-get o 'role)))
-                  (test (or (eq 'primary r)(eq 'end r))))
-             (if test
-                 (progn
-                   (overlay-put o 'previous prev)
-                   (if prev (overlay-put prev 'next o))
-                   (setq prev o last o)
-                   (if (null first)(setq first o))))))))
+           (let* ((r (if o (overlay-get o 'role))))
+             (cond
+              ((eq r 'primary)
+               (overlay-put o 'previous prev)
+               (if prev (overlay-put prev 'next o))
+               (setq prev o last o)
+               (if (null first)(setq first o)))
+              ((eq r 'end)
+               (setq end o)))))))
      snippet)
     ;; loop
     ;; (overlay-put first 'previous last)(overlay-put last 'next first)
+    (cond
+     (end
+      (overlay-put last 'next end)
+      (overlay-put end 'previous last)
+      (setq last end)))
     (overlay-put first 'face 'l-snippets-active-face)
     (while (setq prev (overlay-get prev 'previous))
       (overlay-put prev 'ready t))
