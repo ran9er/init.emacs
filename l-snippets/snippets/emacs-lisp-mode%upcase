@@ -6,16 +6,13 @@ all
 <------environment
 
 <------snippet
-${1:downcase$(lambda (ov after-p)
+${1:downcase$(lambda (pri after-p mi)
   (if after-p
-      (let ((text (l-snippets-overlay-get-text ov)))
-        (mapc
-         (lambda(x)
-           (l-snippets-overlay-update-text x (upcase text)))
-         (overlay-get ov 'mirrors)))))} 
+      (let ((text (l-snippets-overlay-get-text pri)))
+        (l-snippets-overlay-update-text mi (upcase text)))))}
 upcase:$1
 
 upcase  :: $1 $0
-downcase:: ${1$(lambda(mo pri)
-      (l-snippets-overlay-update-text 
-       mo (downcase (l-snippets-overlay-get-text pri))))}
+downcase:: ${1$(lambda(pri af-p mi)
+      (l-snippets-overlay-update-text
+       mi (downcase (l-snippets-overlay-get-text pri))))}
