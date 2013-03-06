@@ -170,6 +170,10 @@
     (modification-hooks l-snippets-this-overlay)
     (local-map . ,l-snippets-keymap) ;; debug
     (face . l-snippets-auto-face))
+   _null
+   ((role . _null)
+    (modification-hooks l-snippets-null-ov-hook)
+    (insert-in-front-hooks l-snippets-null-ov-hook))
    ))
 
 ;; * func
@@ -226,7 +230,8 @@
     (move-overlay primary b e)))
 
 (defun l-snippets-delete-overlay (ov)
-  (let ((p 'l-snippets-overlays-pool))
+  (let ((p 'l-snippets-overlays-pool)
+        (ov (or ov l-snippets-null-ov)))
     (mapc
      (lambda(x)
        (overlay-put ov (car x) nil))
@@ -288,15 +293,15 @@
   (l-snippets-delete-overlay (overlay-get ov 'tail))
   (l-snippets-delete-overlay ov))
 
-(defun l-snippets-clear-instance ()
+(defun l-snippets-clear-instance (ov)
   "l-snippets-clear-instance "
   (interactive)
-  (let* ((cur (l-snippets-get-primary (l-snippets-get-overlay)))
+  (let* ((cur (l-snippets-get-primary ov))
          head)
-    (while (overlay-get cur 'previous)
-      (setq cur (overlay-get cur 'previous)
-            head cur))
-    (or head (setq head cur))
+    (while
+        (prog1 (overlay-get cur 'previous)
+          (setq head cur))
+      (setq cur (overlay-get cur 'previous)))
     (while
         (prog1 (overlay-get head 'next)
           (setq cur head
@@ -443,6 +448,11 @@
       (throw 'l-snippets-throw t)
     (error)))
 
+(defun l-snippets-null-ov-hook (overlay after-p beg end &optional length)
+  "l-snippets-null-ov-hook is writen by ran9er"
+  (if after-p
+      (delete-overlay overlay)))
+
 ;; * keymap
 (defun l-snippets-get-overlay()
   (interactive)
@@ -458,9 +468,7 @@
     (if (eq (overlay-get oo 'role) 'end)
         (progn
           (goto-char (overlay-end oo))
-          (save-excursion
-            (goto-char (overlay-end o))
-            (l-snippets-clear-instance)))
+          (l-snippets-clear-instance o))
       (overlay-put o 'offset (- (overlay-end o)(point)))
       (overlay-put o 'face 'l-snippets-editable-face)
       (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
@@ -792,14 +800,14 @@
                  (progn
                    (overlay-put o 'previous prev)
                    (if prev (overlay-put prev 'next o))
-                   (setq prev o last o)))))))
+                   (setq prev o last o)
+                   (if (null first)(setq first o))))))))
      snippet)
-    (while (setq first prev prev (overlay-get prev 'previous))
-      (if prev
-          (progn
-            (overlay-put prev 'ready t)
-            )))
+    ;; loop
+    ;; (overlay-put first 'previous last)(overlay-put last 'next first)
     (overlay-put first 'face 'l-snippets-active-face)
+    (while (setq prev (overlay-get prev 'previous))
+      (overlay-put prev 'ready t))
     (goto-char (overlay-end first))
     (cons first last)))
 
@@ -840,6 +848,8 @@
   (interactive)
   (or (l-snippets-expand)
       (indent-for-tab-command)))
+
+(setq l-snippets-null-ov (l-snippets-overlay-appoint '_null 1))
 
 ;; load extension
 (let ((f (directory-files l-snippets-extension t ".*\\.el\\'")))

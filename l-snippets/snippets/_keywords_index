@@ -3,6 +3,7 @@
   ("ol" "emacs-lisp-mode%ol")
   ("lt" "emacs-lisp-mode%let")
   ("let" "emacs-lisp-mode%let")
+  ("f" "emacs-lisp-mode%defun")
   ("defun" "emacs-lisp-mode%defun")
   ("def" "emacs-lisp-mode%defun")
   ("cond" "emacs-lisp-mode%cond")
