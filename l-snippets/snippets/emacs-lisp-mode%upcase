@@ -12,6 +12,10 @@ ${1:downcase$(lambda (ov after-p)
         (mapc
          (lambda(x)
            (l-snippets-overlay-update-text x (upcase text)))
-         (overlay-get ov 'mirrors)))))}asdf upcase$1
+         (overlay-get ov 'mirrors)))))} 
+upcase:$1
 
-upcase  $1 $0
+upcase  :: $1 $0
+downcase:: ${1$(lambda(mo pri)
+      (l-snippets-overlay-update-text 
+       mo (downcase (l-snippets-overlay-get-text pri))))}

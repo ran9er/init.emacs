@@ -19,6 +19,14 @@
 ;;       (funcall f ov t))))
 
 (defun l-snippets-call-when-modif (ov after-p beg end &optional length)
-  (let* ((o (l-snippets-get-primary ov))
-         (form (overlay-get o 'l-snippets-overlay-callback)))
-    (funcall form o after-p)))
+  (let* ((prim (l-snippets-get-primary ov))
+         (form (overlay-get prim 'l-snippets-overlay-callback)))
+    (let ((mo (overlay-get prim 'mirrors))) 
+      (if mo
+          (mapc
+           (lambda(x)
+             (let ((h (overlay-get x 'l-snippets-overlay-callback)))
+               (if h (funcall h x prim)
+                 (funcall form prim x after-p))))
+           mo)
+        (funcall form o after-p)))))
