@@ -12,7 +12,7 @@ emacs-lisp-mode
 ;; Copyright (C) 1996, 2001-2012  Free Software Foundation, Inc.
 
 ;; Author: ${$(insert user-full-name)} <${$(insert user-mail-address)}>
-;; Keywords: ${2:KEYWORDS}
+;; Keywords: ${2:KEYWORDS%? }
 
 ;; This file is part of GNU Emacs.
 
