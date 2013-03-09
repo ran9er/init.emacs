@@ -15,6 +15,4 @@ ${0$(overlay-put ovl 'snippet-ready
                  (lambda(o) (let* ((ob (overlay-get o 'first))
                                (e (overlay-end o))
                                (b (overlay-start ob)))
-                          (comment-region b e)
-                          (goto-char e)
-                          (l-snippets-clear-instance ob))))}
+                          (comment-region b e))))}

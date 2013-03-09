@@ -1,0 +1,17 @@
+<------alias
+uc upcase
+<------modes
+all
+<------keywords
+<------environment
+
+<------snippet
+upcase  : ${1:downcase$(lambda (pri after-p mi)
+  (if after-p
+      (let ((text (liny-overlay-get-text pri)))
+        (liny-overlay-update-text mi (upcase text)))))}
+
+upcase  : $1 $0
+downcase: ${1$(lambda(pri af-p mi)
+      (liny-overlay-update-text
+       mi (downcase (liny-overlay-get-text pri))))}

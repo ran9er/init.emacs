@@ -4,105 +4,105 @@
 ;; (add-to-list 'debug-ignored-errors "^End of file during parsing$")
 
 ;; ** face
-(defgroup l-snippets nil
-  "Visual insertion of l-snippets."
+(defgroup liny nil
+  "LINY Is Not Yasnippet."
   :group 'abbrev
   :group 'convenience)
 
-(defface l-snippets-editable-face
+(defface liny-editable-face
   '((((background dark)) (:background "dim gray"))
     (((background light)) (:background "dim gray")))
-  "*Face used for editable text in l-snippets."
-  :group 'l-snippets)
+  "*Face used for editable text in LINY."
+  :group 'liny)
 
-(defface l-snippets-active-face
+(defface liny-active-face
   '((((background dark)) (:background "steel blue"))
     (((background light)) (:background "light cyan")))
-  "*Face used for editable text in l-snippets."
-  :group 'l-snippets)
+  "*Face used for active text in LINY."
+  :group 'liny)
 
-(defface l-snippets-auto-face
+(defface liny-auto-face
   '((((background dark)) (:underline "steel blue"))
     (((background light)) (:underline "light cyan")))
-  "*Face used for automatically updating text in l-snippets."
-  :group 'l-snippets)
+  "*Face used for automatically updating text in LINY."
+  :group 'liny)
 
-(defface l-snippets-auto-form-face
-  '((default (:inherit 'l-snippets-auto-face)))
-  "*Face used for text in l-snippets that is re-evaluated on input."
-  :group 'l-snippets)
+(defface liny-auto-form-face
+  '((default (:inherit 'liny-auto-face)))
+  "*Face used for text in LINY that is re-evaluated on input."
+  :group 'liny)
 
-(defface l-snippets-tail-face
+(defface liny-tail-face
   '((((background dark)) (:underline "dim gray"))
     (((background light)) (:underline "dim gray")))
-  "*Face used for text in l-snippets that is re-evaluated on input."
-  :group 'l-snippets)
+  "*Face used for tail field in LINY."
+  :group 'liny)
 
 ;; * customize
-(defvar l-snippets-dir
+(defvar liny-dir
   (file-name-directory
    (or load-file-name
        buffer-file-name)))
 
-(setq l-snippets-repo (expand-file-name "snippets" l-snippets-dir))
-(setq l-snippets-extension (expand-file-name "extensions" l-snippets-dir))
+(setq liny-repo (expand-file-name "snippets" liny-dir))
+(setq liny-extension (expand-file-name "extensions" liny-dir))
 
-(defvar l-snippets-keymap
+(defvar liny-keymap
   (let ((keymap (make-sparse-keymap)))
-    (define-key keymap [?\t] 'l-snippets-next-field)
-    (define-key keymap "\M-n" 'l-snippets-next-field)
-    (define-key keymap "\M-p" 'l-snippets-previous-field)
-    (define-key keymap [remap move-beginning-of-line] 'l-snippets-beginning-of-field)
-    (define-key keymap [remap move-end-of-line] 'l-snippets-end-of-field)
-    (define-key keymap (kbd "C-x =") (lambda()(interactive)(setq current-overlay (l-snippets-get-overlay))))
-    (define-key keymap (kbd "C-x -") 'l-snippets-clear-instance)
+    (define-key keymap [?\t] 'liny-next-field)
+    (define-key keymap "\M-n" 'liny-next-field)
+    (define-key keymap "\M-p" 'liny-previous-field)
+    (define-key keymap [remap move-beginning-of-line] 'liny-beginning-of-field)
+    (define-key keymap [remap move-end-of-line] 'liny-end-of-field)
+    (define-key keymap (kbd "C-x =") (lambda()(interactive)(setq current-overlay (liny-get-overlay))))
+    (define-key keymap (kbd "C-x -") 'liny-clear-instance)
     keymap)
   "*Keymap used for l-nippets input fields.")
 
-(defun l-snippets-custom-syntax (&rest args)
-  (let ((args (l-snippets-to-alist args)))
-    (setq l-snippets-custom-meta
-          (copy-sequence l-snippets-syntax-meta)
-          l-snippets-custom-delimiter
-          (copy-alist l-snippets-syntax-delimiter))
+(defun liny-custom-syntax (&rest args)
+  (let ((args (liny-to-alist args)))
+    (setq liny-custom-meta
+          (copy-sequence liny-syntax-meta)
+          liny-custom-delimiter
+          (copy-alist liny-syntax-delimiter))
     (mapc
      (lambda(x)
        (if (symbolp (car x))
-           (plist-put l-snippets-custom-meta (car x)(cdr x))
-         (setq l-snippets-custom-delimiter
+           (plist-put liny-custom-meta (car x)(cdr x))
+         (setq liny-custom-delimiter
                (cons
                 x
                 (remove
-                 (rassq (cdr x) l-snippets-custom-delimiter)
+                 (rassq (cdr x) liny-custom-delimiter)
                  (remove
-                  (assoc (car x) l-snippets-custom-delimiter)
-                  l-snippets-custom-delimiter))))))
+                  (assoc (car x) liny-custom-delimiter)
+                  liny-custom-delimiter))))))
      args)))
 
-(defvar l-snippets-syntax-meta
+(defvar liny-syntax-meta
   '(head "\\$" open "{" close "}" id "[[:digit:]]+"
          path-separator "%" file-separator "<------"))
 
-(defvar l-snippets-custom-meta nil)
+(defvar liny-custom-meta nil)
 
-(defvar l-snippets-syntax-delimiter
-  '(("\\(:\\)" . l-snippets-action-prompt)
+(defvar liny-syntax-delimiter
+  '(("\\(:\\)" . liny-action-prompt)
     ("\\(\\$\\)(" . (lambda(s p o)(eval (read s)))))
   "string position overlay")
 
-(defvar l-snippets-custom-delimiter nil)
+(defvar liny-custom-delimiter nil)
 
-(defun l-snippets-gen-regexp (str &rest tags)
+(defun liny-gen-regexp (str &rest tags)
   (apply 'format
          str
          (mapcar
           (lambda(x)
             (plist-get
-             (or l-snippets-custom-meta
-                 l-snippets-syntax-meta) x))
+             (or liny-custom-meta
+                 liny-syntax-meta) x))
           tags)))
 
-(defvar l-snippets-token-tags
+(defvar liny-token-tags
   '((leader "\\(%s%s\\)\\|\\(%s%s\\)" head open head id)
     (sep    "\\(%s\\)\\|\\(%s\\)" id open)
     (head "%s" head)
@@ -111,36 +111,36 @@
     (id "%s" id)
     (file-separator "%s" file-separator)))
 
-(defun l-snippets-token-regexp (tag)
-  (apply 'l-snippets-gen-regexp (cdr (assoc tag l-snippets-token-tags))))
+(defun liny-token-regexp (tag)
+  (apply 'liny-gen-regexp (cdr (assoc tag liny-token-tags))))
 
-(defun l-snippets-token-delimiter ()
-  (or l-snippets-custom-delimiter l-snippets-syntax-delimiter))
+(defun liny-token-delimiter ()
+  (or liny-custom-delimiter liny-syntax-delimiter))
 
-(defun l-snippets-token-regexp-delimiter()
+(defun liny-token-regexp-delimiter()
   (mapconcat
    'identity
    (mapcar
     (lambda(x)
       (format "%s" (car x)))
-    (l-snippets-token-delimiter))
+    (liny-token-delimiter))
    "\\|"))
 
-(defun l-snippets-action-prompt (s p o)
+(defun liny-action-prompt (s p o)
   (insert s)
-  (l-snippets-move-overlay o p (point))
+  (liny-move-overlay o p (point))
   (overlay-put o 'prompt t))
 
-(setq l-snippets-roles
+(setq liny-roles
  `(end
    ((role . end)
     ;; (evaporate . t)
     (previous . nil)
-    (face . l-snippets-tail-face)
-    (insert-in-front-hooks l-snippets-this-overlay)
+    (face . liny-tail-face)
+    (insert-in-front-hooks liny-this-overlay)
     (first . nil)
     (snippet-ready . nil)
-    (keymap . ,l-snippets-keymap))
+    (keymap . ,liny-keymap))
    primary
    ((role . primary)
     (id . nil)
@@ -151,72 +151,72 @@
     (previous . nil)
     (next . nil)
     (mirrors . nil)
-    (modification-hooks l-snippets-this-overlay
-                        l-snippets-update-mirror)
-    (insert-in-front-hooks l-snippets-this-overlay
-                           l-snippets-update-mirror)
-    (local-map . ,l-snippets-keymap)
-    (face . l-snippets-editable-face))
+    (modification-hooks liny-this-overlay
+                        liny-update-mirror)
+    (insert-in-front-hooks liny-this-overlay
+                           liny-update-mirror)
+    (local-map . ,liny-keymap)
+    (face . liny-editable-face))
    tail
    ((role . tail)
     (primary . nil)
     (priority . 1)
-    ;; (face . l-snippets-tail-face) ;; debug
-    (local-map . ,l-snippets-keymap)
-    (insert-in-front-hooks l-snippets-this-overlay
-                           l-snippets-delete-prompt
-                           l-snippets-move-primary
-                           l-snippets-update-mirror))
+    ;; (face . liny-tail-face) ;; debug
+    (local-map . ,liny-keymap)
+    (insert-in-front-hooks liny-this-overlay
+                           liny-delete-prompt
+                           liny-move-primary
+                           liny-update-mirror))
    mirror
    ((role . mirror)
     (primary . nil)
-    (modification-hooks l-snippets-this-overlay)
-    (local-map . ,l-snippets-keymap) ;; debug
-    (face . l-snippets-auto-face))
+    (modification-hooks liny-this-overlay)
+    (local-map . ,liny-keymap) ;; debug
+    (face . liny-auto-face))
    _null
    ((role . _null)
-    (modification-hooks l-snippets-null-ov-hook)
-    (insert-in-front-hooks l-snippets-null-ov-hook))
+    (modification-hooks liny-null-ov-hook)
+    (insert-in-front-hooks liny-null-ov-hook))
    ))
 
 ;; * func
-(defun l-snippets-to-alist (lst)
+(defun liny-to-alist (lst)
   (if lst
       (cons
        (cons (nth 0 lst) (nth 1 lst))
-       (l-snippets-to-alist (nthcdr 2 lst)))))
+       (liny-to-alist (nthcdr 2 lst)))))
 
-(defun l-snippets-make-lst (n)
+(defun liny-make-lst (n)
   (let* ((i n)(x nil))
     (while (> i 0)
       (setq x (cons i x))
       (setq i (1- i)))
     x))
 
-(defun l-snippets-temp-name (make-temp-name (format "--%s-"(buffer-name))))
+(defun liny-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
 ;; * init
-(defvar l-snippets-enable-overlays-pool nil)
+(defvar liny-enable-overlays-pool nil)
 
-(defvar l-snippets-overlays-pool nil)
+(defvar liny-overlays-pool nil)
 
-(defvar l-snippets-enable-indent t)
-(make-local-variable 'l-snippets-enable-indent)
+(defvar liny-enable-indent t)
+(make-local-variable 'liny-enable-indent)
 
-(defvar l-snippets-cache
+(defvar liny-cache
   (make-hash-table :test 'equal))
 
-(defun l-snippets-clear-cache()
+(defun liny-clear-cache()
   (interactive)
-  (clrhash l-snippets-cache))
+  (clrhash liny-cache))
 
 ;; * overlay
 
-(defun l-snippets-make-overlay (b e)
-  (let* ((p 'l-snippets-overlays-pool)
+(defun liny-make-overlay (b e)
+  (let* ((p 'liny-overlays-pool)
          (q (eval p))
          (ov (car q)))
-    (if l-snippets-enable-overlays-pool
+    (if liny-enable-overlays-pool
         (setq ov (make-overlay b e))
       (if ov
           (progn
@@ -225,33 +225,33 @@
         (setq ov (make-overlay b e))))
     ov))
 
-(defun l-snippets-move-overlay (o b e &optional nontail)
-  (let* ((primary (l-snippets-get-primary o))
-         (tail (l-snippets-get-tail o))
+(defun liny-move-overlay (o b e &optional nontail)
+  (let* ((primary (liny-get-primary o))
+         (tail (liny-get-tail o))
          (te (if nontail e (1+ e))))
     (move-overlay tail e te)
     (move-overlay primary b e)))
 
-(defun l-snippets-delete-overlay (ov)
-  (let ((p 'l-snippets-overlays-pool)
-        (ov (or ov l-snippets-null-ov)))
+(defun liny-delete-overlay (ov)
+  (let ((p 'liny-overlays-pool)
+        (ov (or ov liny-null-ov)))
     (mapc
      (lambda(x)
        (overlay-put ov (car x) nil))
-     (plist-get l-snippets-roles (overlay-get ov 'role)))
+     (plist-get liny-roles (overlay-get ov 'role)))
     (delete-overlay ov)
-    (if l-snippets-enable-overlays-pool
+    (if liny-enable-overlays-pool
         (set p (cons ov (eval p))))
     nil))
 
 
-(defun l-snippets-overlay-get-text (o)
-  "l-snippets-overlay-get-text is writen by ran9er"
+(defun liny-overlay-get-text (o)
+  "liny-overlay-get-text is writen by ran9er"
   (buffer-substring-no-properties
    (overlay-start o)
    (overlay-end o)))
 
-(defun l-snippets-overlay-update-text (ov text)
+(defun liny-overlay-update-text (ov text)
   (let ((beg (overlay-start ov)))
     (save-excursion
       (goto-char beg)
@@ -260,16 +260,16 @@
       (insert text)
       (move-overlay ov beg (point)))))
 
-(defun l-snippets-overlay-appoint (role &optional b e &rest properties)
+(defun liny-overlay-appoint (role &optional b e &rest properties)
   (let* ((inhibit-modification-hooks t)
          (b (or b (point)))
          (e (or e b))
          (void (if (> e (point-max))
                    (save-excursion
                      (insert (make-string (- e (point-max)) ?\ )))))
-         (rl (plist-get l-snippets-roles role))
-         (ov (if rl (l-snippets-make-overlay b e))))
-    (run-hooks 'l-snippets-before-overlay-appoint-hook)
+         (rl (plist-get liny-roles role))
+         (ov (if rl (liny-make-overlay b e))))
+    (run-hooks 'liny-before-overlay-appoint-hook)
     (mapc
      (lambda(x)
        (overlay-put ov (car x)
@@ -280,26 +280,26 @@
         (overlay-put
          ov
          'tail
-         (l-snippets-overlay-appoint
+         (liny-overlay-appoint
           'tail
           (overlay-end ov)
           (1+ (overlay-end ov))
           'primary ov)))
-    (run-hooks 'l-snippets-after-overlay-appoint-hook)
+    (run-hooks 'liny-after-overlay-appoint-hook)
     ov))
 
-(defun l-snippets-overlay-release (ov)
+(defun liny-overlay-release (ov)
   (mapc
    (lambda(x)
-     (l-snippets-delete-overlay x))
+     (liny-delete-overlay x))
    (overlay-get ov 'mirrors))
-  (l-snippets-delete-overlay (overlay-get ov 'tail))
-  (l-snippets-delete-overlay ov))
+  (liny-delete-overlay (overlay-get ov 'tail))
+  (liny-delete-overlay ov))
 
-(defun l-snippets-clear-instance (ov)
-  "l-snippets-clear-instance "
+(defun liny-clear-instance (ov)
+  "liny-clear-instance "
   (interactive)
-  (let* ((cur (l-snippets-get-primary ov))
+  (let* ((cur (liny-get-primary ov))
          head)
     (while
         (prog1 (overlay-get cur 'previous)
@@ -309,105 +309,105 @@
         (prog1 (overlay-get head 'next)
           (setq cur head
                 head (overlay-get head 'next))
-          (l-snippets-overlay-release cur)))))
+          (liny-overlay-release cur)))))
 
-(defun l-snippets-get-prev (ov id)
+(defun liny-get-prev (ov id)
   (if (overlayp ov)
       (if (eq id (nth 1 (overlay-get ov 'id)))
           ov
-        (l-snippets-get-prev (overlay-get ov 'previous) id))))
+        (liny-get-prev (overlay-get ov 'previous) id))))
 
-(defun l-snippets-get-primary(ov)
+(defun liny-get-primary(ov)
   (if (eq 'primary (overlay-get ov 'role))
       ov
     (overlay-get ov 'primary)))
 
-(defun l-snippets-get-tail(ov)
+(defun liny-get-tail(ov)
   (if (eq 'tail (overlay-get ov 'role))
       ov
     (overlay-get ov 'tail)))
 
-(defun l-snippets-get-first (ov)
-  "l-snippets-get-first is writen by ran9er"
-  (let ((o (l-snippets-get-primary ov)))
+(defun liny-get-first (ov)
+  "liny-get-first is writen by ran9er"
+  (let ((o (liny-get-primary ov)))
     (while (overlay-get o 'previous)
       (setq o (overlay-get o 'previous)))
     o))
 
-(defun l-snippets-get-last (ov)
-  "l-snippets-get-last is writen by ran9er"
+(defun liny-get-last (ov)
+  "liny-get-last is writen by ran9er"
   (let ((o (if (eq (overlay-get ov 'role) 'end)
-               o (l-snippets-get-primary ov))))
+               o (liny-get-primary ov))))
     (while (overlay-get o 'next)
       (setq o (overlay-get o 'next)))
     o))
 
 
 ;; ** struction
-(defun l-snippets-overlay-push-to (to from &optional p)
+(defun liny-overlay-push-to (to from &optional p)
   (let ((p (or p 'group)))
    (overlay-put to p (cons from (overlay-get to p)))))
 
-(defun l-snippets-overlay-link (front beg &optional end)
+(defun liny-overlay-link (front beg &optional end)
   (let ((end (or end beg)))
     (overlay-put (overlay-get front 'next) 'previous end)
     (overlay-put end 'next (overlay-get front 'next))
     (overlay-put front 'next beg)
     (overlay-put beg 'previous front)))
 
-;; (defun l-snippets-overlay-setprev (to from &optional p)
+;; (defun liny-overlay-setprev (to from &optional p)
 ;;   (let ((p (or p 'link)))
 ;;    (overlay-put to p (cons from (cdr (overlay-get to p))))))
 
-;; (defun l-snippets-overlay-setnext (to from &optional p)
+;; (defun liny-overlay-setnext (to from &optional p)
 ;;   (let ((p (or p 'link)))
 ;;    (overlay-put to p (cons (car (overlay-get to p)) from))))
 
-(defun l-snippets-overlay-append-hooks (ov prop &rest hooks)
+(defun liny-overlay-append-hooks (ov prop &rest hooks)
   (overlay-put ov prop
                (append (overlay-get ov prop)
                        hooks)))
 
-(defun l-snippets-primary-append-hooks (ov &rest hooks)
-  "l-snippets-primary-append-hooks is writen by ran9er"
-  (apply 'l-snippets-overlay-append-hooks ov 'modification-hooks hooks)
-  (apply 'l-snippets-overlay-append-hooks ov 'insert-in-front-hooks hooks)
+(defun liny-primary-append-hooks (ov &rest hooks)
+  "liny-primary-append-hooks is writen by ran9er"
+  (apply 'liny-overlay-append-hooks ov 'modification-hooks hooks)
+  (apply 'liny-overlay-append-hooks ov 'insert-in-front-hooks hooks)
   (if (overlay-get ov 'tail)
-      (apply 'l-snippets-overlay-append-hooks
+      (apply 'liny-overlay-append-hooks
              (overlay-get ov 'tail) 'insert-in-front-hooks hooks)))
 
 
-(defun l-snippets-clone-primary (ov beg)
+(defun liny-clone-primary (ov beg)
   (let* ((ids (overlay-get ov 'id))
-         (o (l-snippets-insert-field
+         (o (liny-insert-field
              'primary
              ids
              (cdr
               (assoc
                (nth 1 ids)
-               (l-snippets-get-snippet
+               (liny-get-snippet
                 (nth 0 ids))))
              beg)))
-    (l-snippets-overlay-link ov o)
+    (liny-overlay-link ov o)
     (goto-char (overlay-end o))
     o))
 
 ;; ** hooks
-(defun l-snippets-update-mirror (overlay after-p beg end &optional length)
+(defun liny-update-mirror (overlay after-p beg end &optional length)
   (if after-p
       (let* ((inhibit-modification-hooks t)
-             (overlay (l-snippets-get-primary overlay))
+             (overlay (liny-get-primary overlay))
              (text (buffer-substring-no-properties
                     (overlay-start overlay)
                     (overlay-end overlay)))
              (mirrors (overlay-get overlay 'mirrors)))
         (mapc
          (lambda(x)
-           (l-snippets-overlay-update-text x text))
+           (liny-overlay-update-text x text))
          mirrors))))
 
-(defun l-snippets-delete-prompt (overlay after-p beg end &optional length)
-  (let ((ov (l-snippets-get-primary overlay)))
+(defun liny-delete-prompt (overlay after-p beg end &optional length)
+  (let ((ov (liny-get-primary overlay)))
     (if (overlay-get ov 'ready)
         (if after-p
             (if (null (overlay-get ov 'prompt))
@@ -415,21 +415,21 @@
               (delete-region (overlay-start ov)(overlay-end ov))
               (overlay-put ov 'prompt nil))))))
 
-(defun l-snippets-move-primary (overlay after-p beg end &optional length)
+(defun liny-move-primary (overlay after-p beg end &optional length)
   (let ((own (overlay-get overlay 'primary))
         (pos (1- (overlay-end overlay))))
     (if after-p
-        (l-snippets-move-overlay overlay (overlay-start own) pos))))
+        (liny-move-overlay overlay (overlay-start own) pos))))
 
-;; (defun l-snippets-display-tail (overlay after-p beg end &optional length)
+;; (defun liny-display-tail (overlay after-p beg end &optional length)
 ;;   (let* ((pri (overlay-get overlay 'primary))
 ;;          (len (- (overlay-end pri)(overlay-start pri)))
 ;;          (tail (overlay-get pri 'tail)))
 ;;     (if (zerop len)
-;;         (overlay-put tail 'face l-snippets-tail-face)
+;;         (overlay-put tail 'face liny-tail-face)
 ;;       (overlay-put tail 'face nil))))
 
-;; (defun l-snippets-move-tail (overlay after-p beg end &optional length)
+;; (defun liny-move-tail (overlay after-p beg end &optional length)
 ;;   (if after-p
 ;;       (let* ((tail (overlay-get overlay 'tail))
 ;;              (beg (overlay-end overlay))
@@ -438,61 +438,61 @@
 ;;             nil
 ;;           (move-overlay tail beg end)))))
 
-(defun l-snippets-this-overlay (overlay after-p beg end &optional length)
+(defun liny-this-overlay (overlay after-p beg end &optional length)
   (if after-p
       nil
     (condition-case nil
         (throw 'current-overlay overlay)
       (error))))
 
-(defun l-snippets-throw ()
-  "l-snippets-virtual-edit is writen by ran9er"
+(defun liny-throw ()
+  "liny-virtual-edit is writen by ran9er"
   (condition-case nil
-      (throw 'l-snippets-throw t)
+      (throw 'liny-throw t)
     (error)))
 
-(defun l-snippets-null-ov-hook (overlay after-p beg end &optional length)
-  "l-snippets-null-ov-hook is writen by ran9er"
+(defun liny-null-ov-hook (overlay after-p beg end &optional length)
+  "liny-null-ov-hook is writen by ran9er"
   (if after-p
       (delete-overlay overlay)))
 
 ;; * keymap
-(defun l-snippets-get-overlay()
+(defun liny-get-overlay()
   (interactive)
   (catch 'current-overlay
     (save-excursion
       (insert " ")
       (delete-char -1))))
 
-(defun l-snippets-goto-field (p-or-n)
+(defun liny-goto-field (p-or-n)
   (interactive)
-  (let* ((o (l-snippets-get-primary (l-snippets-get-overlay)))
+  (let* ((o (liny-get-primary (liny-get-overlay)))
          (oo (overlay-get o p-or-n)))
     (if (eq (overlay-get oo 'role) 'end)
         (progn
           (goto-char (overlay-end oo))
-          (l-snippets-clear-instance o))
+          (liny-clear-instance o))
       (overlay-put o 'offset (- (overlay-end o)(point)))
-      (overlay-put o 'face 'l-snippets-editable-face)
+      (overlay-put o 'face 'liny-editable-face)
       (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-      (overlay-put oo 'face 'l-snippets-active-face))))
+      (overlay-put oo 'face 'liny-active-face))))
 
-(defun l-snippets-previous-field ()
+(defun liny-previous-field ()
   (interactive)
-  (l-snippets-goto-field 'previous))
+  (liny-goto-field 'previous))
 
-(defun l-snippets-next-field ()
+(defun liny-next-field ()
   (interactive)
-  (l-snippets-goto-field 'next))
+  (liny-goto-field 'next))
 
-(defun l-snippets-beginning-of-field ()
+(defun liny-beginning-of-field ()
   (interactive)
-  (let ((o (l-snippets-get-primary (l-snippets-get-overlay))))
+  (let ((o (liny-get-primary (liny-get-overlay))))
     (goto-char (overlay-start o))))
 
-(defun l-snippets-end-of-field ()
+(defun liny-end-of-field ()
   (interactive)
-  (let ((o (l-snippets-get-primary (l-snippets-get-overlay))))
+  (let ((o (liny-get-primary (liny-get-overlay))))
     (goto-char (overlay-end o))))
 
 ;; * debug
@@ -510,7 +510,7 @@
             (overlays-in pt (1+ pt)))))))
 
 ;; * index
-(defun l-snippets-read-index (idx)
+(defun liny-read-index (idx)
   (let (var)
     (with-current-buffer
         (let ((enable-local-variables nil))
@@ -524,44 +524,44 @@
                    nil)))
         (kill-buffer (current-buffer))))))
 
-(defun l-snippets-update-index (file str &optional force)
+(defun liny-update-index (file str &optional force)
   (interactive)
   (setq
-   l-snippets-index
+   liny-index
    (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
-         (l-snippets-index-file
-          (expand-file-name file l-snippets-repo)))
+         (liny-index-file
+          (expand-file-name file liny-repo)))
      (if (or force
              (time-less-p
-              (or (funcall mtime l-snippets-index-file)
+              (or (funcall mtime liny-index-file)
                   '(0 0 0))
-              (funcall mtime l-snippets-repo)))
+              (funcall mtime liny-repo)))
          (with-temp-file
              (let ((enable-local-variables nil)
                    (find-file-hook nil))
-               l-snippets-index-file)
+               liny-index-file)
            (insert str)
-           (message (format "Save %s." l-snippets-index-file))))
-     (l-snippets-read-index l-snippets-index-file))))
+           (message (format "Save %s." liny-index-file))))
+     (liny-read-index liny-index-file))))
 
-(defun l-snippets-snippet-exist-p (snippet)
-  (member snippet l-snippets-index))
+(defun liny-snippet-exist-p (snippet)
+  (member snippet liny-index))
 
-(l-snippets-update-index "_index"
+(liny-update-index "_index"
  (pp-to-string
-  (directory-files l-snippets-repo nil "^[^_].*\\'")))
+  (directory-files liny-repo nil "^[^_].*\\'")))
 
-(defun l-snippets-get-snippet (snippet)
+(defun liny-get-snippet (snippet)
   (or
-   (gethash snippet l-snippets-cache)
-   (if (l-snippets-snippet-exist-p snippet)
+   (gethash snippet liny-cache)
+   (if (liny-snippet-exist-p snippet)
        (puthash snippet
-                (l-snippets-get-token
-                 (expand-file-name snippet l-snippets-repo))
-                l-snippets-cache))))
+                (liny-get-token
+                 (expand-file-name snippet liny-repo))
+                liny-cache))))
 
 ;; * prase
-(defun l-snippets-find-close-paren (x y &optional back)
+(defun liny-find-close-paren (x y &optional back)
   (let ((count 1)
         (re-search (if back 're-search-backward 're-search-forward))
         open close)
@@ -579,26 +579,26 @@
         (setq close (cons (match-beginning 2) (match-end 2)))))
     close))
 
-(defun l-snippets-search-str (str &optional eof)
+(defun liny-search-str (str &optional eof)
   "with-temp-buffer"
   (save-excursion
     (goto-char (point-min))
     (let ((start
            (re-search-forward
             (format "%s%s.*\n"
-                    (l-snippets-token-regexp 'file-separator)
+                    (liny-token-regexp 'file-separator)
                     str)
             nil t))
           (end
            (if eof (point-max)
              (and
               (re-search-forward
-               (l-snippets-token-regexp 'file-separator) nil t)
+               (liny-token-regexp 'file-separator) nil t)
               (1- (match-beginning 0))))))
       (if (and start end)
           (buffer-substring-no-properties start end)))))
 
-(defun l-snippets-delete-tail-space (str)
+(defun liny-delete-tail-space (str)
   (with-temp-buffer
     (insert str)
     (goto-char (point-max))
@@ -608,12 +608,12 @@
       (skip-chars-backward " \t\n")
       (point)))))
 
-(defun l-snippets-fetch-str (str sep)
+(defun liny-fetch-str (str sep)
   (let (id result beg end)
     (with-temp-buffer
       (insert str)
       (goto-char (point-min))
-      (re-search-forward (l-snippets-token-regexp 'head) nil t)
+      (re-search-forward (liny-token-regexp 'head) nil t)
       (re-search-forward sep nil t)
       (cond
        ((match-end 1)
@@ -622,20 +622,20 @@
               result ""))
        ((match-end 2)
         (setq beg (match-end 2))
-        (setq id (if (re-search-forward (l-snippets-token-regexp 'id) nil t)
+        (setq id (if (re-search-forward (liny-token-regexp 'id) nil t)
                      (read (buffer-substring-no-properties
                             (match-beginning 0)(match-end 0)))))
         (setq beg (match-end 0))
         (goto-char (point-min))
-        (setq end (car (l-snippets-find-close-paren
-                        (l-snippets-token-regexp 'open)
-                        (l-snippets-token-regexp 'close))))
+        (setq end (car (liny-find-close-paren
+                        (liny-token-regexp 'open)
+                        (liny-token-regexp 'close))))
         (setq result (buffer-substring-no-properties beg end)))
        (t
         (setq result str))))
     (cons id result)))
 
-(defun l-snippets-split-str (str delimiter elt)
+(defun liny-split-str (str delimiter elt)
   (let* (end result)
     (with-temp-buffer
       (insert str)
@@ -649,7 +649,7 @@
                       (buffer-substring-no-properties
                        (match-end x)
                        end))
-                     (n (cdr (nth (1- x) (l-snippets-token-delimiter)))))
+                     (n (cdr (nth (1- x) (liny-token-delimiter)))))
                  (setq result
                        (cons
                         (cons n m)
@@ -659,10 +659,10 @@
          elt))
       result)))
 
-(defun l-snippets-prase-token (str sep delimiter elt)
-  (let* ((lst (l-snippets-fetch-str str sep))
+(defun liny-prase-token (str sep delimiter elt)
+  (let* ((lst (liny-fetch-str str sep))
          (id (car lst))
-         (act (l-snippets-split-str (cdr lst) delimiter elt)))
+         (act (liny-split-str (cdr lst) delimiter elt)))
     (apply
      'list
      id
@@ -670,11 +670,11 @@
       (lambda(x) (cons (car x) (cdr x)))
       act))))
 
-(defun l-snippets-gen-token (str &optional regexp sep delimiter elt)
-  (let ((regexp (or regexp (l-snippets-token-regexp 'leader)))
-        (sep (or sep (l-snippets-token-regexp 'sep)))
-        (delimiter (or delimiter (l-snippets-token-regexp-delimiter)))
-        (elt (l-snippets-make-lst (length (l-snippets-token-delimiter))))
+(defun liny-gen-token (str &optional regexp sep delimiter elt)
+  (let ((regexp (or regexp (liny-token-regexp 'leader)))
+        (sep (or sep (liny-token-regexp 'sep)))
+        (delimiter (or delimiter (liny-token-regexp-delimiter)))
+        (elt (liny-make-lst (length (liny-token-delimiter))))
         beg mid prev result)
     (with-temp-buffer
       (insert str)
@@ -684,9 +684,9 @@
         (setq beg (match-beginning 0)
               mid (if (match-beginning 1)
                       (progn (goto-char (match-beginning 1))
-                             (cdr (l-snippets-find-close-paren
-                                   (l-snippets-token-regexp 'open)
-                                   (l-snippets-token-regexp 'close))))
+                             (cdr (liny-find-close-paren
+                                   (liny-token-regexp 'open)
+                                   (liny-token-regexp 'close))))
                     (match-end 2)))
         (if prev
             (setq result
@@ -698,47 +698,47 @@
                       result)))
         (setq prev
               (cons
-               (l-snippets-prase-token
+               (liny-prase-token
                 (buffer-substring-no-properties beg mid) sep delimiter elt)
                mid))
         (goto-char mid))
       (setq result
             (cons
-             (l-snippets-delete-tail-space
+             (liny-delete-tail-space
               (buffer-substring-no-properties
                (cdr prev)(point-max)))
              (cons (car prev)
                    result))))
-    (setq l-snippets-custom-meta nil
-          l-snippets-custom-delimiter nil)
+    (setq liny-custom-meta nil
+          liny-custom-delimiter nil)
     (reverse result)))
 
-(defun l-snippets-get-token (file &optional regexp)
+(defun liny-get-token (file &optional regexp)
   (let (str env)
     (with-temp-buffer
       (when (file-readable-p file)
         (insert-file-contents file nil nil nil t)
         (setq
          env
-         (l-snippets-search-str "environment"))
+         (liny-search-str "environment"))
         (if (> (length (replace-regexp-in-string "[ \t\n]" "" env)) 0)
             (eval (read env)))
         (setq
          str
-         (l-snippets-search-str "snippet" t))
-        (l-snippets-gen-token str regexp)))))
+         (liny-search-str "snippet" t))
+        (liny-gen-token str regexp)))))
 
 ;; * insert
-(defun l-snippets-insert-str (str)
-  (let* ((ov (l-snippets-get-primary
-              (or (l-snippets-get-overlay)
-                  l-snippets-null-ov)))
+(defun liny-insert-str (str)
+  (let* ((ov (liny-get-primary
+              (or (liny-get-overlay)
+                  liny-null-ov)))
          st end)
     (if ov (progn
              (setq st (overlay-start ov)
                    end (overlay-end ov))
-             (l-snippets-move-overlay ov st end t)))
-    (if l-snippets-enable-indent
+             (liny-move-overlay ov st end t)))
+    (if liny-enable-indent
         (let ((str (split-string str " \t\n" t))(l 0))
           (while str
             (if (> l 0)
@@ -748,16 +748,16 @@
             (setq str (cdr str)
                   l (1+ l))))
       (insert str))
-    (if ov (l-snippets-move-overlay ov st end))))
+    (if ov (liny-move-overlay ov st end))))
 
-(defun l-snippets-insert-field (role ids args pos &optional prev)
-  "l-snippets-insert-field "
-  (let* ((o (l-snippets-overlay-appoint role pos pos))
+(defun liny-insert-field (role ids args pos &optional prev)
+  "liny-insert-field "
+  (let* ((o (liny-overlay-appoint role pos pos))
          (id (nth 1 ids)))
     (cond
      ((eq role 'mirror)
-      (let* ((prim (l-snippets-get-prev prev id)))
-        (l-snippets-overlay-push-to prim o 'mirrors)
+      (let* ((prim (liny-get-prev prev id)))
+        (liny-overlay-push-to prim o 'mirrors)
         (overlay-put o 'primary prim)
         (goto-char (overlay-end o))
         (if args nil
@@ -776,17 +776,17 @@
      args)
     o))
 
-(defun l-snippets-insert (snippet-name &optional snippet-p)
+(defun liny-insert (snippet-name &optional snippet-p)
   (let* ((snippet (if snippet-p snippet-name
-                    (l-snippets-get-snippet snippet-name)))
+                    (liny-get-snippet snippet-name)))
          (top (eq (current-indentation) 0))
          prev first last end)
     ;; (if top
-    ;;     (l-snippets-clear-instance))
+    ;;     (liny-clear-instance))
     (mapc
      (lambda (x)
        (if (stringp x)
-           (l-snippets-insert-str x)
+           (liny-insert-str x)
          (let* ((id (car x))
                 (args (cdr x))
                 (p (point))
@@ -794,11 +794,11 @@
                 role o)
            (cond
             ((eq id 0)(setq role 'end))
-            ((l-snippets-get-prev prev id)
+            ((liny-get-prev prev id)
              (setq role 'mirror))
             (id (setq role 'primary))
             (t (setq role 'void)))
-           (setq o (l-snippets-insert-field role ids args p prev))
+           (setq o (liny-insert-field role ids args p prev))
            (let* ((r (if o (overlay-get o 'role))))
              (cond
               ((eq r 'primary)
@@ -817,7 +817,7 @@
       (overlay-put end 'previous last)
       (overlay-put end 'first first)
       (setq last end)))
-    (overlay-put first 'face 'l-snippets-active-face)
+    (overlay-put first 'face 'liny-active-face)
     (while (progn
              (overlay-put prev 'ready t)
              (setq prev (overlay-get prev 'previous))))
@@ -827,7 +827,7 @@
     (cons first last)))
 
 ;; * interface
-(defun l-snippets-fetch-alias ()
+(defun liny-fetch-alias ()
   (interactive)
   (save-excursion
     (buffer-substring-no-properties
@@ -838,34 +838,34 @@
        (backward-sexp)
        (point)))))
 
-(defun l-snippets-match ()
+(defun liny-match ()
   (mapconcat 'identity
              (list
               (symbol-name major-mode)
-              (l-snippets-fetch-alias))
+              (liny-fetch-alias))
              (plist-get
-              l-snippets-syntax-meta
+              liny-syntax-meta
               'path-separator)))
 
-(defvar l-snippets-match-strategy 'l-snippets-match)
+(defvar liny-match-strategy 'liny-match)
 
 ;;;###autoload
-(defun l-snippets-expand ()
+(defun liny-expand ()
   (interactive)
-  (let ((spn (funcall l-snippets-match-strategy)))
-    (if (l-snippets-get-snippet spn)
-        (progn (kill-word -1)        ;; (l-snippets-clear-region sp)
-               (l-snippets-insert spn)))))
+  (let ((spn (funcall liny-match-strategy)))
+    (if (liny-get-snippet spn)
+        (progn (kill-word -1)        ;; (liny-clear-region sp)
+               (liny-insert spn)))))
 
 ;;;###autoload
-(defun l-snippets-expand-or-tab ()
-  "l-snippets-expand-or-tab is writen by ran9er"
+(defun liny-expand-or-tab ()
+  "liny-expand-or-tab is writen by ran9er"
   (interactive)
-  (or (l-snippets-expand)
+  (or (liny-expand)
       (indent-for-tab-command)))
 
-(setq l-snippets-null-ov (l-snippets-overlay-appoint '_null 1))
+(setq liny-null-ov (liny-overlay-appoint '_null 1))
 
 ;; load extension
-(let ((f (directory-files l-snippets-extension t ".*\\.el\\'")))
+(let ((f (directory-files liny-extension t ".*\\.el\\'")))
   (if f (mapc (lambda(x)(load x)) f)))

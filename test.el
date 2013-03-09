@@ -63,6 +63,6 @@
 
 ;; \(fn)" t nil)
 
-(autoload 'l-snippets-expand-or-tab
-  (expand-file-name "l-snippets/l-snippets.el" *init-dir*) "" t)
-(global-set-key "\t" 'l-snippets-expand-or-tab)
+(autoload 'liny-expand-or-tab
+  (expand-file-name "liny/liny.el" *init-dir*) "" t)
+(global-set-key "\t" 'liny-expand-or-tab)

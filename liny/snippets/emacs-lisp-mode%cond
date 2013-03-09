@@ -6,17 +6,17 @@ emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------snippet
 (cond
  (${1:TEST}
-  ${2:FORM$(lambda(ov after-p)
+  ${2:FORM$(lambda(ov after-p nil)
              (if after-p nil
                (if (eq last-input-char 13)
-                   (let* ((o (l-snippets-get-last ov)) e)
+                   (let* ((o (liny-get-last ov)) e)
                      (goto-char (overlay-end o))
                      (insert "\n(")
-                     (setq e (l-snippets-clone-primary ov (point)))
+                     (setq e (liny-clone-primary ov (point)))
                      (indent-according-to-mode)
                      (insert "\n)")
                      (indent-according-to-mode)
                      (goto-char (overlay-start e))
-                     ;; (l-snippets-throw)
+                     ;; (liny-throw)
                      ))))}
                        )$0)

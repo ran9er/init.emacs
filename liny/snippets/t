@@ -7,6 +7,6 @@ all
 <------environment
 
 <------snippet
-${1:test$(progn (overlay-put ovl 'face 'l-snippets-auto-face))}
+${1:test$(progn (overlay-put ovl 'face 'liny-auto-face))}$0
 
 

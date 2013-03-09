@@ -1,4 +1,4 @@
-(defun l-snippets-clear-word (str &optional back)
+(defun liny-clear-word (str &optional back)
   (let*  ((str (split-string str "[ \t\n]" t)))
     (if back (setq str (reverse str)))
     (save-excursion
@@ -14,12 +14,12 @@
               (delete-region p1 p2)))
         (setq str (cdr str))))))
 
-(defun l-snippets-clear-region (snippet)
-  (let* ((s (l-snippets-get-snippet snippet))
+(defun liny-clear-region (snippet)
+  (let* ((s (liny-get-snippet snippet))
          (head (car s))
          (tail (car (last s))))
     (if (stringp head)
-        (l-snippets-clear-word head t))
+        (liny-clear-word head t))
     (if (stringp tail)
-        (l-snippets-clear-word tail))))
+        (liny-clear-word tail))))
 

@@ -1,7 +1,7 @@
 ;; * match
-(setq l-snippets-match-strategy 'l-snippets-smart-match)
+(setq liny-match-strategy 'liny-smart-match)
 
-(defvar l-snippets-env-test
+(defvar liny-env-test
   `((,major-mode  major-mode t)
     (head (progn (skip-chars-backward " \t\n")(bobp)))
     (tail (progn (skip-chars-forward " \t\n")(eobp)))
@@ -9,8 +9,8 @@
     (top (null (zerop (current-indentation))))
     ))
 
-(defun l-snippets-fetch-env ()
-  "l-snippets-fetch-env "
+(defun liny-fetch-env ()
+  "liny-fetch-env "
   (let ((test
          (lambda(s)
            (sort
@@ -22,15 +22,15 @@
                      (eq (nth 2 x) s)
                      (save-excursion (save-restriction (eval (nth 1 x)))))
                     (symbol-name (nth 0 x))))
-              l-snippets-env-test))
+              liny-env-test))
             (lambda(x y)
               (string-lessp x y))))))
     (list (funcall test t)(funcall test nil))))
 
-(defun l-snippets-keywords-match (modes keywords)
-  "l-snippets-keywords-match is writen by ran9er"
+(defun liny-keywords-match (modes keywords)
+  "liny-keywords-match is writen by ran9er"
   (let* (test
-         (env (l-snippets-fetch-env))
+         (env (liny-fetch-env))
          (test1 (nth 0 env))
          (test2 (nth 1 env))
          (result 0))
@@ -50,7 +50,7 @@
     (and test result)))
 
 ;; * index
-(defun l-snippets-alias-push (var alias files)
+(defun liny-alias-push (var alias files)
   (let ((a (assoc alias var)))
     (if (null a)
         (cons (list alias files) var)
@@ -60,7 +60,7 @@
                (n (cons alias n)))
           (remove a (cons n var)))))))
 
-(defun l-snippets-gen-index-k ()
+(defun liny-gen-index-k ()
   (let ((gs (lambda(x)(sort (remove "" (if x (split-string x "[ \t\n]"))) 'string-lessp)))
         alias files)
     (setq
@@ -68,46 +68,46 @@
      (mapcar
       (lambda(x)
         (with-temp-buffer
-          (insert-file-contents (expand-file-name x l-snippets-repo))
-          (mapc (lambda(y)(setq alias (l-snippets-alias-push alias y x)))
-                (funcall gs (l-snippets-search-str "alias")))
+          (insert-file-contents (expand-file-name x liny-repo))
+          (mapc (lambda(y)(setq alias (liny-alias-push alias y x)))
+                (funcall gs (liny-search-str "alias")))
           (list
            x
-           (funcall gs (l-snippets-search-str "modes"))
-           (funcall gs (l-snippets-search-str "keywords")))))
-      (directory-files l-snippets-repo nil "^[^._].*\\'")))
+           (funcall gs (liny-search-str "modes"))
+           (funcall gs (liny-search-str "keywords")))))
+      (directory-files liny-repo nil "^[^._].*\\'")))
     (cons alias files)))
 
-(defun l-snippets-snippet-exist-p (snippet)
-  (assoc snippet (cdr l-snippets-index)))
+(defun liny-snippet-exist-p (snippet)
+  (assoc snippet (cdr liny-index)))
 
 (let (print-length print-level selective-display-ellipses)
-  (l-snippets-update-index "_keywords_index"
-                           (pp-to-string (l-snippets-gen-index-k))))
+  (liny-update-index "_keywords_index"
+                           (pp-to-string (liny-gen-index-k))))
 
-(defun l-snippets-force-update-keyword ()
+(defun liny-force-update-keyword ()
   (interactive)
   (let (print-length print-level selective-display-ellipses)
-    (l-snippets-update-index
+    (liny-update-index
      "_keywords_index"
-     (pp-to-string (l-snippets-gen-index-k))
+     (pp-to-string (liny-gen-index-k))
      t)))
 
-;; (insert (concat "\n" (pp-to-string (l-snippets-gen-index-k))))
+;; (insert (concat "\n" (pp-to-string (liny-gen-index-k))))
 
 
 ;; *
-(defun l-snippets-smart-match ()
-  (let* ((alias (l-snippets-fetch-alias))
-         (files (cdr (assoc alias (car l-snippets-index)))))
+(defun liny-smart-match ()
+  (let* ((alias (liny-fetch-alias))
+         (files (cdr (assoc alias (car liny-index)))))
     (cdar
      (sort
       (mapcar
        (lambda(x)
-         (let* ((lst (cdr (assoc x (cdr l-snippets-index))))
+         (let* ((lst (cdr (assoc x (cdr liny-index))))
                 (modes (nth 0 lst))
                 (keywords (nth 1 lst)))
-           (cons (l-snippets-keywords-match modes keywords) x)))
+           (cons (liny-keywords-match modes keywords) x)))
        files)
       (lambda(x y)
         (> (car x)(car y)))))))

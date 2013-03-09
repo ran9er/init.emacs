@@ -4,7 +4,7 @@ let lt
 emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------keywords
 <------environment
-(l-snippets-custom-syntax 'head "#" "\\(\\$\\)" 'l-snippets-action-prompt)
+(liny-custom-syntax 'head "#" "\\(\\$\\)" 'liny-action-prompt)
 <------snippet
 (let ((#{1$var}))
   #0)
