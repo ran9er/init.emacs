@@ -390,6 +390,18 @@
                  (nth 0 ids))))
               beg))))
     (liny-overlay-link ov o)
+    ;; (mapc
+    ;;  (lambda(x)
+    ;;    (goto-char (overlay-end x))
+    ;;    (liny-overlay-push-to
+    ;;     o
+    ;;     (car (liny-insert-field 'mirror ids nil (point) o))
+    ;;     'mirrors)
+    ;;    (liny-ex-template
+    ;;     x
+    ;;     (liny-gen-token
+    ;;      (overlay-get x 'dynamic-template))))
+    ;;  (overlay-get ov 'mirrors))
     (goto-char (overlay-end o))
     o))
 
