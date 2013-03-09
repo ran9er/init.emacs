@@ -5,10 +5,10 @@
   '())
 
 (defvar liny-env-test-sufficient
-  '((head (progn (skip-chars-backward " \t\n")(bobp)))
-    (tail (progn (skip-chars-forward " \t\n")(eobp)))
-    (notop (null (zerop (current-indentation))))
-    (top (null (zerop (current-indentation))))))
+  '(("head" (progn (skip-chars-backward " \t\n")(bobp)))
+    ("tail" (progn (skip-chars-forward " \t\n")(eobp)))
+    ("notop" (null (zerop (current-indentation))))
+    ("top" (zerop (current-indentation)))))
 
 (defun liny-fetch-env-sufficient ()
   "liny-fetch-env "
@@ -20,10 +20,10 @@
              (mapcar
               (lambda(x)
                 (if (save-excursion (save-restriction (eval (nth 1 x))))
-                    (cons (symbol-name (nth 0 x)) (or (nth 2 x) 1))))
+                    (cons (nth 0 x) (or (nth 2 x) 1))))
               tst))
             (lambda(x y)
-              (string-lessp x y))))))
+              (string-lessp (car x)(car y)))))))
         (funcall test liny-env-test-sufficient)))
 
 (defun liny-fetch-env-mode ()

@@ -34,7 +34,7 @@
     ;;    (goto-char (overlay-end x))
     ;;    (liny-overlay-push-to
     ;;     o 
-    ;;     (liny-insert-field 'mirror ids nil (point) o)
+    ;;     (car (liny-insert-field 'mirror ids nil (point) o))
     ;;     'mirrors)
     ;;    (liny-ex-template 
     ;;     x
