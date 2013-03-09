@@ -379,7 +379,7 @@
 
 (defun liny-clone-primary (ov beg)
   (let* ((ids (overlay-get ov 'id))
-         (o (car 
+         (o (car
              (liny-insert-field
               'primary
               ids
@@ -751,14 +751,10 @@
       (insert str))
     (if ov (liny-move-overlay ov st end))))
 
-(defun liny-insert-field (role ids args pos &rest link)
+(defun liny-insert-field (role ids args pos &optional prev first last end)
   "liny-insert-field "
   (let* ((o (liny-overlay-appoint role pos pos))
-         (id (nth 1 ids))
-         (prev (car link))
-         (first (nth 1 link))
-         (last (nth 2 link))
-         (end (nth 3 link)))
+         (id (nth 1 ids)))
     (cond
      ((eq role 'mirror)
       (let* ((prim (liny-get-prev prev id)))
@@ -773,6 +769,9 @@
           (move-overlay o pos (point)))))
      ((eq role 'end)
       (overlay-put o 'id ids)
+      ;; (overlay-put o 'previous prev)
+      ;; (if prev (overlay-put prev 'next o))
+      (overlay-put o 'first first)
       (setq end o))
      ((eq role 'primary)
       (overlay-put o 'id ids)
@@ -809,12 +808,13 @@
             (id (setq role 'primary))
             (t (setq role 'void)))
            (let  ((lst (liny-insert-field
-                        role ids args p prev first last end)))
-             (setq o (car lst)
-                   prev (nth 1 lst)
-                   first (nth 2 lst)
-                   last (nth 3 lst)
-                   end (nth 4 lst))))))
+                        role ids args p
+                        prev first last end)))
+             (setq ;; o (car lst)
+              prev (nth 1 lst)
+              first (nth 2 lst)
+              last (nth 3 lst)
+              end (nth 4 lst))))))
      snippet)
     ;; loop
     ;; (overlay-put first 'previous last)(overlay-put last 'next first)
@@ -822,7 +822,6 @@
      (end
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
-      (overlay-put end 'first first)
       (setq last end)))
     (overlay-put first 'face 'liny-active-face)
     (while (progn
