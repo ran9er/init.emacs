@@ -4,19 +4,7 @@ cond cd co cn
 emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------environment
 <------snippet
-(cond
- (${1:TEST}
-  ${2:FORM$(lambda(ov after-p nil)
-             (if after-p nil
-               (if (eq last-input-char 13)
-                   (let* ((o (liny-get-last ov)) e)
-                     (goto-char (overlay-end o))
-                     (insert "\n(")
-                     (setq e (liny-clone-primary ov (point)))
-                     (indent-according-to-mode)
-                     (insert "\n)")
-                     (indent-according-to-mode)
-                     (goto-char (overlay-start e))
-                     ;; (liny-throw)
-                     ))))}
-                       )$0)
+(cond 
+ ${%{(${1:TEST}
+  ${2:form})
+ $0}})

@@ -151,6 +151,7 @@
      (previous . nil)
      (next . nil)
      (mirrors . nil)
+     (template . nil)
      (modification-hooks liny-this-overlay
                          liny-update-mirror)
      (insert-in-front-hooks liny-this-overlay
@@ -170,6 +171,7 @@
     mirror
     ((role . mirror)
      (primary . nil)
+     (template . nil)
      (modification-hooks liny-this-overlay)
      (local-map . ,liny-keymap) ;; debug
      (face . liny-auto-face))
@@ -296,10 +298,11 @@
   (liny-delete-overlay (overlay-get ov 'tail))
   (liny-delete-overlay ov))
 
-(defun liny-clear-instance (ov)
+(defun liny-clear-instance (&optional ov)
   "liny-clear-instance "
   (interactive)
-  (let* ((cur (liny-get-primary ov))
+  (let* ((cur (liny-get-primary
+               (or ov (liny-get-overlay))))
          head)
     (while
         (prog1 (overlay-get cur 'previous)
@@ -636,10 +639,13 @@
               result ""))
        ((match-end 2)
         (setq beg (match-end 2))
-        (setq id (if (re-search-forward (liny-token-regexp 'id) nil t)
-                     (read (buffer-substring-no-properties
-                            (match-beginning 0)(match-end 0)))))
-        (setq beg (match-end 0))
+        (setq id (if (and (save-excursion
+                            (re-search-forward (liny-token-regexp 'id) nil t))
+                          (eq beg (match-beginning 0)))
+                     (prog1
+                         (read (buffer-substring-no-properties
+                                (match-beginning 0)(match-end 0)))
+                       (setq beg (match-end 0)))))
         (goto-char (point-min))
         (setq end (car (liny-find-close-paren
                         (liny-token-regexp 'open)
@@ -831,18 +837,16 @@
      snippet)
     ;; loop
     ;; (overlay-put first 'previous last)(overlay-put last 'next first)
+    (while (progn
+             (overlay-put prev 'ready t)
+             (setq prev (overlay-get prev 'previous))))
     (cond
      (end
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
-      (setq last end)))
-    (overlay-put first 'face 'liny-active-face)
-    (while (progn
-             (overlay-put prev 'ready t)
-             (setq prev (overlay-get prev 'previous))))
-    (goto-char (overlay-end first))
-    (let ((f (overlay-get end 'snippet-ready)))
-      (if f (funcall f end)))
+      (setq last end)
+      (let ((f (overlay-get end 'snippet-ready)))
+        (if f (funcall f end)))))
     (cons first last)))
 
 ;; * interface
@@ -874,7 +878,9 @@
   (let ((spn (funcall liny-match-strategy)))
     (if (liny-get-snippet spn)
         (progn (kill-word -1)        ;; (liny-clear-region sp)
-               (liny-insert spn)))))
+               (let ((snip (liny-insert spn)))
+                 (overlay-put (car snip) 'face 'liny-active-face)
+                 (goto-char (overlay-end (car snip))))))))
 
 ;;;###autoload
 (defun liny-expand-or-tab ()

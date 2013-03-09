@@ -8,7 +8,7 @@ top
 <------snippet
 (defun ${1:FuncName} (${2:Args%? })
   "this func's name is $1"
-  (let (${2%(${mirror} $11\n)})
+  (let (${2})
     ${$(insert "hello!")})
     $1=$1
     ${1$(insert user-full-name)}
