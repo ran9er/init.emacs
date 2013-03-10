@@ -188,12 +188,12 @@
        (cons (nth 0 lst) (nth 1 lst))
        (liny-to-alist (nthcdr 2 lst)))))
 
-(defun liny-make-lst (n)
-  (let* ((i n)(x nil))
-    (while (> i 0)
-      (setq x (cons i x))
-      (setq i (1- i)))
-    x))
+;; (defun liny-make-lst (n)
+;;   (let* ((i n)(x nil))
+;;     (while (> i 0)
+;;       (setq x (cons i x))
+;;       (setq i (1- i)))
+;;     x))
 
 (defun liny-temp-name (make-temp-name (format "--%s-"(buffer-name))))
 
@@ -484,15 +484,16 @@
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
          (oo (overlay-get o p-or-n)))
-    (if (eq (overlay-get oo 'role) 'end)
-        (if (y-or-n-p "finish this snippet?")
-            (progn
-              (goto-char (overlay-end oo))
-              (liny-clear-instance o)))
-      (overlay-put o 'offset (- (overlay-end o)(point)))
-      (overlay-put o 'face 'liny-editable-face)
-      (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-      (overlay-put oo 'face 'liny-active-face))))
+    (if oo
+        (if (eq (overlay-get oo 'role) 'end)
+            (if (y-or-n-p "finish this snippet?")
+                (progn
+                  (goto-char (overlay-end oo))
+                  (liny-clear-instance o)))
+          (overlay-put o 'offset (- (overlay-end o)(point)))
+          (overlay-put o 'face 'liny-editable-face)
+          (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
+          (overlay-put oo 'face 'liny-active-face)))))
 
 (defun liny-previous-field ()
   (interactive)
@@ -655,29 +656,47 @@
         (setq result str))))
     (cons id result)))
 
+(defun liny-if-open-paren (&optional pos)
+  (let* ((pos (or pos (point)))
+         (c (buffer-substring-no-properties (1- pos) pos))
+         (y (assoc c '(("{" . "}")("[" . "]")))))
+    (if y
+        (progn
+          (backward-char)
+          (goto-char (car (liny-find-close-paren
+                           (regexp-quote c)
+                           (regexp-quote (cdr y)))))))))
+
+(defun liny-find-str (delimiter elt)
+  (let ((i 1) key beg)
+    (and
+     (prog1
+         (re-search-forward delimiter nil t)
+       (while (or (and (<= i elt)(null (match-end i)))
+                  (progn (if (match-end i)
+                             (setq
+                              key (cdr (nth (1- i) (liny-token-delimiter)))
+                              beg (match-end i)))
+                         nil))
+         (setq i (1+ i))))
+     (cons key
+           (apply
+            'buffer-substring-no-properties
+            (or
+             (let ((x (liny-if-open-paren)))(if x (list (1+ beg) x)))
+             (save-excursion
+               (if (re-search-forward delimiter nil t)
+                   (list beg (match-beginning 0))))
+             (list beg (point-max))))))))
+
 (defun liny-split-str (str delimiter elt)
-  (let* (end result)
+  (let (result)
     (with-temp-buffer
       (insert str)
-      (setq end (point-max))
-      (goto-char end)
-      (while (re-search-backward delimiter nil t)
-        (mapcar
-         (lambda(x)
-           (if (match-end x)
-               (let ((m
-                      (buffer-substring-no-properties
-                       (match-end x)
-                       end))
-                     (n (cdr (nth (1- x) (liny-token-delimiter)))))
-                 (setq result
-                       (cons
-                        (cons n m)
-                        result)
-                       end
-                       (match-beginning x)))))
-         elt))
-      result)))
+      (goto-char (point-min))
+      (while (let ((v (liny-find-str delimiter elt)))
+               (if v (setq result (append result (list v)))))))
+    result))
 
 (defun liny-prase-token (str sep delimiter elt)
   (let* ((lst (liny-fetch-str str sep))
@@ -694,7 +713,7 @@
   (let ((regexp (or regexp (liny-token-regexp 'leader)))
         (sep (or sep (liny-token-regexp 'sep)))
         (delimiter (or delimiter (liny-token-regexp-delimiter)))
-        (elt (liny-make-lst (length (liny-token-delimiter))))
+        (elt (length (liny-token-delimiter)))
         beg mid prev result)
     (with-temp-buffer
       (insert str)
@@ -887,7 +906,7 @@
   "liny-expand-or-tab is writen by ran9er"
   (interactive)
   (or (liny-expand)
-      (indent-for-tab-command)))
+      (funcall liny-instead-command)))
 
 (setq liny-null-ov (liny-overlay-appoint '_null 1))
 

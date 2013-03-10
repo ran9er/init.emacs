@@ -55,14 +55,8 @@
           (setq ,x (1+ ,x))))
 
 
-;; (eval-after-load (expand-file-name "sandbox/test.el" *init-dir*)
-;;   '(acc y))
-;; (load (expand-file-name "sandbox/test.el" *init-dir*))
-;; (autoload 'b (expand-file-name "sandbox/edit" *init-dir*) "\
-
-
-;; \(fn)" t nil)
-
-(autoload 'liny-expand-or-tab
-  (expand-file-name "liny/liny.el" *init-dir*) "" t)
-(global-set-key "\t" 'liny-expand-or-tab)
+(let ((key "\C-q"))
+  (setq liny-instead-command (key-binding key))
+  (autoload 'liny-expand-or-tab
+    (expand-file-name "liny/liny.el" *init-dir*) "" t)
+  (global-set-key key 'liny-expand-or-tab))
