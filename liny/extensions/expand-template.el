@@ -3,6 +3,12 @@
        '("\\(%\\){" . liny-expand-templ)
        liny-syntax-delimiter))
 
+(plist-put liny-roles
+           'relay
+           (cons
+            '(role . relay)
+            (cdr (plist-get liny-roles 'primary))))
+
 (defun liny-expand-templ-ovl (str pos ovl)
   "liny-expand-templ-ovl is writen by ran9er"
   )

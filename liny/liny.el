@@ -278,7 +278,7 @@
                     (or (plist-get properties (car x))
                         (cdr x))))
      rl)
-    (if (eq role 'primary)
+    (if (memq role '(primary relay))
         (overlay-put
          ov
          'tail
@@ -321,7 +321,7 @@
         (liny-get-prev (overlay-get ov 'previous) id))))
 
 (defun liny-get-primary(ov)
-  (if (eq 'primary (overlay-get ov 'role))
+  (if (memq (overlay-get ov 'role) '(primary relay))
       ov
     (overlay-get ov 'primary)))
 
@@ -493,7 +493,8 @@
           (overlay-put o 'offset (- (overlay-end o)(point)))
           (overlay-put o 'face 'liny-editable-face)
           (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-          (overlay-put oo 'face 'liny-active-face)))))
+          (overlay-put oo 'face 'liny-active-face))
+      (message "End of world."))))
 
 (defun liny-previous-field ()
   (interactive)
@@ -672,7 +673,7 @@
     (and
      (prog1
          (re-search-forward delimiter nil t)
-       (while (or (and (<= i elt)(null (match-end i)))
+       (while (or (and (null (match-end i))(<= i elt))
                   (progn (if (match-end i)
                              (setq
                               key (cdr (nth (1- i) (liny-token-delimiter)))
@@ -811,7 +812,7 @@
       ;; (if prev (overlay-put prev 'next o))
       (overlay-put o 'first first)
       (setq end o))
-     ((eq role 'primary)
+     ((memq role '(primary relay))
       (overlay-put o 'id ids)
       (overlay-put o 'previous prev)
       (if prev (overlay-put prev 'next o))
@@ -823,7 +824,7 @@
      args)
     (list o prev first last end)))
 
-(defun liny-insert (snippet-name &optional snippet-p)
+(defun liny-insert (snippet-name &optional snippet-p relay)
   (let* ((snippet (if snippet-p snippet-name
                     (liny-get-snippet snippet-name)))
          (top (eq (current-indentation) 0))
@@ -840,7 +841,7 @@
                 (ids (list snippet-name id))
                 role o)
            (cond
-            ((eq id 0)(setq role 'end))
+            ((eq id 0)(setq role (if relay 'relay 'end)))
             ((liny-get-prev prev id)
              (setq role 'mirror))
             (id (setq role 'primary))
