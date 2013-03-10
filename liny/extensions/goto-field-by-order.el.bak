@@ -1,6 +1,6 @@
 (defun liny-sort-field (ov)
   "liny-sort-field is writen by ran9er"
-  (let* (lst 
+  (let* (lst
          (o (liny-get-first ov))
          (go (lambda(ov)
                (if (null ov) nil
@@ -18,9 +18,13 @@
   (let* ((o (liny-get-primary (liny-get-overlay)))
          (lst (or (overlay-get (or (overlay-get o 'first)
                                    liny-null-ov) 'field-order)(liny-sort-field o)))
-         (oo (if (eq p-or-n 'next)
-                 (cdr (nth 1 (member (assq (nth 1 (overlay-get o 'id)) lst)
-                                     lst))))))
+         (oo (cdr (nth
+                   (funcall
+                    (cond ((eq p-or-n 'next) '1+)
+                          ((eq p-or-n 'previous) '1-))
+                    (- (length lst)
+                       (length (member (rassq o lst)
+                                       lst)))) lst))))
     (if oo
         (if (eq (overlay-get oo 'role) 'end)
             (if (y-or-n-p "finish this snippet?")
