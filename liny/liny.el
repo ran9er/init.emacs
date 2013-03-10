@@ -140,6 +140,7 @@
      (insert-in-front-hooks liny-this-overlay)
      (first . nil)
      (snippet-ready . nil)
+     (snippet-exit . nil)
      (keymap . ,liny-keymap))
     primary
     ((role . primary)
@@ -866,7 +867,7 @@
       (overlay-put end 'previous last)
       (setq last end)
       (let ((f (overlay-get end 'snippet-ready)))
-        (if f (funcall f end)))))
+        (if f (mapc (lambda(x)(funcall x end)) f)))))
     (cons first last)))
 
 ;; * interface
