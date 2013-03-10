@@ -6,11 +6,11 @@ emacs-lisp-mode lisp-mode lisp-interaction-mode all
 top
 <------environment
 <------snippet
-(defun ${1:FuncName} (${2:Args%? })
+(defun ${1:FuncName} (${3:Args%? })
   "this func's name is $1"
-  (let (${2})
+  (let (${3} $3)
     ${$(insert "hello!")})
     $1=$1
     ${1$(insert user-full-name)}
     $0
-    $4)
+    $2)

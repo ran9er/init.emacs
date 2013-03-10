@@ -838,7 +838,7 @@
          (let* ((id (car x))
                 (args (cdr x))
                 (p (point))
-                (ids (list snippet-name id))
+                (ids (if snippet-p 'non (list snippet-name id)))
                 role o)
            (cond
             ((eq id 0)(setq role (if relay 'relay 'end)))
