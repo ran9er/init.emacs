@@ -8,7 +8,7 @@
                  (overlay-put ov 'first o)
                  (funcall go (overlay-get ov 'next))))))
     (funcall go o)
-    (sort lst (lambda(x y)(< (car x)(car y))))
+    (sort lst (lambda(x y)(<= (car x)(car y))))
     (if (eq 0 (caar lst))
         (setq lst (append (cdr lst)(list (car lst)))))
     (overlay-put o 'field-order lst)))
