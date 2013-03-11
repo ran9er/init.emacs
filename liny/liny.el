@@ -138,6 +138,8 @@
      (insert-in-front-hooks liny-this-overlay)
      (origin . nil)
      (end . nil)
+     (snippet-ready . nil)
+     (snippet-exit . nil)
      (face . liny-tail-face) ;; debug
      (keymap . ,liny-keymap))
     end
@@ -148,8 +150,6 @@
      (face . liny-tail-face)
      (insert-in-front-hooks liny-this-overlay)
      (origin . nil)
-     (snippet-ready . nil)
-     (snippet-exit . nil)
      (keymap . ,liny-keymap))
     primary
     ((role . primary)
@@ -176,8 +176,6 @@
      (next . nil)
      (insert-in-front-hooks liny-this-overlay)
      (origin . nil)
-     (snippet-ready . nil)
-     (snippet-exit . nil)
      (keymap . ,liny-keymap))
     tail
     ((role . tail)
@@ -907,7 +905,7 @@
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
       (setq last end)
-      (liny-run-hook (overlay-get end 'snippet-ready) end)))
+      (liny-run-hook (overlay-get origin 'snippet-ready) origin)))
     (cons first last)))
 
 ;; * interface

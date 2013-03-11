@@ -24,8 +24,9 @@
 (defun liny-goto-field-by-order (p-or-n)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
+         (ori (overlay-get o 'origin))
          (lst (if (overlay-get o 'sorted)
-                  (overlay-get (overlay-get o 'origin) 'field-order)
+                  (overlay-get ori 'field-order)
                 (liny-sort-field o)))
          (idx (funcall
                (cond ((eq p-or-n 'next) '1+)
@@ -39,8 +40,7 @@
             (if (y-or-n-p "finish this snippet?")
                 (progn
                   (goto-char (overlay-end oo))
-                  (let ((f (overlay-get oo 'snippet-exit)))
-                    (if f (mapc (lambda(x)(funcall x oo)) f)))
+                  (liny-run-hook (overlay-get ori 'snippet-exit) oo)
                   (liny-clear-instance o)))
           (overlay-put o 'offset (- (overlay-end o)(point)))
           (overlay-put o 'face 'liny-editable-face)
