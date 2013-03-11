@@ -1,10 +1,3 @@
-(plist-put liny-roles
-           'relay
-           (append
-            '((role . relay)
-              (next . nil))
-            (cdr (plist-get liny-roles 'end))))
-
 (setq liny-syntax-delimiter
       (cons
        '("\\(%\\){" . liny-expand-templ)

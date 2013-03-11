@@ -4,7 +4,7 @@ cond cd co cn
 emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------environment
 <------snippet
-(cond 
- ${1%{(${1:TEST}
+(${1:cond} 
+ ${2%{(${1:TEST}
   ${2:form})
  $0}})

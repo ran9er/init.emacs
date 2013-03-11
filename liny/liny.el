@@ -343,11 +343,13 @@
           (liny-overlay-release cur)))
     (liny-overlay-release origin)))
 
-(defun liny-get-prev (ov id)
+(defun liny-get-prev-id (ov id origin)
   (if (overlayp ov)
-      (if (eq id (nth 1 (overlay-get ov 'id)))
+      (if (and
+           (eq origin (overlay-get ov 'origin))
+           (eq id (nth 1 (overlay-get ov 'id))))
           ov
-        (liny-get-prev (overlay-get ov 'previous) id))))
+        (liny-get-prev-id (overlay-get ov 'previous) id origin))))
 
 (defun liny-get-primary(ov)
   (if (memq (overlay-get ov 'role) '(primary origin relay))
@@ -512,6 +514,8 @@
       (insert " ")
       (delete-char -1))))
 
+(defvar liny-goto-field-func 'liny-goto-field)
+
 (defun liny-goto-field (p-or-n)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
@@ -530,11 +534,11 @@
 
 (defun liny-previous-field ()
   (interactive)
-  (liny-goto-field 'previous))
+  (funcall liny-goto-field-func 'previous))
 
 (defun liny-next-field ()
   (interactive)
-  (liny-goto-field 'next))
+  (funcall liny-goto-field-func 'next))
 
 (defun liny-beginning-of-field ()
   (interactive)
@@ -834,7 +838,7 @@
       (setq prev o last o)
       (if (null first)(setq first o)))
      ((eq role 'mirror)
-      (let* ((prim (liny-get-prev prev id)))
+      (let* ((prim (liny-get-prev-id prev id origin)))
         (liny-overlay-push-to prim o 'mirrors)
         (overlay-put o 'primary prim)
         (goto-char (overlay-end o))
@@ -865,13 +869,12 @@
   (let* ((snippet (if snippet-p snippet-name
                     (liny-get-snippet snippet-name))))
          ;; (top (eq (current-indentation) 0))
-    (if relay nil
-      (let ((lst (liny-insert-field 'origin (list snippet-name) "" (point))))
-        (setq   origin (nth 5 lst)
-         prev   (nth 1 lst)
-         first  (nth 2 lst)
-         last   (nth 3 lst)
-         end    (nth 4 lst))))
+    (let ((lst (liny-insert-field 'origin (list snippet-name) "" (point))))
+      (setq   origin (nth 5 lst)
+              prev   (nth 1 lst)
+              first  (nth 2 lst)
+              last   (nth 3 lst)
+              end    (nth 4 lst)))
     (mapc
      (lambda (x)
        (if (stringp x)
@@ -883,7 +886,7 @@
                 role o)
            (cond
             ((eq id 0)(setq role (if relay 'relay 'end)))
-            ((liny-get-prev prev id)
+            ((liny-get-prev-id prev id origin)
              (setq role 'mirror))
             (id (setq role 'primary))
             (t (setq role 'void)))

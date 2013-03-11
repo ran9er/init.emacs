@@ -1,3 +1,5 @@
+(defvar liny-goto-field-func 'liny-goto-field-by-order)
+
 (defun liny-sort-field (ov)
   "liny-sort-field is writen by ran9er"
   (let* (lst
@@ -19,7 +21,7 @@
             (if (overlay-get o 'sorted)
                 (overlay-put o 'sorted nil))))
 
-(defun liny-goto-field (p-or-n)
+(defun liny-goto-field-by-order (p-or-n)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
          (lst (if (overlay-get o 'sorted)
