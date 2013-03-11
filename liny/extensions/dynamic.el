@@ -20,7 +20,7 @@
                  (e (overlay-end ov))
                  (o (progn
                       (liny-move-overlay ov b e t)
-                      (liny-clone-primary ov end))))
+                      (liny-clone-primary ov end (overlay-get ov 'origin)))))
             (liny-move-overlay ov b e)
             (overlay-put o 'ready t)
             (overlay-put ov 'face 'liny-editable-face)

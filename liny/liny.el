@@ -132,19 +132,27 @@
   (overlay-put o 'prompt t))
 
 (defvar liny-roles
-  `(end
+  `(origin
+    ((role . origin)
+     (insert-in-front-hooks liny-this-overlay)
+     (origin . nil)
+     (end . nil)
+     (face . liny-tail-face) ;; debug
+     (keymap . ,liny-keymap))
+    end
     ((role . end)
      ;; (evaporate . t)
      (previous . nil)
      (face . liny-tail-face)
      (insert-in-front-hooks liny-this-overlay)
-     (first . nil)
+     (origin . nil)
      (snippet-ready . nil)
      (snippet-exit . nil)
      (keymap . ,liny-keymap))
     primary
     ((role . primary)
      (id . nil)
+     (origin . nil)
      (ready . nil)
      (offset . 0)
      (tail . nil)
@@ -159,6 +167,15 @@
                             liny-update-mirror)
      (local-map . ,liny-keymap)
      (face . liny-editable-face))
+    relay
+    ((role . relay)
+     (previous . nil)
+     (next . nil)
+     (insert-in-front-hooks liny-this-overlay)
+     (origin . nil)
+     (snippet-ready . nil)
+     (snippet-exit . nil)
+     (keymap . ,liny-keymap))
     tail
     ((role . tail)
      (primary . nil)
@@ -231,8 +248,11 @@
 (defun liny-move-overlay (o b e &optional nontail)
   (let* ((primary (liny-get-primary o))
          (tail (liny-get-tail o))
-         (te (if nontail e (1+ e))))
-    (move-overlay tail e te)
+         te)
+    (if tail
+        (progn
+          (setq te (if nontail e (1+ e)))
+          (move-overlay tail e te)))
     (move-overlay primary b e)))
 
 (defun liny-delete-overlay (ov)
@@ -279,7 +299,7 @@
                     (or (plist-get properties (car x))
                         (cdr x))))
      rl)
-    (if (memq role '(primary relay))
+    (if (memq role '(primary))
         (overlay-put
          ov
          'tail
@@ -322,7 +342,7 @@
         (liny-get-prev (overlay-get ov 'previous) id))))
 
 (defun liny-get-primary(ov)
-  (if (memq (overlay-get ov 'role) '(primary relay))
+  (if (memq (overlay-get ov 'role) '(primary origin relay))
       ov
     (overlay-get ov 'primary)))
 
@@ -353,9 +373,11 @@
     (overlay-put to p (cons from (overlay-get to p)))))
 
 (defun liny-overlay-link (front beg &optional end)
-  (let ((end (or end beg)))
-    (overlay-put (overlay-get front 'next) 'previous end)
-    (overlay-put end 'next (overlay-get front 'next))
+  (let ((end (or end beg))
+        (n (overlay-get front 'next)))
+    (if (null n) nil
+      (overlay-put n 'previous end)
+      (overlay-put end 'next n))
     (overlay-put front 'next beg)
     (overlay-put beg 'previous front)))
 
@@ -381,7 +403,7 @@
              (overlay-get ov 'tail) 'insert-in-front-hooks hooks)))
 
 
-(defun liny-clone-primary (ov beg)
+(defun liny-clone-primary (ov beg &optional origin)
   (let* ((ids (overlay-get ov 'id))
          (o (car
              (liny-insert-field
@@ -392,7 +414,8 @@
                 (nth 1 ids)
                 (liny-get-snippet
                  (nth 0 ids))))
-              beg))))
+              beg
+              nil nil nil nil origin))))
     (liny-overlay-link ov o)
     ;; (mapc
     ;;  (lambda(x)
@@ -791,11 +814,17 @@
       (insert str))
     (if ov (liny-move-overlay ov st end))))
 
-(defun liny-insert-field (role ids args pos &optional prev first last end)
+(defun liny-insert-field (role ids args pos &optional prev first last end origin)
   "liny-insert-field "
   (let* ((o (liny-overlay-appoint role pos pos))
          (id (nth 1 ids)))
     (cond
+     ((memq role '(primary relay))
+      (overlay-put o 'id ids)
+      (overlay-put o 'previous prev)
+      (if prev (overlay-put prev 'next o))
+      (setq prev o last o)
+      (if (null first)(setq first o)))
      ((eq role 'mirror)
       (let* ((prim (liny-get-prev prev id)))
         (liny-overlay-push-to prim o 'mirrors)
@@ -807,31 +836,34 @@
             (overlay-start prim)
             (overlay-end prim)))
           (move-overlay o pos (point)))))
+     ((eq role 'origin)
+      (overlay-put o 'id ids)
+      ;; (setq prev o)
+      (setq last o origin o)
+      (overlay-put o 'end (or end last)))
      ((eq role 'end)
       (overlay-put o 'id ids)
-      ;; (overlay-put o 'previous prev)
-      ;; (if prev (overlay-put prev 'next o))
       (overlay-put o 'first first)
       (setq end o))
-     ((memq role '(primary relay))
-      (overlay-put o 'id ids)
-      (overlay-put o 'previous prev)
-      (if prev (overlay-put prev 'next o))
-      (setq prev o last o)
-      (if (null first)(setq first o)))
      (t))
     (mapc
      (lambda(x)(funcall (car x) (cdr x) pos o))
      args)
-    (list o prev first last end)))
+    (if o (overlay-put o 'origin origin))
+    (list o prev first last end origin)))
 
-(defun liny-insert (snippet-name &optional snippet-p relay)
+(defun liny-insert (snippet-name &optional snippet-p relay
+                                 prev first last end)
   (let* ((snippet (if snippet-p snippet-name
-                    (liny-get-snippet snippet-name)))
-         (top (eq (current-indentation) 0))
-         prev first last end)
-    ;; (if top
-    ;;     (liny-clear-instance))
+                    (liny-get-snippet snippet-name))))
+         ;; (top (eq (current-indentation) 0))
+    (if relay nil
+      (let ((lst (liny-insert-field 'origin (list snippet-name) "" (point))))
+        (setq   origin (nth 5 lst)
+         prev   (nth 1 lst)
+         first  (nth 2 lst)
+         last   (nth 3 lst)
+         end    (nth 4 lst))))
     (mapc
      (lambda (x)
        (if (stringp x)
@@ -839,7 +871,7 @@
          (let* ((id (car x))
                 (args (cdr x))
                 (p (point))
-                (ids (if snippet-p 'non (list snippet-name id)))
+                (ids (if snippet-p nil (list snippet-name id)))
                 role o)
            (cond
             ((eq id 0)(setq role (if relay 'relay 'end)))
@@ -849,15 +881,13 @@
             (t (setq role 'void)))
            (let  ((lst (liny-insert-field
                         role ids args p
-                        prev first last end)))
+                        prev first last end origin)))
              (setq ;; o (car lst)
               prev (nth 1 lst)
               first (nth 2 lst)
               last (nth 3 lst)
               end (nth 4 lst))))))
      snippet)
-    ;; loop
-    ;; (overlay-put first 'previous last)(overlay-put last 'next first)
     (while (progn
              (overlay-put prev 'ready t)
              (setq prev (overlay-get prev 'previous))))

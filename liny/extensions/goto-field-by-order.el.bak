@@ -1,13 +1,14 @@
 (defun liny-sort-field (ov)
   "liny-sort-field is writen by ran9er"
   (let* (lst
-         (o (liny-get-first ov))
+         (o (overlay-get ov 'origin))
+         (1st (liny-get-first ov))
          (go (lambda(ov)
                (if (null ov) nil
                  (setq lst (cons (cons (nth 1 (overlay-get ov 'id)) ov) lst))
-                 (overlay-put ov 'first o)
+                 (overlay-put ov 'sorted t)
                  (funcall go (overlay-get ov 'next))))))
-    (funcall go o)
+    (funcall go 1st)
     (sort lst (lambda(x y)(<= (car x)(car y))))
     (if (eq 0 (caar lst))
         (setq lst (append (cdr lst)(list (car lst)))))
@@ -16,15 +17,16 @@
 (defun liny-goto-field (p-or-n)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
-         (lst (or (overlay-get (or (overlay-get o 'first)
-                                   liny-null-ov) 'field-order)(liny-sort-field o)))
-         (oo (cdr (nth
-                   (funcall
-                    (cond ((eq p-or-n 'next) '1+)
-                          ((eq p-or-n 'previous) '1-))
-                    (- (length lst)
-                       (length (member (rassq o lst)
-                                       lst)))) lst))))
+         (lst (if (overlay-get o 'sorted)
+                  (overlay-get (overlay-get o 'origin) 'field-order)
+                (liny-sort-field o)))
+         (idx (funcall
+               (cond ((eq p-or-n 'next) '1+)
+                     ((eq p-or-n 'previous) '1-))
+               (- (length lst)
+                  (length (member (rassq o lst)
+                                  lst)))))
+         (oo (if (< idx 0) nil (cdr (nth idx lst)))))
     (if oo
         (if (eq (overlay-get oo 'role) 'end)
             (if (y-or-n-p "finish this snippet?")
