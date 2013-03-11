@@ -134,6 +134,7 @@
 (defvar liny-roles
   `(origin
     ((role . origin)
+     (id . nil)
      (insert-in-front-hooks liny-this-overlay)
      (origin . nil)
      (end . nil)
@@ -141,6 +142,7 @@
      (keymap . ,liny-keymap))
     end
     ((role . end)
+     (id . nil)
      ;; (evaporate . t)
      (previous . nil)
      (face . liny-tail-face)
@@ -169,6 +171,7 @@
      (face . liny-editable-face))
     relay
     ((role . relay)
+     (id . nil)
      (previous . nil)
      (next . nil)
      (insert-in-front-hooks liny-this-overlay)
@@ -200,6 +203,13 @@
     ))
 
 ;; * func
+(defun liny-run-hook (hook &rest args)
+  "liny-run-hook is writen by ran9er"
+  (if (symbolp hook)
+      (if (boundp hook)
+          (mapc (lambda(x)(apply x args)) (eval hook)))
+    (mapc (lambda(x)(apply x args)) hook)))
+
 (defun liny-to-alist (lst)
   (if lst
       (cons
@@ -317,23 +327,21 @@
      (liny-delete-overlay x))
    (overlay-get ov 'mirrors))
   (liny-delete-overlay (overlay-get ov 'tail))
-  (liny-delete-overlay ov))
+  (liny-delete-overlay ov)
+  (liny-run-hook 'liny-overlay-release-hook ov))
 
 (defun liny-clear-instance (&optional ov)
   "liny-clear-instance "
   (interactive)
-  (let* ((cur (liny-get-primary
+  (let* ((head (liny-get-first
                (or ov (liny-get-overlay))))
-         head)
-    (while
-        (prog1 (overlay-get cur 'previous)
-          (setq head cur))
-      (setq cur (overlay-get cur 'previous)))
+         (origin (overlay-get head 'origin)))
     (while
         (prog1 (overlay-get head 'next)
           (setq cur head
                 head (overlay-get head 'next))
-          (liny-overlay-release cur)))))
+          (liny-overlay-release cur)))
+    (liny-overlay-release origin)))
 
 (defun liny-get-prev (ov id)
   (if (overlayp ov)
@@ -896,8 +904,7 @@
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
       (setq last end)
-      (let ((f (overlay-get end 'snippet-ready)))
-        (if f (mapc (lambda(x)(funcall x end)) f)))))
+      (liny-run-hook (overlay-get end 'snippet-ready) end)))
     (cons first last)))
 
 ;; * interface

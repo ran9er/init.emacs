@@ -14,6 +14,11 @@
         (setq lst (append (cdr lst)(list (car lst)))))
     (overlay-put o 'field-order lst)))
 
+(add-hook 'liny-overlay-release-hook
+          (lambda(o)
+            (if (overlay-get o 'sorted)
+                (overlay-put o 'sorted nil))))
+
 (defun liny-goto-field (p-or-n)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
