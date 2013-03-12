@@ -343,6 +343,13 @@
     (mapc (lambda(x)(liny-overlay-release x))(overlay-get origin 'member))
     (liny-overlay-release origin)))
 
+;;;
+(defun liny-get-overlay-pt (o &rest pt)
+  "liny-get-overlay-pt is writen by ran9er"
+  (if (> (length pt) 1)
+      (apply 'liny-get-overlay-pt o (cdr pt))
+    (overlay-get o (car pt))))
+
 (defun liny-get-prev-id (ov id origin)
   (if (overlayp ov)
       (if (and
@@ -517,17 +524,27 @@
 (defun liny-goto-field (p-or-n)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
-         (oo (overlay-get o p-or-n)))
+         (oo (cond
+              ((eq p-or-n 'nnn)
+               (overlay-get
+                (overlay-get
+                (overlay-get o 'next) 'next)
+                'next))
+              (t (overlay-get o p-or-n)))))
     (if oo
-        (if (eq (overlay-get oo 'role) 'end)
-            (if (y-or-n-p "finish this snippet?")
-                (progn
-                  (goto-char (overlay-end oo))
-                  (liny-clear-instance o)))
+        (cond
+         ((eq (overlay-get oo 'role) 'end)
+          (if (y-or-n-p "finish this snippet?")
+              (progn
+                (goto-char (overlay-end oo))
+                (liny-clear-instance o))))
+         ((eq (overlay-get oo 'role) 'relay)
+          (liny-run-hook (overlay-get oo 'jump-relay-hooks) oo))
+         (t
           (overlay-put o 'offset (- (overlay-end o)(point)))
           (overlay-put o 'face 'liny-editable-face)
           (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-          (overlay-put oo 'face 'liny-active-face))
+          (overlay-put oo 'face 'liny-active-face)))
       (message "End of world."))))
 
 (defun liny-previous-field ()
@@ -834,7 +851,9 @@
       (overlay-put o 'previous prev)
       (if prev (overlay-put prev 'next o))
       (setq prev o last o)
-      (if (null first)(setq first o)))
+      (if (null first)(setq first o))
+      (if (eq role 'relay)
+          (setq end o)))
      ((eq role 'mirror)
       (let* ((prim (liny-get-prev-id prev id origin)))
         (liny-overlay-push-to prim 'mirrors o)
@@ -848,7 +867,6 @@
           (move-overlay o pos (point)))))
      ((eq role 'origin)
       (overlay-put o 'id ids)
-      ;; (setq prev o)
       (setq last o origin o)
       (overlay-put o 'end (or end last)))
      ((eq role 'end)
@@ -856,11 +874,12 @@
       (overlay-put o 'first first)
       (setq end o))
      (t))
+    (if (overlay-get o 'origin) nil
+      (overlay-put o 'origin origin))
+    (liny-overlay-push-to origin 'member o)
     (mapc
      (lambda(x)(funcall (car x) (cdr x) pos o))
      args)
-    (overlay-put o 'origin origin)
-    (liny-overlay-push-to origin 'member o)
     (list o prev first last end origin)))
 
 (defun liny-insert (snippet-name &optional snippet-p relay
@@ -889,7 +908,7 @@
              (setq role 'mirror))
             (id (setq role 'primary))
             (t (setq role 'void)))
-           (let  ((lst (liny-insert-field
+           (let ((lst (liny-insert-field
                         role ids args p
                         prev first last end origin)))
              (setq ;; o (car lst)
@@ -905,7 +924,6 @@
      (end
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
-      ;; (setq last end)
       (liny-run-hook (overlay-get origin 'snippet-ready) origin)))
     (cons first last)))
 
@@ -943,11 +961,11 @@
                  (goto-char (overlay-end (car snip))))))))
 
 ;;;###autoload
-(defun liny-expand-or-tab ()
+(defun liny-expand-maybe ()
   "liny-expand-or-tab is writen by ran9er"
   (interactive)
   (or (liny-expand)
-      (funcall liny-instead-command)))
+      (call-interactively liny-expand-maybe-instead-command)))
 
 (setq liny-null-ov (liny-overlay-appoint '_null 1))
 

@@ -10,6 +10,9 @@
   ("f" "emacs-lisp-mode%defun")
   ("defun" "emacs-lisp-mode%defun")
   ("def" "emacs-lisp-mode%defun")
+  ("condcase" "emacs-lisp-mode%condition-case")
+  ("cc" "emacs-lisp-mode%condition-case")
+  ("case" "emacs-lisp-mode%condition-case")
   ("cond" "emacs-lisp-mode%cond")
   ("co" "emacs-lisp-mode%cond")
   ("cn" "emacs-lisp-mode%cond")
@@ -21,6 +24,9 @@
   nil)
  ("emacs-lisp-mode%cond"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil)
+ ("emacs-lisp-mode%condition-case"
+  ("all")
   nil)
  ("emacs-lisp-mode%defun"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
