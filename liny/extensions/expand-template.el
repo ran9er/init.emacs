@@ -6,7 +6,9 @@
 (defun liny-expand-templ-ovl (ovl)
   "liny-expand-templ-ovl is writen by ran9er"
   (if (y-or-n-p "Continues?")
-      ""
+      (progn
+        (goto-char (overlay-end (liny-find-role ovl)))
+        (liny-expand-templ (overlay-get ovl 'template)(point) ovl))
     (liny-goto-field 'nnn)))
 
 (defun liny-expand-templ (str pos ovl)
@@ -16,6 +18,11 @@
         (ori (overlay-get ovl 'origin)))
     (liny-overlay-append-hooks
      (cdr templ) 'jump-relay-hooks 'liny-expand-templ-ovl)
-    (liny-overlay-push-to ori 'snippet-ready
-     `(lambda(x)(liny-overlay-link (overlay-get ,ovl 'previous)
-                               ,(car templ) ,(cdr templ))))))
+    (overlay-put (cdr templ) 'template str)
+    (if (overlay-get ovl 'next)
+        (liny-overlay-link (overlay-get ovl 'previous)
+                           (car templ) (cdr templ))
+      (liny-overlay-push-to
+       ori 'snippet-ready
+       `(lambda(x)(liny-overlay-link (overlay-get ,ovl 'previous)
+                                 ,(car templ) ,(cdr templ)))))))

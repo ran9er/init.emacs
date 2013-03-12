@@ -56,7 +56,7 @@
 
 
 (let ((key "\C-q"))
-  (setq liny-instead-command (key-binding key))
-  (autoload 'liny-expand-or-tab
+  (setq liny-expand-maybe-instead-command (key-binding key))
+  (autoload 'liny-expand-maybe
     (expand-file-name "liny/liny.el" *init-dir*) "" t)
-  (global-set-key key 'liny-expand-or-tab))
+  (global-set-key key 'liny-expand-maybe))

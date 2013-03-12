@@ -375,14 +375,23 @@
       (setq o (overlay-get o 'previous)))
     o))
 
-(defun liny-get-last (ov)
+(defun liny-get-last (ov &optional role)
   "liny-get-last is writen by ran9er"
-  (let ((o (if (eq (overlay-get ov 'role) 'end)
+  (let* ((prop (or prop 'end))
+         (o (if (eq (overlay-get ov 'role) role)
                o (liny-get-primary ov))))
     (while (overlay-get o 'next)
       (setq o (overlay-get o 'next)))
     o))
 
+(defun liny-find-role (ov &optional r f-b)
+  "liny-find-overlay is writen by ran9er"
+  (let ((r (or r 'relay))
+        (f-b (or f-b 'next)))
+    (while (and (overlay-get ov f-b)
+                (null (eq (overlay-get ov 'role) r)))
+      (setq ov (overlay-get ov f-b)))
+    ov))
 
 ;; ** struction
 (defun liny-overlay-push-to (to p from)
