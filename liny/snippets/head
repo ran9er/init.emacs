@@ -7,11 +7,11 @@ head top
 <------environment
 
 <------snippet
-$1-*- encoding: utf-8-unix; -*-
+-*- encoding: utf-8-unix; -*-
 File-name   : <${$(insert (if (buffer-file-name)(file-name-nondirectory (buffer-file-name))(buffer-name)))}>
 Create      : <${$(insert (format-time-string "%Y-%m-%d %H/%M/%S" (current-time)))} ${$(insert user-full-name)}>
 Time-stamp  : < >
-${0$(let* ((ob (overlay-get ovl 'first))
+${0$(let* ((ob (overlay-get ovl 'origin))
            (e (overlay-end ovl))
            (b (overlay-start ob)))
       (comment-region b e))}
