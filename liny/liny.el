@@ -406,6 +406,14 @@
     (overlay-put front 'next beg)
     (overlay-put beg 'previous front)))
 
+(defun liny-overlay-link-remove (ov)
+  "liny-overlay-link-remove is writen by ran9er"
+  (let ((p (overlay-get ov 'previous))
+        (n (overlay-get ov 'next)))
+    (overlay-put n 'previous p)
+    (overlay-put p 'next n)
+    (liny-overlay-release ov)))
+
 ;; (defun liny-overlay-setprev (to from &optional p)
 ;;   (let ((p (or p 'link)))
 ;;    (overlay-put to p (cons from (cdr (overlay-get to p))))))
@@ -530,20 +538,17 @@
 
 (defvar liny-goto-field-func 'liny-goto-field)
 
-(defun liny-goto-field (p-or-n)
+(defun liny-goto-field (p-or-n &optional na)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
          (oo (cond
-              ((eq p-or-n 'nnn)
-               (overlay-get
-                (overlay-get
-                (overlay-get o 'next) 'next)
-                'next))
+              ((eq p-or-n 'nn)
+               (overlay-get (overlay-get o 'next) 'next))
               (t (overlay-get o p-or-n)))))
     (if oo
         (cond
          ((eq (overlay-get oo 'role) 'end)
-          (if (y-or-n-p "finish this snippet?")
+          (if (or na (y-or-n-p "finish this snippet?"))
               (progn
                 (goto-char (overlay-end oo))
                 (liny-clear-instance o))))
