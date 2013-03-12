@@ -196,6 +196,9 @@
      (modification-hooks liny-this-overlay)
      (local-map . ,liny-keymap) ;; debug
      (face . liny-auto-face))
+    cur
+    ((role . cur)
+     (origin . nil))
     void
     ((role . void)
      (origin . nil))
@@ -435,7 +438,6 @@
       (apply 'liny-overlay-append-hooks
              (overlay-get ov 'tail) 'insert-in-front-hooks hooks)))
 
-
 (defun liny-clone-primary (ov beg &optional origin)
   (let* ((ids (overlay-get ov 'id))
          (o (car
@@ -448,14 +450,14 @@
                 (liny-get-snippet
                  (nth 0 ids))))
               beg
-              nil nil nil nil origin))))
+              origin))))
     (liny-overlay-link ov o)
     ;; (mapc
     ;;  (lambda(x)
     ;;    (goto-char (overlay-end x))
     ;;    (liny-overlay-push-to
     ;;     o 'mirrors
-    ;;     (car (liny-insert-field 'mirror ids nil (point) o)))
+    ;;     (car (liny-insert-field 'mirror ids nil (point) nil o)))
     ;;    (liny-ex-template
     ;;     x
     ;;     (liny-gen-token
@@ -855,7 +857,7 @@
       (insert str))
     (if ov (liny-move-overlay ov st end))))
 
-(defun liny-insert-field (role ids args pos &optional prev first last end origin)
+(defun liny-insert-field (role ids args pos &optional origin prev first last end)
   "liny-insert-field "
   (let* ((o (liny-overlay-appoint role pos pos))
          (id (nth 1 ids)))
@@ -887,6 +889,10 @@
       (overlay-put o 'id ids)
       (overlay-put o 'first first)
       (setq end o))
+     ((eq role 'cur)
+      (setq first o)
+      (liny-overlay-append-hooks
+       origin 'snippet-ready 'liny-clear-instance))
      (t))
     (if (overlay-get o 'origin) nil
       (overlay-put o 'origin origin))
@@ -894,7 +900,7 @@
     (mapc
      (lambda(x)(funcall (car x) (cdr x) pos o))
      args)
-    (list o prev first last end origin)))
+    (list o origin prev first last end)))
 
 (defun liny-insert (snippet-name &optional snippet-p relay
                                  prev first last end)
@@ -902,11 +908,11 @@
                     (liny-get-snippet snippet-name))))
          ;; (top (eq (current-indentation) 0))
     (let ((lst (liny-insert-field 'origin (list snippet-name) "" (point))))
-      (setq   origin (nth 5 lst)
-              prev   (nth 1 lst)
-              first  (nth 2 lst)
-              last   (nth 3 lst)
-              end    (nth 4 lst)))
+      (setq   origin (nth 1 lst)
+              prev   (nth 2 lst)
+              first  (nth 3 lst)
+              last   (nth 4 lst)
+              end    (nth 5 lst)))
     (mapc
      (lambda (x)
        (if (stringp x)
@@ -917,23 +923,29 @@
                 (ids (if snippet-p nil (list snippet-name id)))
                 role o)
            (cond
-            ((eq id 0)(setq role (if relay 'relay 'end)))
+            ((eq id 0)(setq role (cond
+                                  ((null prev) 'cur)
+                                  (relay 'relay)
+                                  (t 'end))))
             ((liny-get-prev-id prev id origin)
              (setq role 'mirror))
             (id (setq role 'primary))
             (t (setq role 'void)))
            (let ((lst (liny-insert-field
                         role ids args p
-                        prev first last end origin)))
+                        origin prev first last end)))
              (setq ;; o (car lst)
-              prev (nth 1 lst)
-              first (nth 2 lst)
-              last (nth 3 lst)
-              end (nth 4 lst))))))
+              prev (nth 2 lst)
+              first (nth 3 lst)
+              last (nth 4 lst)
+              end (nth 5 lst))))))
      snippet)
     (while (progn
-             (overlay-put prev 'ready t)
-             (setq prev (overlay-get prev 'previous))))
+             (overlay-put (or prev liny-null-ov) 'ready t)
+             (setq prev (overlay-get (or prev liny-null-ov) 'previous))))
+    (if relay nil
+      (overlay-put first 'face 'liny-active-face)
+      (goto-char (overlay-end first)))
     (cond
      (end
       (overlay-put last 'next end)
@@ -970,9 +982,7 @@
   (let ((spn (funcall liny-match-strategy)))
     (if (liny-get-snippet spn)
         (progn (kill-word -1)        ;; (liny-clear-region sp)
-               (let ((snip (liny-insert spn)))
-                 (overlay-put (car snip) 'face 'liny-active-face)
-                 (goto-char (overlay-end (car snip))))))))
+               (liny-insert spn)))))
 
 ;;;###autoload
 (defun liny-expand-maybe ()
@@ -986,3 +996,5 @@
 ;; load extension
 (let ((f (directory-files liny-extension t ".*\\.el\\'")))
   (if f (mapc (lambda(x)(load x)) f)))
+
+;; (remove-overlays (point-min)(point-max))
