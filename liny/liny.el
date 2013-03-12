@@ -137,6 +137,7 @@
      (id . nil)
      (insert-in-front-hooks liny-this-overlay)
      (origin . nil)
+     (member . nil)
      (end . nil)
      (snippet-ready . nil)
      (snippet-exit . nil)
@@ -189,11 +190,15 @@
                             liny-update-mirror))
     mirror
     ((role . mirror)
+     (origin . nil)
      (primary . nil)
      (template . nil)
      (modification-hooks liny-this-overlay)
      (local-map . ,liny-keymap) ;; debug
      (face . liny-auto-face))
+    void
+    ((role . void)
+     (origin . nil))
     _null
     ((role . _null)
      (modification-hooks liny-null-ov-hook)
@@ -320,10 +325,11 @@
     ov))
 
 (defun liny-overlay-release (ov)
-  (mapc
-   (lambda(x)
-     (liny-delete-overlay x))
-   (overlay-get ov 'mirrors))
+  ;; appoint to clear-instance
+  ;; (mapc
+  ;;  (lambda(x)
+  ;;    (liny-delete-overlay x))
+  ;;  (overlay-get ov 'mirrors))
   (liny-delete-overlay (overlay-get ov 'tail))
   (liny-delete-overlay ov)
   (liny-run-hook 'liny-overlay-release-hook ov))
@@ -331,14 +337,10 @@
 (defun liny-clear-instance (&optional ov)
   "liny-clear-instance "
   (interactive)
-  (let* ((head (liny-get-first
+  (let* ((prim (liny-get-primary
                (or ov (liny-get-overlay))))
-         (origin (overlay-get head 'origin)))
-    (while
-        (prog1 (overlay-get head 'next)
-          (setq cur head
-                head (overlay-get head 'next))
-          (liny-overlay-release cur)))
+         (origin (overlay-get prim 'origin)))
+    (mapc (lambda(x)(liny-overlay-release x))(overlay-get origin 'member))
     (liny-overlay-release origin)))
 
 (defun liny-get-prev-id (ov id origin)
@@ -376,9 +378,8 @@
 
 
 ;; ** struction
-(defun liny-overlay-push-to (to from &optional p)
-  (let ((p (or p 'group)))
-    (overlay-put to p (cons from (overlay-get to p)))))
+(defun liny-overlay-push-to (to p from)
+  (overlay-put to p (cons from (overlay-get to p))))
 
 (defun liny-overlay-link (front beg &optional end)
   (let ((end (or end beg))
@@ -429,9 +430,8 @@
     ;;  (lambda(x)
     ;;    (goto-char (overlay-end x))
     ;;    (liny-overlay-push-to
-    ;;     o
-    ;;     (car (liny-insert-field 'mirror ids nil (point) o))
-    ;;     'mirrors)
+    ;;     o 'mirrors
+    ;;     (car (liny-insert-field 'mirror ids nil (point) o)))
     ;;    (liny-ex-template
     ;;     x
     ;;     (liny-gen-token
@@ -837,7 +837,7 @@
       (if (null first)(setq first o)))
      ((eq role 'mirror)
       (let* ((prim (liny-get-prev-id prev id origin)))
-        (liny-overlay-push-to prim o 'mirrors)
+        (liny-overlay-push-to prim 'mirrors o)
         (overlay-put o 'primary prim)
         (goto-char (overlay-end o))
         (if args nil
@@ -859,7 +859,8 @@
     (mapc
      (lambda(x)(funcall (car x) (cdr x) pos o))
      args)
-    (if o (overlay-put o 'origin origin))
+    (overlay-put o 'origin origin)
+    (liny-overlay-push-to origin 'member o)
     (list o prev first last end origin)))
 
 (defun liny-insert (snippet-name &optional snippet-p relay
@@ -904,7 +905,7 @@
      (end
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
-      (setq last end)
+      ;; (setq last end)
       (liny-run-hook (overlay-get origin 'snippet-ready) origin)))
     (cons first last)))
 
