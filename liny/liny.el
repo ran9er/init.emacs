@@ -229,8 +229,6 @@
 ;;       (setq i (1- i)))
 ;;     x))
 
-(defun liny-temp-name (make-temp-name (format "--%s-"(buffer-name))))
-
 ;; * init
 (defvar liny-enable-overlays-pool nil)
 
