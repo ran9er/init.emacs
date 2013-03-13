@@ -1,5 +1,6 @@
 ((("t" "t")
   ("snip" "snippets=file")
+  ("se" "save-excursion")
   ("ro" "remove-overlays")
   ("h" "head")
   ("upcase" "emacs-lisp-mode%upcase")
@@ -53,6 +54,9 @@
   ("head")
   ("top"))
  ("remove-overlays"
+  ("all")
+  nil nil)
+ ("save-excursion"
   ("all")
   nil nil)
  ("snippets=file"

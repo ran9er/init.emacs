@@ -1,0 +1,12 @@
+<------alias
+se
+<------modes
+all
+<------keywords
+
+<------environment
+
+<------snippet
+(save-restriction 
+  (save-excursion 
+    $0))
