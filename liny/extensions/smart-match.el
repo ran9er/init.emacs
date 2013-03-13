@@ -27,22 +27,16 @@
   "liny-fetch-env-mode is writen by ran9er"
   major-mode)
 
-(defun liny-keywords-match (&optional modes keywords)
+(defun liny-keywords-match (&optional modes necessary sufficient)
   "liny-keywords-match is writen by ran9er"
   (let* ((env (liny-fetch-env))
          (result 0)
-         necessary sufficient envl)
+         envl)
     (and
      (catch 'test
        (or (member "all" modes)
            (member (symbol-name (liny-fetch-env-mode)) modes)
            (throw 'test nil))
-       (mapc
-        (lambda(x)
-          (if (equal "+" (substring x 0 1))
-              (setq necessary (cons (substring x 1) necessary))
-            (setq sufficient (cons x sufficient))))
-        keywords)
        (setq envl (mapcar (lambda(x)(car x)) env))
        (while (and
                necessary
@@ -68,20 +62,32 @@
           (remove a (cons n var)))))))
 
 (defun liny-gen-index-k ()
-  (let ((gs (lambda(x)(sort (remove "" (if x (split-string x "[ \t\n]"))) 'string-lessp)))
+  (let ((gs
+         (lambda(x)
+           (sort
+            (remove "" (if x (split-string x "[ \t\n]")))
+            'string-lessp)))
         alias files)
     (setq
      files
      (mapcar
       (lambda(x)
         (with-temp-buffer
-          (insert-file-contents (expand-file-name x liny-repo))
-          (mapc (lambda(y)(setq alias (liny-alias-push alias y x)))
-                (funcall gs (liny-search-str "alias")))
-          (list
-           x
-           (funcall gs (liny-search-str "modes"))
-           (funcall gs (liny-search-str "keywords")))))
+          (let (necessary sufficient)
+            (insert-file-contents (expand-file-name x liny-repo))
+            (mapc (lambda(y)(setq alias (liny-alias-push alias y x)))
+                  (funcall gs (liny-search-str "alias")))
+            (mapc
+             (lambda(x)
+               (if (equal "+" (substring x 0 1))
+                   (setq necessary (cons (substring x 1) necessary))
+                 (setq sufficient (cons x sufficient))))
+             (funcall gs (liny-search-str "keywords")))
+            (list
+             x
+             (funcall gs (liny-search-str "modes"))
+             necessary
+             sufficient))))
       (directory-files liny-repo nil "^[^._].*\\'")))
     (cons alias files)))
 
@@ -112,9 +118,7 @@
       (mapcar
        (lambda(x)
          (let* ((lst (cdr (assoc x (cdr liny-index))))
-                (modes (nth 0 lst))
-                (keywords (nth 1 lst))
-                (match (liny-keywords-match modes keywords)))
+                (match (apply 'liny-keywords-match lst)))
            (if match (cons match x))))
        files)
       (lambda(x y)

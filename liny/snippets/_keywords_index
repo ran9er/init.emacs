@@ -22,37 +22,42 @@
   ("eltempl" "eltempl"))
  ("eltempl"
   ("emacs-lisp-mode")
-  nil)
+  nil nil)
  ("emacs-lisp-mode%cond"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-  nil)
+  nil nil)
  ("emacs-lisp-mode%condition-case"
   ("all")
-  nil)
+  nil nil)
  ("emacs-lisp-mode%defun"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-  ("+top"))
+  ("top")
+  nil)
  ("emacs-lisp-mode%let"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil
   ("notop"))
  ("emacs-lisp-mode%ol"
   ("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil
   ("top"))
  ("emacs-lisp-mode%test"
   ("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
+  nil
   ("top"))
  ("emacs-lisp-mode%upcase"
   ("all")
-  nil)
+  nil nil)
  ("head"
   ("all")
-  ("+head" "top"))
+  ("head")
+  ("top"))
  ("remove-overlays"
   ("all")
-  nil)
+  nil nil)
  ("snippets=file"
   ("all")
-  ("$3"))
+  nil nil)
  ("t"
   ("all")
-  nil))
+  nil nil))

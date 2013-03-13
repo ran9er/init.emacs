@@ -3,6 +3,7 @@ snip
 <------modes
 all
 <------environment
+<------keywords
 <------snippet
 <------alias
 ${1:alias}
