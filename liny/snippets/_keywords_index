@@ -3,50 +3,50 @@
   ("se" "save-excursion")
   ("ro" "remove-overlays")
   ("h" "head")
-  ("upcase" "emacs-lisp-mode%upcase")
-  ("uc" "emacs-lisp-mode%upcase")
-  ("test" "emacs-lisp-mode%test")
-  ("ol" "emacs-lisp-mode%ol")
-  ("lt" "emacs-lisp-mode%let")
-  ("let" "emacs-lisp-mode%let")
-  ("f" "emacs-lisp-mode%defun")
-  ("defun" "emacs-lisp-mode%defun")
-  ("def" "emacs-lisp-mode%defun")
-  ("condcase" "emacs-lisp-mode%condition-case")
-  ("cc" "emacs-lisp-mode%condition-case")
-  ("case" "emacs-lisp-mode%condition-case")
-  ("cond" "emacs-lisp-mode%cond")
-  ("co" "emacs-lisp-mode%cond")
-  ("cn" "emacs-lisp-mode%cond")
-  ("cd" "emacs-lisp-mode%cond")
+  ("upcase" "emacs-lisp-mode#upcase")
+  ("uc" "emacs-lisp-mode#upcase")
+  ("test" "emacs-lisp-mode#test")
+  ("ol" "emacs-lisp-mode#ol")
+  ("lt" "emacs-lisp-mode#let")
+  ("let" "emacs-lisp-mode#let")
+  ("f" "emacs-lisp-mode#defun")
+  ("defun" "emacs-lisp-mode#defun")
+  ("def" "emacs-lisp-mode#defun")
+  ("condcase" "emacs-lisp-mode#condition-case")
+  ("cc" "emacs-lisp-mode#condition-case")
+  ("case" "emacs-lisp-mode#condition-case")
+  ("cond" "emacs-lisp-mode#cond")
+  ("co" "emacs-lisp-mode#cond")
+  ("cn" "emacs-lisp-mode#cond")
+  ("cd" "emacs-lisp-mode#cond")
   ("et" "eltempl")
   ("eltempl" "eltempl"))
  ("eltempl"
   ("emacs-lisp-mode")
   nil nil)
- ("emacs-lisp-mode%cond"
+ ("emacs-lisp-mode#cond"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   nil nil)
- ("emacs-lisp-mode%condition-case"
+ ("emacs-lisp-mode#condition-case"
   ("all")
   nil nil)
- ("emacs-lisp-mode%defun"
+ ("emacs-lisp-mode#defun"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   ("top")
   nil)
- ("emacs-lisp-mode%let"
+ ("emacs-lisp-mode#let"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   nil
   ("notop"))
- ("emacs-lisp-mode%ol"
+ ("emacs-lisp-mode#ol"
   ("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   nil
   ("top"))
- ("emacs-lisp-mode%test"
+ ("emacs-lisp-mode#test"
   ("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   nil
   ("top"))
- ("emacs-lisp-mode%upcase"
+ ("emacs-lisp-mode#upcase"
   ("all")
   nil nil)
  ("head"

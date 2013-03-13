@@ -1,8 +1,15 @@
 ;; * match
 (setq liny-match-strategy 'liny-smart-match)
 
+(defvar liny-alias-index
+  (make-hash-table :test 'equal))
+
+(defvar liny-files-index
+  (make-hash-table :test 'equal))
+
 (defvar liny-env-test
-  '(("head" (progn (backward-sexp)(skip-chars-backward " \t\n")(bobp)))
+  '(("head" (progn (funcall liny-fetch-alias-func)
+                   (skip-chars-backward " \t\n")(bobp)))
     ("tail" (progn (skip-chars-forward " \t\n")(eobp)))
     ("notop" (null (zerop (current-indentation))))
     ("top" (zerop (current-indentation)))))
@@ -92,19 +99,21 @@
     (cons alias files)))
 
 (defun liny-snippet-exist-p (snippet)
-  (assoc snippet (cdr liny-index)))
+  (gethash snippet liny-files-index))
 
-(let (print-length print-level selective-display-ellipses)
-  (liny-update-index "_keywords_index"
-                           (pp-to-string (liny-gen-index-k))))
+(defun liny-update-keyword-index (file strs &optional force)
+  "liny-update-keyword-dir is writen by ran9er"
+  (let* ((lst (liny-read-index (liny-update-index-dir file strs force)))
+         (alias (car lst))
+         (files (cdr lst)))
+    (mapc (lambda(x)(puthash (car x) (cdr x) liny-alias-index)) alias)
+    (mapc (lambda(x)(puthash (car x) (cdr x) liny-files-index)) files)))
+
+(liny-update-keyword-index "_keywords_index" '(liny-gen-index-k))
 
 (defun liny-force-update-keyword ()
   (interactive)
-  (let (print-length print-level selective-display-ellipses)
-    (liny-update-index
-     "_keywords_index"
-     (pp-to-string (liny-gen-index-k))
-     t)))
+  (liny-update-keyword-index "_keywords_index" '(liny-gen-index-k) t))
 
 ;; (insert (concat "\n" (pp-to-string (liny-gen-index-k))))
 
@@ -112,12 +121,12 @@
 ;; *
 (defun liny-smart-match ()
   (let* ((alias (liny-fetch-alias))
-         (files (cdr (assoc alias (car liny-index)))))
+         (files (gethash alias liny-alias-index)))
     (cdar
      (sort
       (mapcar
        (lambda(x)
-         (let* ((lst (cdr (assoc x (cdr liny-index))))
+         (let* ((lst (gethash x liny-files-index))
                 (match (apply 'liny-keywords-match lst)))
            (if match (cons match x))))
        files)

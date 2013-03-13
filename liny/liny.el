@@ -81,7 +81,7 @@
 
 (defvar liny-syntax-meta
   '(head "\\$" open "{" close "}" id "[[:digit:]]+"
-         path-separator "%" file-separator "<------"))
+         path-separator "#" file-separator "<------"))
 
 (defvar liny-custom-meta nil)
 
@@ -596,11 +596,11 @@
             (overlays-in pt (1+ pt)))))))
 
 ;; * index
-(defun liny-read-index (idx)
+(defun liny-read-index (idxf)
   (let (var)
     (with-current-buffer
         (let ((enable-local-variables nil))
-          (find-file-noselect idx))
+          (find-file-noselect idxf))
       (prog2
           (goto-char (point-min))
           (setq var
@@ -610,32 +610,37 @@
                    nil)))
         (kill-buffer (current-buffer))))))
 
-(defun liny-update-index (file str &optional force)
+(defun liny-update-index-dir (file strs &optional force)
+  "liny-update-index-dir is writen by ran9er"
+  (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
+        (liny-index-file
+         (expand-file-name file liny-repo))
+        print-length print-level selective-display-ellipses)
+    (if (or force
+            (time-less-p
+             (or (funcall mtime liny-index-file)
+                 '(0 0 0))
+             (funcall mtime liny-repo)))
+        (with-temp-file
+            (let ((enable-local-variables nil)
+                  (find-file-hook nil))
+              liny-index-file)
+          (insert (pp-to-string (eval strs)))
+          (message (format "Save %s." liny-index-file))))
+    liny-index-file))
+
+(defun liny-update-index (file strs &optional force)
   (interactive)
   (setq
    liny-index
-   (let ((mtime (lambda(x)(nth 5 (file-attributes x))))
-         (liny-index-file
-          (expand-file-name file liny-repo)))
-     (if (or force
-             (time-less-p
-              (or (funcall mtime liny-index-file)
-                  '(0 0 0))
-              (funcall mtime liny-repo)))
-         (with-temp-file
-             (let ((enable-local-variables nil)
-                   (find-file-hook nil))
-               liny-index-file)
-           (insert str)
-           (message (format "Save %s." liny-index-file))))
-     (liny-read-index liny-index-file))))
+   (liny-read-index
+    (liny-update-index-dir file strs force))))
 
 (defun liny-snippet-exist-p (snippet)
   (member snippet liny-index))
 
 (liny-update-index "_index"
-                   (pp-to-string
-                    (directory-files liny-repo nil "^[^_].*\\'")))
+                   '(directory-files liny-repo nil "^[^_].*\\'"))
 
 (defun liny-get-snippet (snippet)
   (or
@@ -954,6 +959,8 @@
     (cons first last)))
 
 ;; * interface
+(defvar liny-fetch-alias-func 'backward-sexp)
+
 (defun liny-fetch-alias ()
   (interactive)
   (save-excursion
@@ -962,7 +969,7 @@
        (skip-chars-backward " \t\n")
        (point))
      (progn
-       (backward-sexp)
+       (funcall liny-fetch-alias-func)
        (point)))))
 
 (defun liny-match ()

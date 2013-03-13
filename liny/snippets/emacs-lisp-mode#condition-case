@@ -1,0 +1,12 @@
+<------alias
+cc condcase case
+<------modes
+all
+<------keywords
+
+<------environment
+
+<------snippet
+(condition-case ${1:nil}
+    (throw '${2:TAG} ${3:Value})
+  (error $0))

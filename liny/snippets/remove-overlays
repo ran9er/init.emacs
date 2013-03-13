@@ -1,0 +1,10 @@
+<------alias
+ro
+<------modes
+all
+<------keywords
+
+<------environment
+
+<------snippet
+(remove-overlays (point-min)(point-max))$0
