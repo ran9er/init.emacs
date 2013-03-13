@@ -58,15 +58,11 @@
      result)))
 
 ;; * index
-(defun liny-alias-push (var alias files)
-  (let ((a (assoc alias var)))
-    (if (null a)
-        (cons (list alias files) var)
-      (if (member files (cdr a))
-          var
-        (let* ((n (cons files (cdr a)))
-               (n (cons alias n)))
-          (remove a (cons n var)))))))
+(defun liny-alias-push (alias file hash)
+  (let ((v (gethash alias hash)))
+    (if (null (member file v))
+        (puthash alias (sort (append (list file) v) 'string-lessp) hash))))
+
 
 (defun liny-gen-index-k ()
   (let ((gs
@@ -74,28 +70,29 @@
            (sort
             (remove "" (if x (split-string x "[ \t\n]")))
             'string-lessp)))
-        alias files)
-    (setq
-     files
-     (mapcar
-      (lambda(x)
-        (with-temp-buffer
-          (let (necessary sufficient)
-            (insert-file-contents (expand-file-name x liny-repo))
-            (mapc (lambda(y)(setq alias (liny-alias-push alias y x)))
-                  (funcall gs (liny-search-str "alias")))
-            (mapc
-             (lambda(x)
-               (if (equal "+" (substring x 0 1))
-                   (setq necessary (cons (substring x 1) necessary))
-                 (setq sufficient (cons x sufficient))))
-             (funcall gs (liny-search-str "keywords")))
+        (alias (make-hash-table :test 'equal))
+        (files (make-hash-table :test 'equal)))
+    (mapc
+     (lambda(x)
+       (with-temp-buffer
+         (let (necessary sufficient)
+           (insert-file-contents (expand-file-name x liny-repo))
+           (mapc (lambda(y)(liny-alias-push y x alias))
+                 (funcall gs (liny-search-str "alias")))
+           (mapc
+            (lambda(x)
+              (if (equal "+" (substring x 0 1))
+                  (setq necessary (cons (substring x 1) necessary))
+                (setq sufficient (cons x sufficient))))
+            (funcall gs (liny-search-str "keywords")))
+           (puthash
+            x
             (list
-             x
              (funcall gs (liny-search-str "modes"))
              necessary
-             sufficient))))
-      (directory-files liny-repo nil "^[^._].*\\'")))
+             sufficient)
+            files))))
+     (directory-files liny-repo nil "^[^._].*\\'"))
     (cons alias files)))
 
 (defun liny-snippet-exist-p (snippet)
@@ -103,11 +100,9 @@
 
 (defun liny-update-keyword-index (file strs &optional force)
   "liny-update-keyword-dir is writen by ran9er"
-  (let* ((lst (liny-read-index (liny-update-index-dir file strs force)))
-         (alias (car lst))
-         (files (cdr lst)))
-    (mapc (lambda(x)(puthash (car x) (cdr x) liny-alias-index)) alias)
-    (mapc (lambda(x)(puthash (car x) (cdr x) liny-files-index)) files)))
+  (let* ((lst (liny-read-index (liny-update-index-dir file strs force))))
+    (setq liny-alias-index (car lst)
+          liny-files-index (cdr lst))))
 
 (liny-update-keyword-index "_keywords_index" '(liny-gen-index-k))
 
