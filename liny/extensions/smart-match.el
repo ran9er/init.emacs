@@ -1,16 +1,13 @@
 ;; * match
 (setq liny-match-strategy 'liny-smart-match)
 
-(defvar liny-env-test-necessary
-  '())
-
-(defvar liny-env-test-sufficient
-  '(("head" (progn (skip-chars-backward " \t\n")(bobp)))
+(defvar liny-env-test
+  '(("head" (progn (backward-sexp)(skip-chars-backward " \t\n")(bobp)))
     ("tail" (progn (skip-chars-forward " \t\n")(eobp)))
     ("notop" (null (zerop (current-indentation))))
     ("top" (zerop (current-indentation)))))
 
-(defun liny-fetch-env-sufficient ()
+(defun liny-fetch-env ()
   "liny-fetch-env "
   (let ((test
          (lambda(tst)
@@ -24,7 +21,7 @@
               tst))
             (lambda(x y)
               (string-lessp (car x)(car y)))))))
-        (funcall test liny-env-test-sufficient)))
+        (funcall test liny-env-test)))
 
 (defun liny-fetch-env-mode ()
   "liny-fetch-env-mode is writen by ran9er"
@@ -32,19 +29,32 @@
 
 (defun liny-keywords-match (&optional modes keywords)
   "liny-keywords-match is writen by ran9er"
-  (let* (test
-         (env (liny-fetch-env-sufficient))
-         (result 0))
-    (if (or (member "all" modes)
-            (member (symbol-name (liny-fetch-env-mode)) modes))
-        (setq test t))
-    (if test
-        (mapc
-         (lambda(x)
-           (if (member (car x) keywords)
-               (setq result (+ (cdr x) result))))
-         env))
-    (and test result)))
+  (let* ((env (liny-fetch-env))
+         (result 0)
+         necessary sufficient envl)
+    (and
+     (catch 'test
+       (or (member "all" modes)
+           (member (symbol-name (liny-fetch-env-mode)) modes)
+           (throw 'test nil))
+       (mapc
+        (lambda(x)
+          (if (equal "+" (substring x 0 1))
+              (setq necessary (cons (substring x 1) necessary))
+            (setq sufficient (cons x sufficient))))
+        keywords)
+       (setq envl (mapcar (lambda(x)(car x)) env))
+       (while (and
+               necessary
+               (if (member (car necessary) envl) t
+                 (throw 'test nil)))
+         (setq necessary (cdr necessary)))
+       (mapc
+        (lambda(x)
+          (if (member (car x) sufficient)
+              (setq result (+ (cdr x) result))))
+        env))
+     result)))
 
 ;; * index
 (defun liny-alias-push (var alias files)

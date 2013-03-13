@@ -31,7 +31,7 @@
   nil)
  ("emacs-lisp-mode%defun"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-  ("top"))
+  ("+top"))
  ("emacs-lisp-mode%let"
   ("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
   ("notop"))
@@ -46,7 +46,7 @@
   nil)
  ("head"
   ("all")
-  ("head" "top"))
+  ("+head" "top"))
  ("remove-overlays"
   ("all")
   nil)
