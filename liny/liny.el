@@ -336,7 +336,6 @@
   (liny-run-hook 'liny-overlay-release-hook ov))
 
 (defun liny-clear-instance (&optional ov)
-  "liny-clear-instance "
   (interactive)
   (let* ((prim (liny-get-primary
                (or ov (liny-get-overlay))))

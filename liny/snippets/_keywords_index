@@ -1,92 +1,88 @@
 (#s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                ("eltempl"
-                ("eltempl")
-                "et"
-                ("eltempl")
-                "cd"
-                ("emacs-lisp-mode#cond")
-                "cn"
-                ("emacs-lisp-mode#cond")
-                "co"
-                ("emacs-lisp-mode#cond")
-                "cond"
-                ("emacs-lisp-mode#cond")
-                "case"
-                ("emacs-lisp-mode#condition-case")
-                "cc"
-                ("emacs-lisp-mode#condition-case")
-                "condcase"
-                ("emacs-lisp-mode#condition-case")
-                "def"
-                ("emacs-lisp-mode#defun")
-                "defun"
-                ("emacs-lisp-mode#defun")
-                "f"
-                ("emacs-lisp-mode#defun")
-                "let"
-                ("emacs-lisp-mode#let")
-                "lt"
-                ("emacs-lisp-mode#let")
-                "ol"
-                ("emacs-lisp-mode#ol")
-                "test"
-                ("emacs-lisp-mode#test")
-                "uc"
-                ("emacs-lisp-mode#upcase")
-                "upcase"
-                ("emacs-lisp-mode#upcase")
-                "h"
-                ("head")
-                "ro"
-                ("remove-overlays")
-                "se"
-                ("save-excursion")
-                "snip"
-                ("snippets=file")
+                (nil nil)
+                "emacs-lisp-mode#cond"
+                (nil nil)
+                "emacs-lisp-mode#condition-case"
+                (nil nil)
+                "emacs-lisp-mode#defun"
+                (("top")
+                 nil)
+                "emacs-lisp-mode#let"
+                (nil
+                 ("notop"))
+                "emacs-lisp-mode#ol"
+                (nil
+                 ("top"))
+                "emacs-lisp-mode#test"
+                (nil
+                 ("top"))
+                "emacs-lisp-mode#upcase"
+                (nil nil)
+                "head"
+                (("head")
+                 ("top"))
+                "remove-overlays"
+                (nil nil)
+                "save-excursion"
+                (nil nil)
+                "snippets=file"
+                (nil nil)
                 "t"
-                ("t")))
-   . #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
-                   ("eltempl"
-                    (("emacs-lisp-mode")
-                     nil nil)
-                    "emacs-lisp-mode#cond"
-                    (("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-                     nil nil)
-                    "emacs-lisp-mode#condition-case"
-                    (("all")
-                     nil nil)
-                    "emacs-lisp-mode#defun"
-                    (("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-                     ("top")
-                     nil)
-                    "emacs-lisp-mode#let"
-                    (("emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-                     nil
-                     ("notop"))
-                    "emacs-lisp-mode#ol"
-                    (("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-                     nil
-                     ("top"))
-                    "emacs-lisp-mode#test"
-                    (("all" "emacs-lisp-mode" "lisp-interaction-mode" "lisp-mode")
-                     nil
-                     ("top"))
-                    "emacs-lisp-mode#upcase"
-                    (("all")
-                     nil nil)
-                    "head"
-                    (("all")
-                     ("head")
-                     ("top"))
-                    "remove-overlays"
-                    (("all")
-                     nil nil)
-                    "save-excursion"
-                    (("all")
-                     nil nil)
-                    "snippets=file"
-                    (("all")
-                     nil nil)
-                    "t"
-                    (("all")
-                     nil nil))))
+                (nil nil)))
+   #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
+                 ("eltempl"
+                  ("eltempl")
+                  "et"
+                  ("eltempl")
+                  "cd"
+                  ("emacs-lisp-mode#cond")
+                  "cn"
+                  ("emacs-lisp-mode#cond")
+                  "co"
+                  ("emacs-lisp-mode#cond")
+                  "cond"
+                  ("emacs-lisp-mode#cond")
+                  "case"
+                  ("emacs-lisp-mode#condition-case")
+                  "cc"
+                  ("emacs-lisp-mode#condition-case")
+                  "condcase"
+                  ("emacs-lisp-mode#condition-case")
+                  "def"
+                  ("emacs-lisp-mode#defun")
+                  "defun"
+                  ("emacs-lisp-mode#defun")
+                  "f"
+                  ("emacs-lisp-mode#defun")
+                  "let"
+                  ("emacs-lisp-mode#let")
+                  "lt"
+                  ("emacs-lisp-mode#let")
+                  "ol"
+                  ("emacs-lisp-mode#ol")
+                  "test"
+                  ("emacs-lisp-mode#test")
+                  "uc"
+                  ("emacs-lisp-mode#upcase")
+                  "upcase"
+                  ("emacs-lisp-mode#upcase")
+                  "h"
+                  ("head")
+                  "ro"
+                  ("remove-overlays")
+                  "se"
+                  ("save-excursion")
+                  "snip"
+                  ("snippets=file")
+                  "t"
+                  ("t")))
+   #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
+                 ("emacs-lisp-mode"
+                  ("eltempl" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test")
+                  "lisp-interaction-mode"
+                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test")
+                  "lisp-mode"
+                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test")
+                  "all"
+                  ("emacs-lisp-mode#condition-case" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "emacs-lisp-mode#upcase" "head" "remove-overlays" "save-excursion" "snippets=file" "t"))))

@@ -7,6 +7,92 @@
 (defvar liny-files-index
   (make-hash-table :test 'equal))
 
+;; * index
+(defun liny-intersection (a b)
+  "liny-intersection is writen by ran9er"
+  (let (result)
+    (while (and a b)
+      (cond
+       ((equal (car a)(car b))
+        (setq result (append result (list (car a)))
+              a (cdr a)
+              b (cdr b)))
+       ((string-lessp (car a)(car b))
+        (setq a (cdr a)))
+       (t
+        (setq b (cdr b)))))
+    result))
+
+(defun liny-intersection-r (a b &optional result)
+  "liny-intersection-r is writen by ran9er"
+  (if (and a b)
+      (cond
+       ((equal (car a)(car b))
+        (liny-intersection-r (cdr a) (cdr b) (cons (car a) result)))
+       ((string-lessp (car a)(car b))
+        (liny-intersection-r (cdr a) b result))
+       (t
+        (liny-intersection-r a (cdr b) result)))
+    result))
+
+(defun liny-hash-push (key file hash)
+  (let ((v (gethash key hash)))
+    (if (null (member file v))
+        (puthash key (sort (append (list file) v) 'string-lessp) hash))))
+
+
+(defun liny-gen-index-k ()
+  (let ((gs
+         (lambda(x)
+           (sort
+            (remove "" (if x (split-string x "[ \t\n]")))
+            'string-lessp)))
+        (alias (make-hash-table :test 'equal))
+        (modes (make-hash-table :test 'equal))
+        (files (make-hash-table :test 'equal)))
+    (mapc
+     (lambda(x)
+       (with-temp-buffer
+         (let (necessary sufficient)
+           (insert-file-contents (expand-file-name x liny-repo))
+           (mapc (lambda(y)(liny-hash-push y x alias))
+                 (funcall gs (liny-search-str "alias")))
+           (mapc (lambda(y)(liny-hash-push y x modes))
+                 (funcall gs (liny-search-str "modes")))
+           (mapc
+            (lambda(x)
+              (if (equal "+" (substring x 0 1))
+                  (setq necessary (cons (substring x 1) necessary))
+                (setq sufficient (cons x sufficient))))
+            (funcall gs (liny-search-str "keywords")))
+           (puthash
+            x
+            (list
+             necessary
+             sufficient)
+            files))))
+     (directory-files liny-repo nil "^[^._].*\\'"))
+    (list files alias modes)))
+
+(defun liny-snippet-exist-p (snippet)
+  (gethash snippet liny-files-index))
+
+(defun liny-update-keyword-index (file strs &optional force)
+  "liny-update-keyword-dir is writen by ran9er"
+  (let* ((lst (liny-read-index (liny-update-index-dir file strs force))))
+    (setq liny-files-index (nth 0 lst)
+          liny-alias-index (nth 1 lst)
+          liny-modes-index (nth 2 lst))))
+
+(liny-update-keyword-index "_keywords_index" '(liny-gen-index-k))
+
+(defun liny-force-update-keyword ()
+  (interactive)
+  (liny-update-keyword-index "_keywords_index" '(liny-gen-index-k) t))
+
+;; (insert (concat "\n" (pp-to-string (liny-gen-index-k))))
+
+;; * match
 (defvar liny-env-test
   '(("head" (progn (funcall liny-fetch-alias-func)
                    (skip-chars-backward " \t\n")(bobp)))
@@ -32,18 +118,15 @@
 
 (defun liny-fetch-env-mode ()
   "liny-fetch-env-mode is writen by ran9er"
-  major-mode)
+  (symbol-name major-mode))
 
-(defun liny-keywords-match (&optional modes necessary sufficient)
+(defun liny-keywords-match (&optional necessary sufficient)
   "liny-keywords-match is writen by ran9er"
   (let* ((env (liny-fetch-env))
          (result 0)
          envl)
     (and
      (catch 'test
-       (or (member "all" modes)
-           (member (symbol-name (liny-fetch-env-mode)) modes)
-           (throw 'test nil))
        (setq envl (mapcar (lambda(x)(car x)) env))
        (while (and
                necessary
@@ -57,66 +140,14 @@
         env))
      result)))
 
-;; * index
-(defun liny-alias-push (alias file hash)
-  (let ((v (gethash alias hash)))
-    (if (null (member file v))
-        (puthash alias (sort (append (list file) v) 'string-lessp) hash))))
-
-
-(defun liny-gen-index-k ()
-  (let ((gs
-         (lambda(x)
-           (sort
-            (remove "" (if x (split-string x "[ \t\n]")))
-            'string-lessp)))
-        (alias (make-hash-table :test 'equal))
-        (files (make-hash-table :test 'equal)))
-    (mapc
-     (lambda(x)
-       (with-temp-buffer
-         (let (necessary sufficient)
-           (insert-file-contents (expand-file-name x liny-repo))
-           (mapc (lambda(y)(liny-alias-push y x alias))
-                 (funcall gs (liny-search-str "alias")))
-           (mapc
-            (lambda(x)
-              (if (equal "+" (substring x 0 1))
-                  (setq necessary (cons (substring x 1) necessary))
-                (setq sufficient (cons x sufficient))))
-            (funcall gs (liny-search-str "keywords")))
-           (puthash
-            x
-            (list
-             (funcall gs (liny-search-str "modes"))
-             necessary
-             sufficient)
-            files))))
-     (directory-files liny-repo nil "^[^._].*\\'"))
-    (cons alias files)))
-
-(defun liny-snippet-exist-p (snippet)
-  (gethash snippet liny-files-index))
-
-(defun liny-update-keyword-index (file strs &optional force)
-  "liny-update-keyword-dir is writen by ran9er"
-  (let* ((lst (liny-read-index (liny-update-index-dir file strs force))))
-    (setq liny-alias-index (car lst)
-          liny-files-index (cdr lst))))
-
-(liny-update-keyword-index "_keywords_index" '(liny-gen-index-k))
-
-(defun liny-force-update-keyword ()
-  (interactive)
-  (liny-update-keyword-index "_keywords_index" '(liny-gen-index-k) t))
-
-;; (insert (concat "\n" (pp-to-string (liny-gen-index-k))))
-
-
 ;; *
 (defun liny-smart-match ()
   (let* ((alias (liny-fetch-alias))
-         (files (gethash alias liny-alias-index)))
+         (mode (liny-fetch-env-mode))
+         (files (liny-intersection
+                 (gethash alias liny-alias-index)
+                 (append (gethash mode liny-modes-index)
+                         (gethash "all" liny-modes-index)))))
     (cdar
      (sort
       (mapcar
