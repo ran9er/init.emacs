@@ -10,8 +10,7 @@ all
 -*- encoding: utf-8-unix; -*-
 File-name   : <${$(insert (if (buffer-file-name)(file-name-nondirectory (buffer-file-name))(buffer-name)))}>
 Create      : <${$(insert (format-time-string "%Y-%m-%d %H/%M/%S" (current-time)))} ${$(insert user-full-name)}>
-Time-stamp  : < >
-${0$(let* ((ob (overlay-get ovl 'origin))
-           (e (overlay-end ovl))
-           (b (overlay-start ob)))
+Time-stamp  : <>
+${0$(let ((b (overlay-start (overlay-get ovl 'origin)))
+          (e (overlay-end ovl)))
       (comment-region b e))}
