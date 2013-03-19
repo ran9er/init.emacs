@@ -1,4 +1,4 @@
-     (setq default-mode-line-format
+(setq default-mode-line-format
       (quote
        (#("-" 0 1
           (help-echo
