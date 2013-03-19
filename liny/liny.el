@@ -80,8 +80,8 @@
      args)))
 
 (defvar liny-syntax-meta
-  '(head "\\$" open "{" close "}" id "[[:digit:]]+"
-         path-separator "#" file-separator "<------"))
+  '(head "\\$" open "{" close "}" id "[[:digit:]]+"  escape "[^\\\\]"
+    path-separator "#" file-separator "<------"))
 
 (defvar liny-custom-meta nil)
 
@@ -109,7 +109,8 @@
     (open "%s" open)
     (close "%s" close)
     (id "%s" id)
-    (file-separator "%s" file-separator)))
+    (file-separator "%s" file-separator)
+    (escape "%s" escape)))
 
 (defun liny-token-regexp (tag)
   (apply 'liny-gen-regexp (cdr (assoc tag liny-token-tags))))
@@ -122,7 +123,7 @@
    'identity
    (mapcar
     (lambda(x)
-      (format "%s" (car x)))
+      (format "%s%s" (liny-token-regexp 'escape)(car x)))
     (liny-token-delimiter))
    "\\|"))
 
@@ -762,6 +763,7 @@
 (defun liny-split-str (str delimiter elt)
   (let (result)
     (with-temp-buffer
+      (insert " ")                      ;for escape
       (insert str)
       (goto-char (point-min))
       (while (let ((v (liny-find-str delimiter elt)))

@@ -14,7 +14,7 @@
 
 (defun liny-ext-overlay (ov after-p beg end &optional length)
   (if after-p
-      (if (eq last-input-char (overlay-get ov 'dynamic-trigger))
+      (if (eq last-input-event (overlay-get ov 'dynamic-trigger))
           (let* ((ov (liny-get-primary ov))
                  (b (overlay-start ov))
                  (e (overlay-end ov))
