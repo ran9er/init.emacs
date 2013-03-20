@@ -23,6 +23,10 @@
         (setq b (cdr b)))))
     result))
 
+(defun liny-union-set (a b)
+  "liny-union-set is writen by ran9er"
+  (delete-dups (sort (append a b) 'string-lessp)))
+
 (defun liny-intersection-r (a b &optional result)
   "liny-intersection-r is writen by ran9er"
   (if (and a b)
@@ -146,7 +150,7 @@
          (mode (liny-fetch-env-mode))
          (files (liny-intersection
                  (gethash alias liny-alias-index)
-                 (append (gethash mode liny-modes-index)
+                 (liny-union-set (gethash mode liny-modes-index)
                          (gethash "all" liny-modes-index)))))
     (cdar
      (sort

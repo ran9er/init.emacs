@@ -1,5 +1,9 @@
 (loaddefs-eval
- '(("logic.el"
+ '(("search.el"
+    (20808 64911 791000 0)
+    (autoload 'search-str "search" "Not documented.\n\n(fn regexp str &rest sub)" nil nil)
+    (autoload 'split-str "search" "Not documented.\n\n(fn sep str)" nil nil))
+   ("logic.el"
     (20771 27383 105000)
     (autoload 'xor "logic" "like find-if\n\n(fn fn &rest lst)" nil t)
     (autoload 'xand "logic" "Not documented.\n\n(fn fn &rest lst)" nil t))
@@ -9,10 +13,6 @@
     (autoload 'mask-check "mask" "Not documented.\n\n(fn idx n)" nil nil)
     (autoload 'mask-gen-lst "mask" "Not documented.\n\n(fn n)" nil nil)
     (autoload 'mask-count-t "mask" "Not documented.\n\n(fn n)" nil nil))
-   ("search.el"
-    (20771 27383 73000)
-    (autoload 'search-str "search" "Not documented.\n\n(fn regexp str &rest sub)" nil nil)
-    (autoload 'split-str "search" "Not documented.\n\n(fn sep str)" nil nil))
    ("skeleton-pair.el"
     (20770 17307 343000)
     (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn)" t nil))

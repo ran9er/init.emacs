@@ -1,0 +1,13 @@
+(loaddefs-eval
+ '(("magit.el"
+    (20808 64911 931000 0)
+    (autoload 'magit-status "magit" nil t))
+   ("skeleton-pair.el"
+    (20770 17308 740000)
+    (autoload 'skeleton-pair-insert-maybe "skeleton-pair" "" t))
+   ("evil-mode.el"
+    (20767 46616 105000)
+    (autoload 'evil-mode "evil-mode" nil t))
+   ("linum-mode.el"
+    (20767 46616 74000)
+    (autoload 'linum-mode "linum-mode" "" t))))
