@@ -165,8 +165,12 @@
      (end . nil)
      (snippet-ready . nil)
      (snippet-exit . nil)
+     (snippet-final . nil)
      (face . liny-tail-face) ;; debug
      (keymap . ,liny-keymap))
+    final
+    ((role . final)
+     (origin . nil))
     end
     ((role . end)
      (id . nil)
@@ -968,6 +972,9 @@
               last (nth 4 lst)
               end (nth 5 lst))))))
      snippet)
+    (let ((final (liny-overlay-appoint 'final)))
+      (overlay-put origin 'snippet-final final)
+      (liny-overlay-push-to origin 'member final))
     (while (progn
              (overlay-put (or prev liny-null-ov) 'ready t)
              (setq prev (overlay-get (or prev liny-null-ov) 'previous))))
