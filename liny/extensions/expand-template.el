@@ -32,10 +32,10 @@
         (goto-char (overlay-end (car (liny-expand-templ ovl)))))
     (liny-goto-field 'nn t)))
 
-(defun liny-expand-templ (ov)
+(defun liny-expand-templ (ov &optional origin)
   "liny-expand-template is writen by ran9er"
   (let* ((str (overlay-get ov 'template)) ;ov => relay
-         (templ (liny-insert (liny-gen-token str) t t nil ov)) ;templ => expand
+         (templ (liny-insert (liny-gen-token str) t t origin ov)) ;templ => expand
          (ori (overlay-get ov 'origin))
          (last (cdr templ))) ;last => expand relay
     (overlay-put last 'template str)

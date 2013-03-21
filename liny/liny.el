@@ -4,26 +4,47 @@
 ;; (add-to-list 'debug-ignored-errors "^End of file during parsing$")
 
 ;; ** face
+(defun adjust-color (color percentage)
+  (let ((p (* 65535 (/ percentage 100.0))))
+    (apply
+     (lambda(r g b)
+       (format "#%02x%02x%02x" r g b))
+     (mapcar
+      (lambda(x)
+        (let ((v (+ x p)))
+          (/ (cond
+              ((> v 65535) 65535)
+              ((< v 0) 0)
+              (t v))
+             257.0)))
+      (color-values color)))))
+
 (defgroup liny nil
   "LINY Is Not Yasnippet."
   :group 'abbrev
   :group 'convenience)
 
-(defface liny-editable-face
-  '((((background dark)) (:background "dim gray"))
-    (((background light)) (:background "dim gray")))
-  "*Face used for editable text in LINY."
-  :group 'liny)
+(defvar liny-base-color '("steel blue" "light cyan" "dim gray"))
 
 (defface liny-active-face
-  '((((background dark)) (:background "steel blue"))
-    (((background light)) (:background "light cyan")))
+  `((((background dark)) (:underline ,(nth 0 liny-base-color)))
+    (((background light)) (:underline ,(nth 1 liny-base-color))))
   "*Face used for active text in LINY."
   :group 'liny)
 
+(defface liny-editable-face
+  `((((background dark))
+     (:underline ,(adjust-color (nth 0 liny-base-color) -20)))
+    (((background light))
+     (:underline ,(adjust-color (nth 1 liny-base-color) -20))))
+  "*Face used for editable text in LINY."
+  :group 'liny)
+
 (defface liny-auto-face
-  '((((background dark)) (:underline "steel blue"))
-    (((background light)) (:underline "light cyan")))
+  `((((background dark))
+     (:underline ,(nth 2 liny-base-color)))
+    (((background light))
+     (:underline ,(nth 2 liny-base-color))))
   "*Face used for automatically updating text in LINY."
   :group 'liny)
 
@@ -33,8 +54,10 @@
   :group 'liny)
 
 (defface liny-tail-face
-  '((((background dark)) (:underline "dim gray"))
-    (((background light)) (:underline "dim gray")))
+  `((((background dark))
+     (:underline ,(adjust-color (nth 2 liny-base-color) -20)))
+    (((background light))
+     (:underline ,(adjust-color (nth 2 liny-base-color) -20))))
   "*Face used for tail field in LINY."
   :group 'liny)
 
