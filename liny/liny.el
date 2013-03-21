@@ -345,11 +345,11 @@
     (liny-overlay-release origin)))
 
 ;;;
-(defun liny-get-overlay-pt (o &rest pt)
-  "liny-get-overlay-pt is writen by ran9er"
-  (if (> (length pt) 1)
-      (apply 'liny-get-overlay-pt o (cdr pt))
-    (overlay-get o (car pt))))
+(defun liny-ovl-get (o &rest l)
+  "liny-get-ol is writen by ran9er"
+  (if (> (length l) 1)
+      (apply 'liny-ovl-get (overlay-get o (car l))(cdr l))
+    (overlay-get o (car l))))
 
 (defun liny-get-prev-id (ov id origin)
   (if (overlayp ov)
@@ -466,7 +466,7 @@
 
 ;; ** hooks
 (defun liny-update-mirror (overlay after-p beg end &optional length)
-  (if after-p
+  (if (and after-p (overlay-buffer overlay))
       (let* ((inhibit-modification-hooks t)
              (overlay (liny-get-primary overlay))
              (text (buffer-substring-no-properties
@@ -480,7 +480,7 @@
 
 (defun liny-delete-prompt (overlay after-p beg end &optional length)
   (let ((ov (liny-get-primary overlay)))
-    (if (overlay-get ov 'ready)
+    (if (and (overlayp ov) (overlay-get ov 'ready))
         (if after-p
             (if (null (overlay-get ov 'prompt))
                 nil
@@ -489,8 +489,8 @@
 
 (defun liny-move-primary (overlay after-p beg end &optional length)
   (let ((own (overlay-get overlay 'primary))
-        (pos (1- (overlay-end overlay))))
-    (if after-p
+        (pos (and (overlay-buffer overlay)(1- (overlay-end overlay)))))
+    (if (and after-p own pos)
         (liny-move-overlay overlay (overlay-start own) pos))))
 
 ;; (defun liny-display-tail (overlay after-p beg end &optional length)
@@ -907,16 +907,17 @@
     (list o origin prev first last end)))
 
 (defun liny-insert (snippet-name &optional snippet-p relay
-                                 prev first last end)
+                                 origin prev first last end)
   (let* ((snippet (if snippet-p snippet-name
                     (liny-get-snippet snippet-name))))
-         ;; (top (eq (current-indentation) 0))
-    (let ((lst (liny-insert-field 'origin (list snippet-name) "" (point))))
-      (setq   origin (nth 1 lst)
-              prev   (nth 2 lst)
-              first  (nth 3 lst)
-              last   (nth 4 lst)
-              end    (nth 5 lst)))
+    (if origin nil
+      (let ((lst (liny-insert-field
+                  'origin (list snippet-name) "" (point))))
+        (setq   origin (nth 1 lst)
+                prev   (nth 2 lst)
+                first  (nth 3 lst)
+                last   (nth 4 lst)
+                end    (nth 5 lst))))
     (mapc
      (lambda (x)
        (if (stringp x)
@@ -936,8 +937,8 @@
             (id (setq role 'primary))
             (t (setq role 'void)))
            (let ((lst (liny-insert-field
-                        role ids args p
-                        origin prev first last end)))
+                       role ids args p
+                       origin prev first last end)))
              (setq ;; o (car lst)
               prev (nth 2 lst)
               first (nth 3 lst)
