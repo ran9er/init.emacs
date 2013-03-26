@@ -35,19 +35,4 @@
                   (length (member (rassq o lst)
                                   lst)))))
          (oo (if (< idx 0) nil (cdr (nth idx lst)))))
-    (if oo
-        (cond
-         ((eq (overlay-get oo 'role) 'end)
-          (if (y-or-n-p "finish this snippet?")
-              (progn
-                (goto-char (overlay-end oo))
-                (liny-run-hook (overlay-get ori 'snippet-exit) oo)
-                (liny-clear-instance o))))
-         ((eq (overlay-get oo 'role) 'relay)
-          (liny-run-hook (overlay-get oo 'jump-relay-hooks) oo))
-         (t
-          (overlay-put o 'offset (- (overlay-end o)(point)))
-          (overlay-put o 'face 'liny-editable-face)
-          (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-          (overlay-put oo 'face 'liny-active-face)))
-      (message "End of world."))))
+    (liny-goto-field-really oo)))

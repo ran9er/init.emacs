@@ -201,6 +201,7 @@
     relay
     ((role . relay)
      (id . nil)
+     (offset . 0)
      (previous . nil)
      (next . nil)
      (insert-in-front-hooks liny-this-overlay)
@@ -565,28 +566,33 @@
 
 (defvar liny-goto-field-func 'liny-goto-field)
 
+
+(defun liny-goto-field-really (ov &optional na)
+  "liny-goto-field-1 is writen by ran9er"
+  (if ov
+      (cond
+       ((eq (overlay-get ov 'role) 'end)
+        (if (or na (y-or-n-p "finish this snippet?"))
+            (progn
+              (goto-char (overlay-end ov))
+              (liny-run-hook (overlay-get
+                              (overlay-get ov 'origin)
+                              'snippet-exit) ov)
+              (liny-clear-instance o))))
+       (t
+        (overlay-put o 'offset (- (overlay-end o)(point)))
+        (overlay-put o 'face 'liny-editable-face)
+        (if (or na (null (eq (overlay-get ov 'role) 'relay)))
+            (goto-char (- (overlay-end ov)(overlay-get ov 'offset)))
+          (liny-run-hook (overlay-get ov 'jump-relay-hooks) ov))
+        (overlay-put ov 'face 'liny-active-face)))
+    (message "End of world.")))
+
 (defun liny-goto-field (p-or-n &optional na)
   (interactive)
   (let* ((o (liny-get-primary (liny-get-overlay)))
-         (oo (cond
-              ((eq p-or-n 'nn)
-               (overlay-get (overlay-get o 'next) 'next))
-              (t (overlay-get o p-or-n)))))
-    (if oo
-        (cond
-         ((eq (overlay-get oo 'role) 'end)
-          (if (or na (y-or-n-p "finish this snippet?"))
-              (progn
-                (goto-char (overlay-end oo))
-                (liny-clear-instance o))))
-         ((eq (overlay-get oo 'role) 'relay)
-          (liny-run-hook (overlay-get oo 'jump-relay-hooks) oo))
-         (t
-          (overlay-put o 'offset (- (overlay-end o)(point)))
-          (overlay-put o 'face 'liny-editable-face)
-          (goto-char (- (overlay-end oo)(overlay-get oo 'offset)))
-          (overlay-put oo 'face 'liny-active-face)))
-      (message "End of world."))))
+         (oo (overlay-get o p-or-n)))
+    (liny-goto-field-really oo na)))
 
 (defun liny-previous-field ()
   (interactive)
