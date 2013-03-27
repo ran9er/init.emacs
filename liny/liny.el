@@ -1004,13 +1004,16 @@
   (let* ((result (liny-insert-snippet snippet-name snippet-p relay
                                       origin prev first last end))
          (beg (overlay-start (nth 3 result)))
-         (end (overlay-end (nth 4 result))))
-    (if (null (boundp 'liny-expand-marker-beg))
-        (setq liny-expand-marker-beg (make-marker)))
-    (move-marker liny-expand-marker-beg beg)
-    (if (null (boundp 'liny-expand-marker-end))
-        (setq liny-expand-marker-end (make-marker)))
-    (move-marker liny-expand-marker-end end)
+         (end (overlay-end (nth 4 result)))
+         (setmkr (lambda(mk pt)
+                   (let ((mkr mk))
+                     (if (null (boundp mkr))
+                         (progn
+                           (make-local-variable mkr)
+                           (set mkr (make-marker))))
+                     (move-marker (eval mkr) pt)))))
+    (funcall setmkr 'liny-expand-marker-beg beg)
+    (funcall setmkr 'liny-expand-marker-end end)
     result))
 
 ;; * interface
@@ -1027,6 +1030,8 @@
        (funcall liny-fetch-alias-func)
        (point)))))
 
+(defvar liny-match-strategy 'liny-match)
+
 (defun liny-match ()
   (mapconcat 'identity
              (list
@@ -1036,7 +1041,18 @@
               liny-syntax-meta
               'path-separator)))
 
-(defvar liny-match-strategy 'liny-match)
+(defvar liny-match-snippets nil)
+
+(defun liny-multi-snippets-select ()
+  "liny-multi-snippets-select is writen by ran9er"
+  (interactive)
+  (if (> (length liny-match-snippets) 1)
+      (progn
+        (if (liny-get-overlay)(liny-clear-instance))
+        (delete-region liny-expand-marker-beg liny-expand-marker-end)
+        (setq liny-match-snippets
+              (append (cdr liny-match-snippets)(list (car liny-match-snippets))))
+        (liny-insert (cdar liny-match-snippets)))))
 
 ;;;###autoload
 (defun liny-expand ()
@@ -1052,6 +1068,10 @@
   "liny-expand-or-tab is writen by ran9er"
   (interactive)
   (or (liny-expand)
+      (let ((p (point)))
+        (if (and (<= liny-expand-marker-beg p)
+               (<= p liny-expand-marker-end))
+          (liny-multi-snippets-select)))
       (call-interactively liny-expand-maybe-instead-command)))
 
 (setq liny-null-ov (liny-overlay-appoint '_null 1))

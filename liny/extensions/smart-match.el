@@ -145,8 +145,6 @@
         env))
      result)))
 
-(defvar liny-match-files nil)
-
 ;; *
 (defun liny-smart-match ()
   (let* ((alias (liny-fetch-alias))
@@ -166,5 +164,5 @@
                   (lambda(x y)
                     (> (car x)(car y))))))
     (if result
-        (setq liny-match-files result))
+        (setq liny-match-snippets result))
     (cdar result)))
