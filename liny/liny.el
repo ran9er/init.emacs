@@ -1029,7 +1029,13 @@
   (let ((spn (funcall liny-match-strategy)))
     (if (liny-get-snippet spn)
         (progn (kill-word -1)        ;; (liny-clear-region sp)
-               (liny-insert spn)))))
+               (if (boundp 'liny-expand-marker-beg)
+                   (move-marker liny-expand-marker-beg (point))
+                 (setq liny-expand-marker-beg (point-marker)))
+               (prog1 (liny-insert spn)
+                 (if (boundp 'liny-expand-marker-end)
+                     (move-marker liny-expand-marker-end (point))
+                   (setq liny-expand-marker-end (point-marker))))))))
 
 ;;;###autoload
 (defun liny-expand-maybe ()
