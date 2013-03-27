@@ -1041,8 +1041,6 @@
               liny-syntax-meta
               'path-separator)))
 
-(defvar liny-match-snippets nil)
-
 (defun liny-multi-snippets-select ()
   "liny-multi-snippets-select is writen by ran9er"
   (interactive)

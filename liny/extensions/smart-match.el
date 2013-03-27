@@ -163,6 +163,10 @@
                    files)
                   (lambda(x y)
                     (> (car x)(car y))))))
-    (if result
+    (if (and
+         result
+         (or
+          (boundp 'liny-match-snippets)
+          (make-local-variable 'liny-match-snippets)))
         (setq liny-match-snippets result))
     (cdar result)))
