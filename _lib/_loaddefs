@@ -1,5 +1,12 @@
 (loaddefs-eval
- '(("search.el"
+ '(("zenburn-theme.el"
+    (20818 16473 718000 0)
+    (and load-file-name
+         (boundp 'custom-theme-load-path)
+         (add-to-list 'custom-theme-load-path
+                      (file-name-as-directory
+                       (file-name-directory load-file-name)))))
+   ("search.el"
     (20808 64911 791000 0)
     (autoload 'search-str "search" "Not documented.\n\n(fn regexp str &rest sub)" nil nil)
     (autoload 'split-str "search" "Not documented.\n\n(fn sep str)" nil nil))

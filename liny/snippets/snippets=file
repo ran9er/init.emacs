@@ -8,7 +8,7 @@ all
 <------alias
 ${1:alias}
 <------modes
-${2:all}
+${2:emacs-lisp-mode lisp-mode lisp-interaction-mode}
 <------keywords
 $3
 <------environment

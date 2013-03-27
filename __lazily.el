@@ -102,7 +102,8 @@
             (emacs-lisp-mode-hook nil)
             (find-file-hook nil))
         ldfs)
-    (insert (pp-to-string var))
+    (let (print-length print-level selective-display-ellipses)
+      (insert (pp-to-string var)))
     (message (format "Save %s." ldfs))))
 
 (defun loaddefs-docstr (s a)
