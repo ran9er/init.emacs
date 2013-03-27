@@ -942,11 +942,12 @@
      args)
     (list o origin prev first last end)))
 
-(defun liny-insert (snippet-name &optional snippet-p relay
+(defun liny-insert-snippet (snippet-name &optional snippet-p relay
                                  origin prev first last end)
   (let* ((snippet (if snippet-p snippet-name
                     (liny-get-snippet snippet-name)))
-         (first-line (line-number-at-pos)))
+         (first-line (line-number-at-pos))
+         final)
     (if origin nil
       (let ((lst (liny-insert-field
                   'origin (list snippet-name) "" (point))))
@@ -982,9 +983,9 @@
               last (nth 4 lst)
               end (nth 5 lst))))))
      snippet)
-    (let ((final (liny-overlay-appoint 'final)))
-      (overlay-put origin 'snippet-final final)
-      (liny-overlay-push-to origin 'member final))
+    (setq final (liny-overlay-appoint 'final))
+    (overlay-put origin 'snippet-final final)
+    (liny-overlay-push-to origin 'member final)
     (while (progn
              (overlay-put (or prev liny-null-ov) 'ready t)
              (setq prev (overlay-get (or prev liny-null-ov) 'previous))))
@@ -996,7 +997,21 @@
       (overlay-put last 'next end)
       (overlay-put end 'previous last)
       (liny-run-hook (overlay-get origin 'snippet-ready) origin)))
-    (cons first last)))
+    (list first last end origin final)))
+
+(defun liny-insert (snippet-name &optional snippet-p relay
+                                 origin prev first last end)
+  (let* ((result (liny-insert-snippet snippet-name snippet-p relay
+                                      origin prev first last end))
+         (beg (overlay-start (nth 3 result)))
+         (end (overlay-end (nth 4 result))))
+    (if (null (boundp 'liny-expand-marker-beg))
+        (setq liny-expand-marker-beg (make-marker)))
+    (move-marker liny-expand-marker-beg beg)
+    (if (null (boundp 'liny-expand-marker-end))
+        (setq liny-expand-marker-end (make-marker)))
+    (move-marker liny-expand-marker-end end)
+    result))
 
 ;; * interface
 (defvar liny-fetch-alias-func 'backward-sexp)
@@ -1028,14 +1043,9 @@
   (interactive)
   (let ((spn (funcall liny-match-strategy)))
     (if (liny-get-snippet spn)
-        (progn (kill-word -1)        ;; (liny-clear-region sp)
-               (if (boundp 'liny-expand-marker-beg)
-                   (move-marker liny-expand-marker-beg (point))
-                 (setq liny-expand-marker-beg (point-marker)))
-               (prog1 (liny-insert spn)
-                 (if (boundp 'liny-expand-marker-end)
-                     (move-marker liny-expand-marker-end (point))
-                   (setq liny-expand-marker-end (point-marker))))))))
+        (progn
+          (kill-word -1)        ;; (liny-clear-region sp)
+          (liny-insert spn)))))
 
 ;;;###autoload
 (defun liny-expand-maybe ()

@@ -33,7 +33,7 @@
   (let* ((str (overlay-get ov 'template)) ;ov => relay
          (templ (liny-insert (liny-gen-token str) t t origin ov)) ;templ => expand
          (ori (overlay-get ov 'origin))
-         (last (cdr templ)) ;last => expand relay
+         (last (nth 1 templ)) ;last => expand relay
          (ori1 (liny-ovl-get last 'origin)))
     (overlay-put last 'template str)
     (liny-overlay-link ov (car templ) last)
