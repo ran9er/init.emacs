@@ -1,5 +1,5 @@
 <------alias
-let lt
+le lt
 <------modes
 emacs-lisp-mode lisp-mode lisp-interaction-mode
 <------keywords
@@ -8,4 +8,6 @@ notop
 (liny-custom-syntax 'head "#" "\\(\\$\\)" 'liny-action-prompt)
 <------snippet
 (let ((#{1$var}))
+  #{1%{$1 some text.
+  $0}}
   #0)

@@ -1,9 +1,9 @@
 <------alias
-cc condcase case
+cc condcase case co
 <------modes
 all
 <------keywords
-
+notop
 <------environment
 
 <------snippet

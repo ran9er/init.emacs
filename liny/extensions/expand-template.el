@@ -9,7 +9,9 @@
                     'relay nil nil nil ori)))
          (void (liny-overlay-link ovl rly))
          (void (overlay-put rly 'template str))
-         (templ (liny-expand-templ rly)))
+         (templ (liny-expand-templ
+                 rly
+                 (if (eq (liny-ovl-get ovl 'role) 'mirror) ori))))
     (liny-overlay-push-to
      ori 'snippet-ready
      `(lambda(o) ;o => ori

@@ -92,7 +92,8 @@
 
 (defun liny-force-update-keyword ()
   (interactive)
-  (liny-update-keyword-index "_keywords_index" '(liny-gen-index-k) t))
+  (liny-update-keyword-index "_keywords_index" '(liny-gen-index-k) t)
+  (liny-clear-cache))
 
 ;; (insert (concat "\n" (pp-to-string (liny-gen-index-k))))
 
@@ -144,6 +145,8 @@
         env))
      result)))
 
+(defvar liny-match-files nil)
+
 ;; *
 (defun liny-smart-match ()
   (let* ((alias (liny-fetch-alias))
@@ -151,14 +154,17 @@
          (files (liny-intersection
                  (gethash alias liny-alias-index)
                  (liny-union-set (gethash mode liny-modes-index)
-                         (gethash "all" liny-modes-index)))))
-    (cdar
-     (sort
-      (mapcar
-       (lambda(x)
-         (let* ((lst (gethash x liny-files-index))
-                (match (apply 'liny-keywords-match lst)))
-           (if match (cons match x))))
-       files)
-      (lambda(x y)
-        (> (car x)(car y)))))))
+                                 (gethash "all" liny-modes-index))))
+         (result (sort
+                  (mapcar
+                   (lambda(x)
+                     (let* ((lst (gethash x liny-files-index))
+                            (match (apply 'liny-keywords-match lst)))
+                       (if match (cons match x)
+                         (cons -1 x))))
+                   files)
+                  (lambda(x y)
+                    (> (car x)(car y))))))
+    (if result
+        (setq liny-match-files result))
+    (cdar result)))

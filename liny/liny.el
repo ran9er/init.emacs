@@ -242,8 +242,8 @@
   "liny-run-hook is writen by ran9er"
   (if (symbolp hook)
       (if (boundp hook)
-          (mapc (lambda(x)(apply x args)) (eval hook)))
-    (mapc (lambda(x)(apply x args)) hook)))
+          (and (mapc (lambda(x)(apply x args)) (eval hook)) t))
+    (and (mapc (lambda(x)(apply x args)) hook) t)))
 
 (defun liny-to-alist (lst)
   (if lst
@@ -586,7 +586,9 @@
             (goto-char (- (overlay-end ov)(overlay-get ov 'offset)))
           (liny-run-hook (overlay-get ov 'jump-relay-hooks) ov))
         (overlay-put ov 'face 'liny-active-face)))
-    (message "End of world.")))
+    (or
+     (liny-run-hook 'liny-goto-field-nil-hook)
+     (message "End of world."))))
 
 (defun liny-goto-field (p-or-n &optional na)
   (interactive)
@@ -873,7 +875,7 @@
         (liny-gen-token str regexp)))))
 
 ;; * insert
-(defun liny-insert-str (str)
+(defun liny-insert-str (str &optional indent)
   (let* ((ov (liny-get-primary
               (or (liny-get-overlay)
                   liny-null-ov)))
@@ -888,7 +890,8 @@
             (if (> l 0)
                 (forward-line))
             (insert (car str))
-            (indent-according-to-mode)
+            (if indent
+                (indent-according-to-mode))
             (setq str (cdr str)
                   l (1+ l))))
       (insert str))
@@ -942,7 +945,8 @@
 (defun liny-insert (snippet-name &optional snippet-p relay
                                  origin prev first last end)
   (let* ((snippet (if snippet-p snippet-name
-                    (liny-get-snippet snippet-name))))
+                    (liny-get-snippet snippet-name)))
+         (first-line (line-number-at-pos)))
     (if origin nil
       (let ((lst (liny-insert-field
                   'origin (list snippet-name) "" (point))))
@@ -954,7 +958,7 @@
     (mapc
      (lambda (x)
        (if (stringp x)
-           (liny-insert-str x)
+           (liny-insert-str x (if (eq (line-number-at-pos) first) nil t))
          (let* ((id (car x))
                 (args (cdr x))
                 (p (point))

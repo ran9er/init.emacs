@@ -7,7 +7,8 @@
                 "emacs-lisp-mode#cond"
                 (nil nil)
                 "emacs-lisp-mode#condition-case"
-                (nil nil)
+                (nil
+                 ("notop"))
                 "emacs-lisp-mode#defun"
                 (("top")
                  nil)
@@ -25,6 +26,8 @@
                 "head"
                 (("head")
                  ("top"))
+                "let"
+                (nil nil)
                 "remove-overlays"
                 (nil nil)
                 "save-excursion"
@@ -47,7 +50,7 @@
                   "cn"
                   ("emacs-lisp-mode#cond")
                   "co"
-                  ("emacs-lisp-mode#cond")
+                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#condition-case")
                   "cond"
                   ("emacs-lisp-mode#cond")
                   "case"
@@ -62,12 +65,12 @@
                   ("emacs-lisp-mode#defun")
                   "f"
                   ("emacs-lisp-mode#defun")
-                  "let"
+                  "le"
                   ("emacs-lisp-mode#let")
                   "lt"
-                  ("emacs-lisp-mode#let")
+                  ("emacs-lisp-mode#let" "let")
                   "ol"
-                  ("emacs-lisp-mode#ol")
+                  ("emacs-lisp-mode#ol" "remove-overlays")
                   "test"
                   ("emacs-lisp-mode#test")
                   "uc"
@@ -76,6 +79,8 @@
                   ("emacs-lisp-mode#upcase")
                   "h"
                   ("head")
+                  "let"
+                  ("let")
                   "ro"
                   ("remove-overlays")
                   "se"
@@ -86,10 +91,10 @@
                   ("t")))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                  ("emacs-lisp-mode"
-                  ("eltempl" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test")
+                  ("eltempl" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "let")
                   "all"
                   ("emacs-lisp-mode#autoload" "emacs-lisp-mode#condition-case" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "emacs-lisp-mode#upcase" "head" "remove-overlays" "save-excursion" "snippets=file" "t")
                   "lisp-interaction-mode"
-                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test")
+                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "let")
                   "lisp-mode"
-                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test"))))
+                  ("emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "let"))))
