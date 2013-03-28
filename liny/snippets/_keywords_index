@@ -30,6 +30,9 @@
                  ("top"))
                 "let"
                 (nil nil)
+                "org-mode#head"
+                (("head")
+                 ("top"))
                 "remove-overlays"
                 (nil nil)
                 "save-excursion"
@@ -84,7 +87,7 @@
                   "upcase"
                   ("emacs-lisp-mode#upcase")
                   "h"
-                  ("head")
+                  ("head" "org-mode#head")
                   "let"
                   ("let")
                   "ro"
@@ -103,4 +106,6 @@
                   "lisp-interaction-mode"
                   ("emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "let")
                   "lisp-mode"
-                  ("emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "let"))))
+                  ("emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "let")
+                  "org-mode"
+                  ("org-mode#head"))))

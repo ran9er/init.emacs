@@ -23,9 +23,12 @@
         (setq b (cdr b)))))
     result))
 
-(defun liny-union-set (a b)
+(defun liny-union-set (a b &optional sort-p)
   "liny-union-set is writen by ran9er"
-  (delete-dups (sort (append a b) 'string-lessp)))
+  (let ((lst (delete-dups (append a b))))
+    (if sort-p
+        (sort lst 'string-lessp)
+      lst)))
 
 (defun liny-intersection-r (a b &optional result)
   "liny-intersection-r is writen by ran9er"
@@ -147,12 +150,11 @@
 
 ;; *
 (defun liny-smart-match ()
-  (let* ((alias (liny-fetch-alias))
-         (mode (liny-fetch-env-mode))
-         (files (liny-intersection
-                 (gethash alias liny-alias-index)
-                 (liny-union-set (gethash mode liny-modes-index)
-                                 (gethash "all" liny-modes-index))))
+  (let* ((alias (gethash (liny-fetch-alias) liny-alias-index))
+         (modes (gethash (liny-fetch-env-mode) liny-modes-index))
+         (files (liny-union-set
+                 (liny-intersection alias modes)
+                 (liny-intersection alias (gethash "all" liny-modes-index))))
          (result (sort
                   (mapcar
                    (lambda(x)
