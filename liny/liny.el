@@ -792,7 +792,8 @@
              (let ((x (liny-if-open-paren)))(if x (list (1+ beg) x)))
              (save-excursion
                (if (re-search-forward delimiter nil t)
-                   (list beg (match-beginning 0))))
+                   ;; 1+ for escape
+                   (list beg (1+ (match-beginning 0)))))
              (list beg (point-max))))))))
 
 (defun liny-split-str (str delimiter elt)
