@@ -1068,9 +1068,10 @@
   (interactive)
   (or (liny-expand)
       (let ((p (point)))
-        (if (and (<= liny-expand-marker-beg p)
-               (<= p liny-expand-marker-end))
-          (liny-multi-snippets-select)))
+        (if (and (boundp 'liny-expand-marker-beg)
+                 (<= liny-expand-marker-beg p)
+                 (<= p liny-expand-marker-end))
+            (liny-multi-snippets-select)))
       (call-interactively liny-expand-maybe-instead-command)))
 
 (setq liny-null-ov (liny-overlay-appoint '_null 1))

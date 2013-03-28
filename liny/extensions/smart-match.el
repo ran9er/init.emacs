@@ -1,12 +1,6 @@
 ;; * match
 (setq liny-match-strategy 'liny-smart-match)
 
-(defvar liny-alias-index
-  (make-hash-table :test 'equal))
-
-(defvar liny-files-index
-  (make-hash-table :test 'equal))
-
 ;; * index
 (defun liny-intersection (a b)
   "liny-intersection is writen by ran9er"
@@ -102,51 +96,45 @@
 
 ;; * match
 (defvar liny-env-test
-  '(("head" (progn (funcall liny-fetch-alias-func)
-                   (skip-chars-backward " \t\n")(bobp)))
-    ("tail" (progn (skip-chars-forward " \t\n")(eobp)))
-    ("notop" (null (zerop (current-indentation))))
-    ("top" (zerop (current-indentation)))))
+  #s(hash-table size 40 test equal rehash-size 1.5 rehash-threshold 0.8 data
+                ("head" ((progn (funcall liny-fetch-alias-func)
+                               (skip-chars-backward " \t\n")(bobp)))
+                 "tail" ((progn (skip-chars-forward " \t\n")(eobp)))
+                 "notop" ((null (zerop (current-indentation))))
+                 "top" ((zerop (current-indentation))))))
 
-(defun liny-fetch-env ()
-  "liny-fetch-env "
-  (let ((test
+
+(defun liny-exec-env-test (keyword)
+  (let ((env (if (hash-table-p liny-env-test)
+                 (gethash keyword liny-env-test)
+               (cdr (assoc keyword liny-env-test))))
+        (test
          (lambda(tst)
-           (sort
-            (remove
-             nil
-             (mapcar
-              (lambda(x)
-                (if (save-excursion (save-restriction (eval (nth 1 x))))
-                    (cons (nth 0 x) (or (nth 2 x) 1))))
-              tst))
-            (lambda(x y)
-              (string-lessp (car x)(car y)))))))
-        (funcall test liny-env-test)))
-
-(defun liny-fetch-env-mode ()
-  "liny-fetch-env-mode is writen by ran9er"
-  (symbol-name major-mode))
+           (if (save-excursion (save-restriction (eval (car tst))))
+               (cons keyword (or (nth 1 tst) 1))))))
+    (funcall test env)))
 
 (defun liny-keywords-match (&optional necessary sufficient)
   "liny-keywords-match is writen by ran9er"
-  (let* ((env (liny-fetch-env))
-         (result 0)
-         envl)
+  (let* ((result 0))
     (and
      (catch 'test
-       (setq envl (mapcar (lambda(x)(car x)) env))
        (while (and
                necessary
-               (if (member (car necessary) envl) t
+               (if (liny-exec-env-test (car necessary))
+                   t
                  (throw 'test nil)))
          (setq necessary (cdr necessary)))
        (mapc
         (lambda(x)
-          (if (member (car x) sufficient)
-              (setq result (+ (cdr x) result))))
-        env))
+          (let ((envt (liny-exec-env-test x)))
+            (if envt (setq result (+ (cdr envt) result)))))
+        sufficient))
      result)))
+
+(defun liny-fetch-env-mode ()
+  "liny-fetch-env-mode is writen by ran9er"
+  (symbol-name major-mode))
 
 ;; *
 (defun liny-smart-match ()
@@ -159,7 +147,9 @@
                   (mapcar
                    (lambda(x)
                      (let* ((lst (gethash x liny-files-index))
-                            (match (apply 'liny-keywords-match lst)))
+                            (match (if (or (nth 0 lst)(nth 1 lst))
+                                       (apply 'liny-keywords-match lst)
+                                     0)))
                        (if match (cons match x)
                          (cons -1 x))))
                    files)
@@ -171,4 +161,4 @@
           (boundp 'liny-match-snippets)
           (make-local-variable 'liny-match-snippets)))
         (setq liny-match-snippets result))
-    (cdar result)))
+    (if (and result (>= (caar result) 0)) (cdar result))))

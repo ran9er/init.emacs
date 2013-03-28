@@ -1,0 +1,12 @@
+<------alias
+ht hash
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode
+<------keywords
+
+<------environment
+
+<------snippet
+#s(hash-table size ${1:0} test ${2:equal} 
+              rehash-size 1.5 rehash-threshold 0.8 data
+              ($0))

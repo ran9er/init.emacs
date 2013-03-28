@@ -1,0 +1,17 @@
+<------alias
+h
+<------modes
+org-mode
+<------keywords
++head top
+<------environment
+
+<------snippet
+#+STARTUP: overview
+#+TAGS: { 桌面(d) 服务器(s) }  编辑器(e) 浏览器(f) 多媒体(m) 压缩(z)
+#+TAGS:  { @Windows(w)  @Linux(l) }
+#+TAGS:  { 糟糕(1) 凑合(2) 不错(3) 很好(4) 极品(5) }
+#+SEQ_TODO: TODO(t) WAIT(w) | DONE(d!) CANCELED(c@)
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+$0
