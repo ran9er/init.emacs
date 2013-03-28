@@ -1046,7 +1046,7 @@
   (interactive)
   (if (> (length liny-match-snippets) 1)
       (progn
-        (if (liny-get-overlay)(liny-clear-instance))
+        (remove-overlays liny-expand-marker-beg liny-expand-marker-end)
         (delete-region liny-expand-marker-beg liny-expand-marker-end)
         (setq liny-match-snippets
               (append (cdr liny-match-snippets)(list (car liny-match-snippets))))
