@@ -1,0 +1,13 @@
+<------alias
+let lt
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(let* ((${1:var}))
+  ${1%{$1 some text.
+  $0}}
+  $0)

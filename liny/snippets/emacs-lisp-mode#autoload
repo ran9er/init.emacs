@@ -1,0 +1,11 @@
+<------alias
+al autoload
+<------modes
+all
+<------keywords
++top
+<------environment
+
+<------snippet
+;;;###autoload
+$0

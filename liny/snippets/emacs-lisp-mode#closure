@@ -1,0 +1,19 @@
+<------alias
+cl closure
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(setq
+ ${1:LST}
+ (funcall
+  (eval
+   '(lambda(${2:lex-var%? })
+      (list
+       '${3:cl} (lambda()$0)
+       ))
+   t)
+  ${2}))
