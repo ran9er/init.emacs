@@ -111,13 +111,13 @@
 
    `(menu ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
    `(minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
-   `(modeline
+   `(modeline ;;;;
      ((,class (:foreground ,zenburn-green+1
                            :background ,zenburn-bg-1
                            :box (:line-width -1 :style released-button)))
       (t :inverse-video t)))
-   `(modeline-buffer-id ((t (:foreground ,zenburn-yellow :weight bold))))
-   `(modeline-inactive
+   `(mode-line-buffer-id ((t (:foreground ,zenburn-yellow :weight bold))))
+   `(mode-line-inactive
      ((t (:foreground ,zenburn-green-1
                       :background ,zenburn-bg-05
                       :box (:line-width -1 :style released-button)))))
@@ -553,7 +553,7 @@
    `(show-paren-mismatch ((t (:foreground ,zenburn-red-3 :background ,zenburn-bg :weight bold))))
    `(show-paren-match ((t (:foreground ,zenburn-blue-1 :background ,zenburn-bg :weight bold))))
 
-   ;; sml-modeline
+   ;; sml-mode-line
    '(sml-modeline-end-face ((t :inherit default :width condensed)))
 
    ;; SLIME
@@ -608,9 +608,9 @@
    `(w3m-lnum-minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
 
    ;; whitespace-mode
-   `(whitespace-space ((t (:background ,zenburn-bg+1 :foreground ,zenburn-bg+1))))
-   `(whitespace-hspace ((t (:background ,zenburn-bg+1 :foreground ,zenburn-bg+1))))
-   `(whitespace-tab ((t (:background ,zenburn-red-1))))
+   `(whitespace-space ((t (:background ,zenburn-bg :foreground ,zenburn-bg+1))))
+   `(whitespace-hspace ((t (:background ,zenburn-bg :foreground ,zenburn-bg+1))))
+   `(whitespace-tab ((t (:background ,zenburn-bg :foreground ,zenburn-red-1))))
    `(whitespace-newline ((t (:foreground ,zenburn-bg+1))))
    `(whitespace-trailing ((t (:background ,zenburn-red))))
    `(whitespace-line ((t (:background ,zenburn-bg :foreground ,zenburn-magenta))))

@@ -39,7 +39,7 @@
            (eldoc-mode)
 ;           (lisp-symbol)
            (my-auto-pair)
-           (enable-theme 'eshell)
+           ;; (enable-theme 'eshell)
            (eshell-scroll-conservatively)
            (setq
                  pcomplete-cycle-completions   nil
