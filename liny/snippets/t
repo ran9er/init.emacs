@@ -3,11 +3,9 @@ t
 <------modes
 all
 <------keywords
-head tail top notop +head +tail +top
+head tail top notop
 <------environment
 
 <------snippet
-${1:test$(progn (insert "aaa")
+${1:test$(progn (insert "xxx")
 (overlay-put ovl 'face 'liny-auto-face))}$0
-
-

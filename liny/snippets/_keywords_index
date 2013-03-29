@@ -20,8 +20,7 @@
                 (nil
                  ("notop"))
                 "emacs-lisp-mode#ol"
-                (nil
-                 ("top"))
+                (nil nil)
                 "emacs-lisp-mode#test"
                 (nil
                  ("top"))
@@ -42,7 +41,7 @@
                 "snippets=file"
                 (nil nil)
                 "t"
-                (("top" "tail" "head")
+                (nil
                  ("top" "tail" "notop" "head"))))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                  ("eltempl"
