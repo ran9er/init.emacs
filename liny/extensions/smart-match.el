@@ -117,20 +117,19 @@
 (defun liny-keywords-match (&optional necessary sufficient)
   "liny-keywords-match is writen by ran9er"
   (let* ((result 0))
-    (and
-     (catch 'test
-       (while (and
-               necessary
-               (if (liny-exec-env-test (car necessary))
-                   t
-                 (throw 'test nil)))
-         (setq necessary (cdr necessary)))
-       (mapc
-        (lambda(x)
-          (let ((envt (liny-exec-env-test x)))
-            (if envt (setq result (+ (cdr envt) result)))))
-        sufficient))
-     result)))
+    (catch 'test
+      (while (and
+              necessary
+              (if (liny-exec-env-test (car necessary))
+                  t
+                (throw 'test nil)))
+        (setq necessary (cdr necessary)))
+      (mapc
+       (lambda(x)
+         (let ((envt (liny-exec-env-test x)))
+           (if envt (setq result (+ (cdr envt) result)))))
+       sufficient)
+      result)))
 
 (defun liny-fetch-env-mode ()
   "liny-fetch-env-mode is writen by ran9er"

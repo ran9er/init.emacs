@@ -42,7 +42,8 @@
                 "snippets=file"
                 (nil nil)
                 "t"
-                (nil nil)))
+                (("top" "tail" "head")
+                 ("top" "tail" "notop" "head"))))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                  ("eltempl"
                   ("eltempl")
