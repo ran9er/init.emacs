@@ -875,10 +875,10 @@
                    end (overlay-end ov))
              (liny-move-overlay ov st end t)))
     (if liny-enable-indent
-        (let ((str (split-string str " \t\n" t))(l 0))
+        (let ((str (split-string str "[\n]"))(l 0))
           (while str
             (if (> l 0)
-                (forward-line))
+                (newline))
             (insert (car str))
             (if indent
                 (indent-according-to-mode))
