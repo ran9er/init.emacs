@@ -54,8 +54,5 @@
   `(progn (defvar ,x 0)
           (setq ,x (1+ ,x))))
 
-(let ((key "\C-l"))
-  (setq liny-expand-maybe-instead-command (key-binding key))
-  (autoload 'liny-expand-maybe
+(autoload 'liny-mode
     (expand-file-name "liny/liny.el" *init-dir*) "" t)
-  (global-set-key key 'liny-expand-maybe))

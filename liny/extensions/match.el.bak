@@ -1,0 +1,23 @@
+;; ** match
+(defun liny-match ()
+  (mapconcat 'identity
+             (list
+              (symbol-name major-mode)
+              (liny-fetch-alias))
+             (plist-get
+              liny-syntax-meta
+              'path-separator)))
+
+(liny-update-index "_index"
+                   '(directory-files liny-repo nil "^[^_].*\\'"))
+
+(defun liny-update-index (file strs &optional force)
+  (interactive)
+  (setq
+   liny-index
+   (liny-read-index
+    (liny-update-index-dir file strs force))))
+
+(defun liny-snippet-exist-p (snippet)
+  (member snippet liny-index))
+

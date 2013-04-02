@@ -186,6 +186,7 @@
      (origin . nil)
      (ready . nil)
      (offset . 0)
+     (priority . 100)
      (tail . nil)
      (prompt . nil)
      (previous . nil)
@@ -202,6 +203,7 @@
     ((role . relay)
      (id . nil)
      (offset . 0)
+     (priority . 100)
      (previous . nil)
      (next . nil)
      (insert-in-front-hooks liny-this-overlay)
@@ -210,7 +212,7 @@
     tail
     ((role . tail)
      (primary . nil)
-     (priority . 1)
+     (priority . 100)
      ;; (face . liny-tail-face) ;; debug
      (local-map . ,liny-keymap)
      (insert-in-front-hooks liny-this-overlay
@@ -662,19 +664,6 @@
           (message (format "Save %s." liny-index-file))))
     liny-index-file))
 
-(defun liny-update-index (file strs &optional force)
-  (interactive)
-  (setq
-   liny-index
-   (liny-read-index
-    (liny-update-index-dir file strs force))))
-
-(defun liny-snippet-exist-p (snippet)
-  (member snippet liny-index))
-
-(liny-update-index "_index"
-                   '(directory-files liny-repo nil "^[^_].*\\'"))
-
 (defun liny-get-snippet (snippet)
   (or
    (gethash snippet liny-cache)
@@ -1031,16 +1020,7 @@
        (funcall liny-fetch-alias-func)
        (point)))))
 
-(defvar liny-match-strategy 'liny-match)
-
-(defun liny-match ()
-  (mapconcat 'identity
-             (list
-              (symbol-name major-mode)
-              (liny-fetch-alias))
-             (plist-get
-              liny-syntax-meta
-              'path-separator)))
+(defvar liny-match-strategy 'liny-smart-match)
 
 (defun liny-multi-snippets-select ()
   "liny-multi-snippets-select is writen by ran9er"
@@ -1080,4 +1060,17 @@
 (let ((f (directory-files liny-extension t ".*\\.el\\'")))
   (if f (mapc (lambda(x)(load x)) f)))
 
-;; (remove-overlays (point-min)(point-max))
+;; minor-mode
+(setq liny-mode-trigger "C-l"
+      liny-expand-maybe-instead-command
+      (key-binding (kbd liny-mode-trigger)))
+
+;;;###autoload
+(define-minor-mode liny-mode
+  "Buffer-local minor liny-mode."
+  :group 'liny
+  :global t
+  :lighter " linY"
+  :keymap
+  `((,(kbd liny-mode-trigger) . liny-expand-maybe))
+  )
