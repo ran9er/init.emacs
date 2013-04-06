@@ -56,3 +56,6 @@
 
 (autoload 'liny-mode
     (expand-file-name "liny/liny.el" *init-dir*) "" t)
+
+(autoload 'cws-mode
+    (expand-file-name "cws/cws.el" *init-dir*) "" t)
