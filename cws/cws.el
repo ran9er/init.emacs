@@ -69,7 +69,14 @@
         (lambda(x)(modify-syntax-entry (car x)(cadr x)))
         '((?_ "w")(?[ "w")(?] "w")(?（ "(")(?） ")")
           (?， ".")(?。 ".")(?“ "(")(?” ")")(?… ".")))
-       (let* (index cc lz)
+       (let* (index cc lz (n 0)
+              (word? (lambda()(if (null cc)
+                          (setq
+                           cc
+                           (eval lz))
+                        cc)))
+              (max? (lambda(lst)
+                      (mapc (lambda(x)(if (> (length x) n)(setq n (length x)))) lst))))
          (setq lz (quote
                    `[,@(split-string
                         (with-current-buffer
@@ -95,12 +102,10 @@
          (list
           'index (lambda() index)
           'skip (lambda() "…_[]（），。“” \t\n")
-          'words (lambda()(if (null cc)
-                          (setq 
-                           cc 
-                           (eval lz))
-                        cc))
-          )))
+          'words word?
+          'max (lambda() (if (null (zerop n)) n
+                       (funcall max? (funcall (plist-get cws-cl 'words)))
+                       n)))))
     t)
    (file-name-directory
     (or load-file-name (buffer-file-name)))))
