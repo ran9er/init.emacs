@@ -1,6 +1,6 @@
 (loaddefs-eval
  '(("zenburn-theme.el"
-    (20818 16473 718000 0)
+    (20832 47667 130000 0)
     (and load-file-name
          (boundp 'custom-theme-load-path)
          (add-to-list 'custom-theme-load-path

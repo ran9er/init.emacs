@@ -1,5 +1,11 @@
 (loaddefs-eval
- '(("magit.el"
+ '(("cws.el"
+    (20832 47664 490000 0)
+    (autoload 'cws-mode "cws" "" t))
+   ("liny.el"
+    (20832 47664 490000 0)
+    (autoload 'liny-mode "liny" "" t))
+   ("magit.el"
     (20808 64911 931000 0)
     (autoload 'magit-status "magit" nil t))
    ("skeleton-pair.el"

@@ -53,9 +53,3 @@
 (defmacro acc (x)
   `(progn (defvar ,x 0)
           (setq ,x (1+ ,x))))
-
-(autoload 'liny-mode
-    (expand-file-name "liny/liny.el" *init-dir*) "" t)
-
-(autoload 'cws-mode
-    (expand-file-name "cws/cws.el" *init-dir*) "" t)
