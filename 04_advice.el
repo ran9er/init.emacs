@@ -1,9 +1,3 @@
-;; -*- encoding: utf-8-unix; -*-
-;; File-name:    <04_advice.el>
-;; Create:       <2012-01-16 13:44:23 ran9er>
-;; Time-stamp:   <2012-09-18 19:55:44 ran9er>
-;; Mail:         <2999am@gmail.com>
-
 (defadvice isearch-yank-word-or-char (around aiywoc activate)
   ;; default-key: isearch-mode-map C-w
   (interactive)
@@ -30,7 +24,7 @@
                  beg end (- end beg)))
     ad-do-it))
 
-(defadvice delete-horizontal-space (around resize-space (&optional backward-only) activate)
+(defadvice delete-horizontal-space (around resize-space (&optional backward-only))
   "if elop or bolp or space around \"(\" or \")\", delete all space;"
   (interactive "*P")
   (let ((orig-pos (point))

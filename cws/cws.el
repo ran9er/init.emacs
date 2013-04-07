@@ -27,30 +27,43 @@
         (setcdr e (list v))
       (setcdr (last lst)(list (if v (list k v)(list k)))))))
 
+(defun cws-insert-tree (str lst &optional reverse)
+  "cws-insert-tree is writen by ran9er"
+  (let ((l (length str)))
+    (if (> l 0)
+        (let* ((a (if reverse
+                      (substring str (1- l))
+                    (substring str 0 1)))
+               (d (if reverse
+                      (substring str 0 (1- l))
+                    (substring str 1)))
+               (r (assoc a lst)))
+          (if r
+              (cws-insert-tree d (or (cdr r) r))
+            (cws-set lst a)
+            (cws-insert-tree d (assoc a lst)))))))
+
+(defun cws-del-tree (word lst)
+  "cws-del-tree is writen by ran9er"
+  (let* ((a (substring word 0 1))
+         (d (substring word 1))
+         (r (assoc a lst)))
+    (if (> (length (cdr r)) 1)
+        (cws-del-tree d r)
+      (setcar (member r lst) nil))))
+
 (defun cws-make-tree (lst &optional reverse)
   "cws-make-tree is writen by ran9er"
   (let* ((len (length lst))
          (total (float len))
          (result '(nil))
-         (ins (lambda(s ls)
-                (let ((l (length s)))
-                  (if (> l 0)
-                      (let* ((a (if reverse
-                                    (substring s (1- l))
-                                  (substring s 0 1)))
-                             (d (if reverse
-                                    (substring s 0 (1- l))
-                                  (substring s 1)))
-                             (r (assoc a ls)))
-                        (if r
-                            (funcall ins d (cdr r))
-                          (cws-set ls a)
-                          (funcall ins d (assoc a ls)))))))))
+         )
     (while (> len 0)
       (let ((w (aref lst (1- len))))
-        (funcall ins w result))
+        (cws-insert-tree w result))
       (setq len (1- len))
-      (message (format "%d, %d/100" len (- 100 (* 100 (/ len total))))))
+      (message "completed %d%%, remainder %d"
+               (- 100 (* 100 (/ len total))) len))
     (remove nil result)))
 
 (defun cws-update-index()
@@ -69,7 +82,7 @@
         (lambda(x)(modify-syntax-entry (car x)(cadr x)))
         '((?_ "w")(?[ "w")(?] "w")(?（ "(")(?） ")")
           (?， ".")(?。 ".")(?“ "(")(?” ")")(?… ".")))
-       (let* (index cc lz (n 0)
+       (let* (index cc lz (n 0) new-words
               (word? (lambda()(if (null cc)
                           (setq
                            cc
@@ -103,6 +116,9 @@
           'index (lambda() index)
           'skip (lambda() "…_[]（），。“” \t\n")
           'words word?
+          'get-new (lambda() new-words)
+          'set-new (lambda(x)(setq new-words (cons x new-words)))
+          'clr-new (lambda()(setq new-words nil))
           'max (lambda() (if (null (zerop n)) n
                        (funcall max? (funcall (plist-get cws-cl 'words)))
                        n)))))
@@ -118,6 +134,42 @@
       (setq word (substring word 1))
       (setq r (1+ r)))
     r))
+
+(defun cws-new-word ()
+  "cws-new-word is writen by ran9er"
+  (interactive)
+  (if mark-active
+      (let ((w (buffer-substring-no-properties
+                (region-beginning)(region-end))))
+        (cws-insert-tree w (funcall (plist-get cws-cl 'index)))
+        (funcall (plist-get cws-cl 'set-new) w)
+        (deactivate-mark))
+    (message "请选中要添加的词语！")))
+
+(defun cws-del-word ()
+  "cws-del-word is writen by ran9er"
+  (interactive)
+  (if mark-active
+      (let ((w (buffer-substring-no-properties
+                (region-beginning)(region-end))))
+        (cws-del-tree w (funcall (plist-get cws-cl 'index)))
+        (deactivate-mark))
+    (message "请选中要删除的词语！")))
+
+(defun cws-update-words()
+  (interactive)
+  (let ((ws (funcall (plist-get cws-cl 'get-new))))
+    (if ws
+        (if (yes-or-no-p
+             (message "存盘以下词汇：\n    %S\n"ws))
+            (progn
+              (cws-update-index-dir
+               cws-words-index
+               '(funcall (plist-get cws-cl 'index))
+               cws-words-file t)
+              (funcall (plist-get cws-cl 'clr-new))
+              nil))
+      (message "没有需要保存的词汇"))))
 
 (defun cws-search-word-1 (word lst)
   "cws-search-word is writen by ran9er"
