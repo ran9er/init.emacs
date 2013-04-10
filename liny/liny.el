@@ -368,8 +368,9 @@
 
 (defun liny-clear-instance (&optional ov)
   (interactive)
-  (let* ((prim (liny-get-primary
-               (or ov (liny-get-overlay))))
+  (let* ((ov (or ov (liny-get-overlay)))
+         (prim (if (eq (liny-ovl-get ov 'role) 'end) ov
+                 (liny-get-primary ov)))
          (origin (overlay-get prim 'origin)))
     (mapc (lambda(x)(liny-overlay-release x))(overlay-get origin 'member))
     (liny-overlay-release origin)))
@@ -569,7 +570,7 @@
 (defvar liny-goto-field-func 'liny-goto-field)
 
 
-(defun liny-goto-field-really (ov &optional na)
+(defun liny-goto-field-really (ov o &optional na)
   "liny-goto-field-1 is writen by ran9er"
   (if ov
       (cond
@@ -580,7 +581,7 @@
               (liny-run-hook (overlay-get
                               (overlay-get ov 'origin)
                               'snippet-exit) ov)
-              (liny-clear-instance o))))
+              (liny-clear-instance ov))))
        (t
         (overlay-put o 'offset (- (overlay-end o)(point)))
         (overlay-put o 'face 'liny-editable-face)
@@ -594,9 +595,13 @@
 
 (defun liny-goto-field (p-or-n &optional na)
   (interactive)
-  (let* ((o (liny-get-primary (liny-get-overlay)))
-         (oo (overlay-get o p-or-n)))
-    (liny-goto-field-really oo na)))
+  (let* ((o (liny-get-overlay))
+         oo)
+    (if (eq (liny-ovl-get o 'role) 'end)
+        (setq oo o)
+      (setq o (liny-get-primary o)
+            oo (overlay-get o p-or-n)))
+    (liny-goto-field-really oo o na)))
 
 (defun liny-previous-field ()
   (interactive)
