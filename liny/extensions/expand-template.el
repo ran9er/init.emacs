@@ -5,33 +5,43 @@
 
 (defun liny-expand-template (str pos ovl)
   (let* ((ori (overlay-get ovl 'origin)) ;ovl => prim
-         (rly (car (liny-insert-field   ;rly => relay
-                    'relay nil nil nil ori)))
-         (void (liny-overlay-link ovl rly))
+         (role (liny-ovl-get ovl 'role))
+         (new (liny-insert-field   ;rly => relay
+               'relay nil nil nil ori ovl))
+         (rly (car new))
+         ;; (void (liny-overlay-link ovl rly))
          (void (overlay-put rly 'template str))
          (templ (liny-expand-templ
                  rly
-                 (if (eq (liny-ovl-get ovl 'role) 'mirror) ori))))
-    (liny-overlay-push-to
-     ori 'snippet-ready
-     `(lambda(o) ;o => ori
-        (liny-overlay-link ,rly ,first ,last)
-        (liny-overlay-link-remove ,ovl)
-        ))))
+                 (if (eq role 'mirror) ori)))
+         (first (nth 0 templ))
+         (last (nth 1 templ)))
+    (if (eq role 'primary)
+        (liny-overlay-push-to
+         ori 'snippet-ready
+         `(lambda(o) ;o => ori
+            (liny-overlay-link ,ovl ,first ,last)
+            (liny-overlay-link-remove ,ovl)
+            )))))
 
 (defun liny-expand-templ-ovl (ovl)
   "liny-expand-templ-ovl is writen by ran9er"
   (if (y-or-n-p "Continues?")
-      (progn
+      (let (new n1)
         (goto-char (overlay-end (liny-find-role ovl)))
-        (goto-char (overlay-end (car (liny-expand-templ ovl)))))
-    (liny-goto-field 'next t)
-    (liny-goto-field 'next t)))
+        (setq new (liny-expand-templ ovl))
+        (goto-char (overlay-end (nth 0 new)))
+        (setq n1 (overlay-end (nth 1 new)))
+        (move-overlay (liny-ovl-get ovl 'origin 'end)
+                      n1 n1))
+    (let ((o (liny-get-primary (liny-get-overlay))))
+      (goto-char (overlay-end (liny-ovl-get o 'origin 'end)))
+      (liny-clear-instance o))))
 
 (defun liny-expand-templ (ov &optional origin)
   "liny-expand-template is writen by ran9er"
   (let* ((str (overlay-get ov 'template)) ;ov => relay
-         (templ (liny-insert (liny-gen-token str) t t origin ov)) ;templ => expand
+         (templ (liny-insert-snippet (liny-gen-token str) t t origin ov)) ;templ => expand
          (ori (overlay-get ov 'origin))
          (last (nth 1 templ)) ;last => expand relay
          (ori1 (liny-ovl-get last 'origin)))
