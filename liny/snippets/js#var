@@ -1,0 +1,11 @@
+<------alias
+v
+<------modes
+js-mode
+<------keywords
+
+<------environment
+
+<------snippet
+var ${1:l} = ${2:r};
+$0

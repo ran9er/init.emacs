@@ -1,0 +1,22 @@
+<------alias
+rf readf
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(let (var)
+  (with-current-buffer
+      (let ((enable-local-variables nil))
+        (find-file-noselect ${2:file}))
+    (prog2
+        (goto-char (point-min))
+        (setq var
+              (condition-case err
+                  ${1:(read (current-buffer))}
+                  $0
+                (error
+                 nil)))
+      (kill-buffer (current-buffer)))))

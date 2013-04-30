@@ -1,0 +1,14 @@
+<------alias
+for
+<------modes
+js-mode c-mode
+<------keywords
+
+<------environment
+
+<------snippet
+for (${$(if (eq major-mode 'js-mode)(insert-string "var "))}${1:i} = ${2:1}; $1 ${3:i < 10}; $1++)
+{
+    $0
+}
+

@@ -1,0 +1,12 @@
+<------alias
+f
+<------modes
+js-mode
+<------keywords
++nohol
+<------environment
+
+<------snippet
+function (${2:args%?,}){
+    $0
+}
