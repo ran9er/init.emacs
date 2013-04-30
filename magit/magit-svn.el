@@ -3,11 +3,12 @@
 ;; Copyright (C) 2008  Alex Ott
 ;; Copyright (C) 2009  Alexey Voinov
 ;; Copyright (C) 2009  John Wiegley
+;; Copyright (C) 2013  Leonardo Etcheverry
 ;; Copyright (C) 2008  Linh Dang
 ;; Copyright (C) 2008  Marcin Bachry
 ;; Copyright (C) 2008, 2009  Marius Vollmer
 ;; Copyright (C) 2010  Yann Hodique
-;;
+
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
@@ -23,17 +24,26 @@
 
 ;;; Commentary:
 
-;; This plug-in provides git-svn functionality as a separate component of Magit
+;; This plug-in provides git-svn functionality as a separate component
+;; of Magit.
 
 ;;; Code:
 
 (require 'magit)
+
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib)
+  (require 'find-lisp))
+
+(defcustom magit-svn-externals-dir ".git_externals"
+  "Directory from repository root that stores cloned SVN externals."
+  :group 'magit
+  :type 'string)
 
 ;; git svn commands
 
-(defun magit-svn-find-rev (rev &optional branch)
+(magit-define-command svn-find-rev (rev &optional branch)
+  "Find commit for svn REVISION in BRANCH."
   (interactive
    (list (read-string "SVN revision: ")
          (if current-prefix-arg
@@ -50,17 +60,31 @@
            sha))
       (error "Revision %s could not be mapped to a commit" rev))))
 
-(defun magit-svn-create-branch (name)
+(magit-define-command svn-create-branch (name)
+  "Create svn branch NAME."
   (interactive "sBranch name: ")
-  (magit-run-git "svn" "branch" name))
+  (apply 'magit-run-git "svn" "branch" (append magit-custom-options (list name))))
 
-(defun magit-svn-rebase ()
-  (interactive)
-  (magit-run-git-async "svn" "rebase"))
+(magit-define-command svn-create-tag (name)
+  "Create svn tag NAME."
+  (interactive "sTag name: ")
+  (apply 'magit-run-git "svn" "tag" (append magit-custom-options (list name))))
 
-(defun magit-svn-dcommit ()
+(magit-define-command svn-rebase ()
+  "Run git-svn rebase."
   (interactive)
-  (magit-run-git-async "svn" "dcommit"))
+  (apply 'magit-run-git-async "svn" "rebase" magit-custom-options))
+
+(magit-define-command svn-dcommit ()
+  "Run git-svn dcommit."
+  (interactive)
+  (apply 'magit-run-git-async "svn" "dcommit" magit-custom-options))
+
+(magit-define-command svn-remote-update ()
+  "Run git-svn fetch."
+  (interactive)
+  (when (magit-svn-enabled)
+    (magit-run-git-async "svn" "fetch")))
 
 (defun magit-svn-enabled ()
   (not (null (magit-svn-get-ref-info t))))
@@ -173,10 +197,26 @@ If USE-CACHE is non nil, use the cached information."
               " @ "
               (cdr (assoc 'revision svn-info))))))
 
-(defun magit-svn-remote-update ()
+(defun magit-svn-fetch-externals()
+  "Loops through all external repos found by `magit-svn-external-directories'
+   and runs git svn fetch, and git svn rebase on each of them."
   (interactive)
-  (when (magit-svn-enabled)
-    (magit-run-git-async "svn" "fetch")))
+  (let ((externals (magit-svn-external-directories)))
+    (if (not externals)
+        (message "No SVN Externals found. Check magit-svn-externals-dir.")
+      (dolist (external externals)
+        (let ((default-directory (file-name-directory external)))
+          (magit-run-git "svn" "fetch")
+          (magit-run-git "svn" "rebase")))
+      (magit-refresh))))
+
+(defun magit-svn-external-directories()
+  "Returns all .git directories within `magit-svn-externals-dir'."
+  (require 'find-lisp)
+  (find-lisp-find-files-internal (expand-file-name magit-svn-externals-dir)
+                                 '(lambda(file dir)
+                                    (string-equal file ".git"))
+                                 'find-lisp-default-directory-predicate))
 
 (easy-menu-define magit-svn-extension-menu
   nil
@@ -202,6 +242,9 @@ If USE-CACHE is non nil, use the cached information."
   (magit-key-mode-insert-action 'svn "f" "Fetch" 'magit-svn-remote-update)
   (magit-key-mode-insert-action 'svn "s" "Find rev" 'magit-svn-find-rev)
   (magit-key-mode-insert-action 'svn "B" "Create branch" 'magit-svn-create-branch)
+  (magit-key-mode-insert-action 'svn "T" "Create tag" 'magit-svn-create-tag)
+  (magit-key-mode-insert-action 'svn "x" "Fetch Externals" 'magit-svn-fetch-externals)
+  (magit-key-mode-insert-switch 'svn "-n" "Dry run" "--dry-run")
 
   ;; generate and bind the menu popup function
   (magit-key-mode-generate 'svn))

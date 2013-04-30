@@ -4,7 +4,8 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: http://github.com/bbatsov/zenburn-emacs
-;; Version: 1.8
+;; Version: 20130417.901
+;; X-Original-Version: 2.0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -13,11 +14,11 @@
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program. If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;
@@ -83,6 +84,8 @@
                                   :background ,zenburn-bg-1
                                   :box (:line-width -1 :style released-button)))))
    `(highlight ((t (:background ,zenburn-bg-05))))
+   `(success ((t (:foreground ,zenburn-green :weight bold))))
+   `(warning ((t (:foreground ,zenburn-orange :weight bold))))
 
    ;;; compilation
    `(compilation-column-face ((t (:foreground ,zenburn-yellow))))
@@ -96,6 +99,9 @@
    `(compilation-line-number ((t (:foreground ,zenburn-yellow))))
    `(compilation-message-face ((t (:foreground ,zenburn-blue))))
    `(compilation-warning-face ((t (:foreground ,zenburn-orange :weight bold :underline t))))
+   `(compilation-mode-line-exit ((t (:foreground ,zenburn-green+2 :weight bold))))
+   `(compilation-mode-line-fail ((t (:foreground ,zenburn-red :weight bold))))
+   `(compilation-mode-line-run ((t (:foreground ,zenburn-yellow :weight bold))))
 
    ;;; grep
    `(grep-context-face ((t (:foreground ,zenburn-fg))))
@@ -105,13 +111,14 @@
    `(match ((t (:background ,zenburn-bg-1 :foreground ,zenburn-orange :weight bold))))
 
    ;; faces used by isearch
-   `(isearch ((t (:foreground ,zenburn-yellow :background ,zenburn-bg-1))))
+   `(isearch ((t (:foreground ,zenburn-yellow-2 :weight bold :background ,zenburn-bg-1))))
    `(isearch-fail ((t (:foreground ,zenburn-fg :background ,zenburn-red-4))))
-   `(lazy-highlight ((t (:foreground ,zenburn-yellow :background ,zenburn-bg+2))))
+   `(lazy-highlight ((t (:foreground ,zenburn-yellow-2 :weight bold :background ,zenburn-bg-05))))
 
    `(menu ((t (:foreground ,zenburn-fg :background ,zenburn-bg))))
    `(minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
-   `(modeline ;;;;
+;;;;;;   `(mode-line
+   `(modeline
      ((,class (:foreground ,zenburn-green+1
                            :background ,zenburn-bg-1
                            :box (:line-width -1 :style released-button)))
@@ -165,6 +172,10 @@
    `(newsticker-treeview-selection-face ((t (:foreground ,zenburn-yellow))))
 
    ;;; external
+   `(ace-jump-face-background
+     ((t (:foreground ,zenburn-fg-1 :background ,zenburn-bg :inverse-video nil))))
+   `(ace-jump-face-foreground
+     ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg :inverse-video nil))))
 
    ;; full-ack
    `(ack-separator ((t (:foreground ,zenburn-fg))))
@@ -186,22 +197,69 @@
    `(popup-scroll-bar-background-face ((t (:background ,zenburn-bg-1))))
    `(popup-isearch-match ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
 
+   ;; android mode
+   `(android-mode-debug-face ((t (:foreground ,zenburn-green+1))))
+   `(android-mode-error-face ((t (:foreground ,zenburn-orange :weight bold))))
+   `(android-mode-info-face ((t (:foreground ,zenburn-fg))))
+   `(android-mode-verbose-face ((t (:foreground ,zenburn-green))))
+   `(android-mode-warning-face ((t (:foreground ,zenburn-yellow))))
+
+   ;; bm
+   `(bm-face ((t (:background ,zenburn-yellow-1 :foreground ,zenburn-bg))))
+   `(bm-fringe-face ((t (:background ,zenburn-yellow-1 :foreground ,zenburn-bg))))
+   `(bm-fringe-persistent-face ((t (:background ,zenburn-green-1 :foreground ,zenburn-bg))))
+   `(bm-persistent-face ((t (:background ,zenburn-green-1 :foreground ,zenburn-bg))))
+
    ;; clojure-test-mode
    `(clojure-test-failure-face ((t (:foreground ,zenburn-orange :weight bold :underline t))))
    `(clojure-test-error-face ((t (:foreground ,zenburn-red :weight bold :underline t))))
    `(clojure-test-success-face ((t (:foreground ,zenburn-green+1 :weight bold :underline t))))
 
+   ;; ctable
+   `(ctbl:face-cell-select ((t (:background ,zenburn-blue :foreground ,zenburn-bg))))
+   `(ctbl:face-continue-bar ((t (:background ,zenburn-bg-05 :foreground ,zenburn-bg))))
+   `(ctbl:face-row-select ((t (:background ,zenburn-cyan :foreground ,zenburn-bg))))
+
    ;; diff
-   `(diff-added ((,class (:foreground ,zenburn-green+4))
-                 (t (:foreground ,zenburn-green-1))))
+   `(diff-added ((,class (:foreground ,zenburn-green+4 :background nil))
+                 (t (:foreground ,zenburn-green-1 :background nil))))
    `(diff-changed ((t (:foreground ,zenburn-yellow))))
-   `(diff-removed ((,class (:foreground ,zenburn-red))
-                   (t (:foreground ,zenburn-red-3))))
+   `(diff-removed ((,class (:foreground ,zenburn-red :background nil))
+                   (t (:foreground ,zenburn-red-3 :background nil))))
+   `(diff-refine-added ((t :inherit diff-added :weight bold)))
+   `(diff-refine-change ((t :inherit diff-changed :weight bold)))
+   `(diff-refine-removed ((t :inherit diff-removed :weight bold)))
    `(diff-header ((,class (:background ,zenburn-bg+2))
                   (t (:background ,zenburn-fg :foreground ,zenburn-bg))))
    `(diff-file-header
      ((,class (:background ,zenburn-bg+2 :foreground ,zenburn-fg :bold t))
       (t (:background ,zenburn-fg :foreground ,zenburn-bg :bold t))))
+
+   ;; dired+
+   `(diredp-display-msg ((t (:foreground ,zenburn-blue))))
+   `(diredp-compressed-file-suffix ((t (:foreground ,zenburn-orange))))
+   `(diredp-date-time ((t (:foreground ,zenburn-magenta))))
+   `(diredp-deletion ((t (:foreground ,zenburn-yellow))))
+   `(diredp-deletion-file-name ((t (:foreground ,zenburn-red))))
+   `(diredp-dir-heading ((t (:foreground ,zenburn-blue :background ,zenburn-bg-1))))
+   `(diredp-dir-priv ((t (:foreground ,zenburn-cyan))))
+   `(diredp-exec-priv ((t (:foreground ,zenburn-red))))
+   `(diredp-executable-tag ((t (:foreground ,zenburn-green+1))))
+   `(diredp-file-name ((t (:foreground ,zenburn-blue))))
+   `(diredp-file-suffix ((t (:foreground ,zenburn-green))))
+   `(diredp-flag-mark ((t (:foreground ,zenburn-yellow))))
+   `(diredp-flag-mark-line ((t (:foreground ,zenburn-orange))))
+   `(diredp-ignored-file-name ((t (:foreground ,zenburn-red))))
+   `(diredp-link-priv ((t (:foreground ,zenburn-yellow))))
+   `(diredp-mode-line-flagged ((t (:foreground ,zenburn-yellow))))
+   `(diredp-mode-line-marked ((t (:foreground ,zenburn-orange))))
+   `(diredp-no-priv ((t (:foreground ,zenburn-fg))))
+   `(diredp-number ((t (:foreground ,zenburn-green+1))))
+   `(diredp-other-priv ((t (:foreground ,zenburn-yellow-1))))
+   `(diredp-rare-priv ((t (:foreground ,zenburn-red-1))))
+   `(diredp-read-priv ((t (:foreground ,zenburn-green-1))))
+   `(diredp-symlink ((t (:foreground ,zenburn-yellow))))
+   `(diredp-write-priv ((t (:foreground ,zenburn-magenta))))
 
    ;; ert
    `(ert-test-result-expected ((t (:foreground ,zenburn-green+4 :background ,zenburn-bg))))
@@ -254,9 +312,15 @@
    `(erc-underline-face ((t (:underline t))))
 
    ;; git-gutter
-   `(git-gutter:added ((,class (:foreground ,zenburn-green :weight bold :inverse-video t))))
-   `(git-gutter:deleted ((,class (:foreground ,zenburn-red :weight bold :inverse-video t))))
-   `(git-gutter:modified ((,class (:foreground ,zenburn-magenta :weight bold :inverse-video t))))
+   `(git-gutter:added ((t (:foreground ,zenburn-green :weight bold :inverse-video t))))
+   `(git-gutter:deleted ((t (:foreground ,zenburn-red :weight bold :inverse-video t))))
+   `(git-gutter:modified ((t (:foreground ,zenburn-magenta :weight bold :inverse-video t))))
+   `(git-gutter:unchanged ((t (:foreground ,zenburn-fg :weight bold :inverse-video t))))
+
+   ;; git-gutter-fr
+   `(git-gutter-fr:added ((t (:foreground ,zenburn-green  :weight bold))))
+   `(git-gutter-fr:deleted ((t (:foreground ,zenburn-red :weight bold))))
+   `(git-gutter-fr:modified ((t (:foreground ,zenburn-magenta :weight bold))))
 
    ;; gnus
    `(gnus-group-mail-1 ((t (:bold t :inherit gnus-group-mail-1-empty))))
@@ -320,6 +384,11 @@
    `(gnus-signature ((t (:foreground ,zenburn-yellow))))
    `(gnus-x ((t (:background ,zenburn-fg :foreground ,zenburn-bg))))
 
+   ;; guide-key
+   `(guide-key/highlight-command-face ((t (:foreground ,zenburn-blue))))
+   `(guide-key/key-face ((t (:foreground ,zenburn-green))))
+   `(guide-key/prefix-command-face ((t (:foreground ,zenburn-green+1))))
+
    ;; helm
    `(helm-header
      ((t (:foreground ,zenburn-green
@@ -336,6 +405,7 @@
    `(helm-selection-line ((t (:background ,zenburn-bg+1))))
    `(helm-visible-mark ((t (:foreground ,zenburn-bg :background ,zenburn-yellow-2))))
    `(helm-candidate-number ((t (:foreground ,zenburn-green+4 :background ,zenburn-bg-1))))
+   `(helm-ff-directory ((t (:foreground ,zenburn-magenta))))
 
    ;; hl-line-mode
    `(hl-line-face ((,class (:background ,zenburn-bg-05))
@@ -377,10 +447,39 @@
    ;; linum-mode
    `(linum ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg))))
 
+   ;; macrostep
+   `(macrostep-gensym-1
+     ((t (:foreground ,zenburn-green+2 :background ,zenburn-bg-1))))
+   `(macrostep-gensym-2
+     ((t (:foreground ,zenburn-red+1 :background ,zenburn-bg-1))))
+   `(macrostep-gensym-3
+     ((t (:foreground ,zenburn-blue+1 :background ,zenburn-bg-1))))
+   `(macrostep-gensym-4
+     ((t (:foreground ,zenburn-magenta :background ,zenburn-bg-1))))
+   `(macrostep-gensym-5
+     ((t (:foreground ,zenburn-yellow :background ,zenburn-bg-1))))
+   `(macrostep-expansion-highlight-face
+     ((t (:inherit highlight))))
+   `(macrostep-macro-face
+     ((t (:underline t))))
+
    ;; magit
    `(magit-section-title ((t (:foreground ,zenburn-yellow :weight bold))))
    `(magit-branch ((t (:foreground ,zenburn-orange :weight bold))))
    `(magit-item-highlight ((t (:background ,zenburn-bg+1))))
+
+   ;; egg
+   `(egg-text-base ((t (:foreground ,zenburn-fg))))
+   `(egg-help-header-1 ((t (:foreground ,zenburn-yellow))))
+   `(egg-help-header-2 ((t (:foreground ,zenburn-green+3))))
+   `(egg-branch ((t (:foreground ,zenburn-yellow))))
+   `(egg-branch-mono ((t (:foreground ,zenburn-yellow))))
+   `(egg-term ((t (:foreground ,zenburn-yellow))))
+   `(egg-diff-add ((t (:foreground ,zenburn-green+4))))
+   `(egg-diff-del ((t (:foreground ,zenburn-red+1))))
+   `(egg-diff-file-header ((t (:foreground ,zenburn-yellow-2))))
+   `(egg-section-title ((t (:foreground ,zenburn-yellow))))
+   `(egg-stash-mono ((t (:foreground ,zenburn-green+4))))
 
    ;; message-mode
    `(message-cited-text ((t (:inherit font-lock-comment))))
@@ -428,6 +527,14 @@
    `(paren-face-mismatch ((t (:foreground ,zenburn-bg :background ,zenburn-magenta :weight bold))))
    `(paren-face-no-match ((t (:foreground ,zenburn-bg :background ,zenburn-red :weight bold))))
 
+   ;; mingus
+   `(mingus-directory-face ((t (:foreground ,zenburn-blue))))
+   `(mingus-pausing-face ((t (:foreground ,zenburn-magenta))))
+   `(mingus-playing-face ((t (:foreground ,zenburn-cyan))))
+   `(mingus-playlist-face ((t (:foreground ,zenburn-cyan ))))
+   `(mingus-song-file-face ((t (:foreground ,zenburn-yellow))))
+   `(mingus-stopped-face ((t (:foreground ,zenburn-red))))
+
    ;; nav
    `(nav-face-heading ((t (:foreground ,zenburn-yellow))))
    `(nav-face-button-num ((t (:foreground ,zenburn-cyan))))
@@ -437,13 +544,13 @@
    `(nav-face-hfile ((t (:foreground ,zenburn-red-4))))
 
    ;; mu4e
-   `(mu4e-cited-1-face ((t (:foreground ,zenburn-blue :slant italic))))
+   `(mu4e-cited-1-face ((t (:foreground ,zenburn-blue    :slant italic))))
    `(mu4e-cited-2-face ((t (:foreground ,zenburn-green+2 :slant italic))))
-   `(mu4e-cited-3-face ((t (:foreground ,zenburn-blue-2 :slant italic))))
-   `(mu4e-cited-4-face ((t (:foreground ,zenburn-green :slant italic))))
-   `(mu4e-cited-5-face ((t (:foreground ,zenburn-blue-4 :slant italic))))
+   `(mu4e-cited-3-face ((t (:foreground ,zenburn-blue-2  :slant italic))))
+   `(mu4e-cited-4-face ((t (:foreground ,zenburn-green   :slant italic))))
+   `(mu4e-cited-5-face ((t (:foreground ,zenburn-blue-4  :slant italic))))
    `(mu4e-cited-6-face ((t (:foreground ,zenburn-green-1 :slant italic))))
-   `(mu4e-cited-7-face ((t (:foreground ,zenburn-blue :slant italic))))
+   `(mu4e-cited-7-face ((t (:foreground ,zenburn-blue    :slant italic))))
    `(mu4e-replied-face ((t (:foreground ,zenburn-bg+3))))
    `(mu4e-trashed-face ((t (:foreground ,zenburn-bg+3 :strike-through t))))
 
@@ -590,7 +697,7 @@
    '(term-default-bg-color ((t (:inherit term-color-black))))
 
    ;; volatile-highlights
-   `(vhl/default-face ((t (:background ,zenburn-bg+1))))
+   `(vhl/default-face ((t (:background ,zenburn-bg-05))))
 
    ;; emacs-w3m
    `(w3m-anchor ((t (:foreground ,zenburn-yellow :underline t
@@ -608,9 +715,9 @@
    `(w3m-lnum-minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
 
    ;; whitespace-mode
-   `(whitespace-space ((t (:background ,zenburn-bg :foreground ,zenburn-bg+1))))
-   `(whitespace-hspace ((t (:background ,zenburn-bg :foreground ,zenburn-bg+1))))
-   `(whitespace-tab ((t (:background ,zenburn-bg :foreground ,zenburn-red-1))))
+   `(whitespace-space ((t (:background ,zenburn-bg+1 :foreground ,zenburn-bg+1))))
+   `(whitespace-hspace ((t (:background ,zenburn-bg+1 :foreground ,zenburn-bg+1))))
+   `(whitespace-tab ((t (:background ,zenburn-red-1))))
    `(whitespace-newline ((t (:foreground ,zenburn-bg+1))))
    `(whitespace-trailing ((t (:background ,zenburn-red))))
    `(whitespace-line ((t (:background ,zenburn-bg :foreground ,zenburn-magenta))))
@@ -662,7 +769,31 @@
                                           ,zenburn-blue ,zenburn-magenta ,zenburn-cyan ,zenburn-fg])
 
    ;; fill-column-indicator
-   `(fci-rule-color ,zenburn-bg-05)))
+   `(fci-rule-color ,zenburn-bg-05)
+
+   ;; vc-annotate
+   `(vc-annotate-color-map
+     '(( 20. . ,zenburn-red-1)
+       ( 40. . ,zenburn-red)
+       ( 60. . ,zenburn-orange)
+       ( 80. . ,zenburn-yellow-2)
+       (100. . ,zenburn-yellow-1)
+       (120. . ,zenburn-yellow)
+       (140. . ,zenburn-green-1)
+       (160. . ,zenburn-green)
+       (180. . ,zenburn-green+1)
+       (200. . ,zenburn-green+2)
+       (220. . ,zenburn-green+3)
+       (240. . ,zenburn-green+4)
+       (260. . ,zenburn-cyan)
+       (280. . ,zenburn-blue-2)
+       (300. . ,zenburn-blue-1)
+       (320. . ,zenburn-blue)
+       (340. . ,zenburn-blue+1)
+       (360. . ,zenburn-magenta)))
+   `(vc-annotate-very-old-color ,zenburn-magenta)
+   `(vc-annotate-background ,zenburn-bg-1)
+   ))
 
 ;;;###autoload
 (and load-file-name

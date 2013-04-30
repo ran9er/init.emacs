@@ -101,7 +101,12 @@
                                (skip-chars-backward " \t\n")(bobp)))
                  "tail" ((progn (skip-chars-forward " \t\n")(eobp)))
                  "notop" ((null (zerop (current-indentation))))
-                 "top" ((zerop (current-indentation))))))
+                 "top" ((zerop (current-indentation)))
+                 "hol" ((progn (funcall liny-fetch-alias-func)
+                               (skip-chars-backward " \t")(bolp)))
+                 "nohol"((null (progn (funcall liny-fetch-alias-func)
+                               (skip-chars-backward " \t")(bolp))))
+                 )))
 
 
 (defun liny-exec-env-test (keyword)

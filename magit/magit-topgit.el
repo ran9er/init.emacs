@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2010  Nathan Weizenbaum
 ;; Copyright (C) 2010  Yann Hodique
-;;
+
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
@@ -18,13 +18,13 @@
 
 ;;; Commentary:
 
-;; This plug-in provides topgit functionality as a separate component of Magit
+;; This plug-in provides topgit functionality as a separate component
+;; of Magit.
 
 ;;; Code:
 
 (require 'magit)
-(eval-when-compile
-  (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (defcustom magit-topgit-executable "tg"
   "The name of the TopGit executable."

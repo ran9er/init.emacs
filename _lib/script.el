@@ -1,3 +1,15 @@
+(defvar script&shell-alist
+  '(("py"     .  "python")
+    ("rb"     .  "ruby")
+    ("lua"    .  "lua")
+    ("php"    .  "php")
+    ("pl"     .  "perl")
+    ("sh"     .  "bash")
+    ("java"   .  "javac")
+    ("hs"     .  "hugs")
+    ("js"     .  "node")
+    ))
+
 ;;;###autoload
 (defun run-current-file ()
   "Execute or compile the current file.
@@ -8,19 +20,7 @@ File suffix is used to determine what program to run."
   (interactive)
   (let (ext-map file-name file-ext prog-name cmd-str
                 outputf status)
-    (setq ext-map
-          (to-alist
-           '(
-             "py"       "python"
-             "rb"       "ruby"
-             "lua"      "lua"
-             "php"      "php"
-             "pl"       "perl"
-             "sh"       "bash"
-             "java"     "javac"
-             "hs"       "hugs"
-             "js"       "node"
-             )))
+    (setq ext-map script&shell-alist)
     (setq
      status
      (catch 'status
@@ -38,25 +38,30 @@ File suffix is used to determine what program to run."
 
 ;;;###autoload
 (defun x-shell (prog)
-  (eval
-   `(defun ,(concat-symbol prog '-shell)()
-      ,(format "make a %s shell" prog)
-      (interactive)
-      (switch-to-buffer (make-comint ,(symbol-name prog) ,(symbol-name prog) nil "-i")))))
+  (let ((progstr (symbol-name prog)))
+    (eval
+     `(defun ,(concat-symbol prog '-shell)()
+        ,(format "make a %s shell" prog)
+        (interactive)
+        (switch-to-buffer
+         (make-comint ,progstr
+                      ,(or
+                        (cdr (assoc progstr script&shell-alist))
+                        progstr)
+                      nil "-i"))))))
 ;; (mapcar 'x-shell '(python lua))
-
-;; (defmacro x-shell (prog)
-;;   `(defun ,(concat-symbol prog '-shell)()
-;;      ,(format "make a %s shell" prog)
-;;      (interactive)
-;;      (switch-to-buffer (make-comint ,(symbol-name prog) ,(symbol-name prog) nil "-i"))))
-;; (mapcar (lambda(x)(eval `(x-shell ,x))) '(python lua))
 
 ;;;###autoload
 (defun lua-shell ()
   "make a lua shell"
   (interactive)
   (switch-to-buffer (make-comint "lua" "lua" nil "-i")))
+
+;;;###autoload
+(defun node.js ()
+  "make a node.js shell"
+  (interactive)
+  (switch-to-buffer (make-comint "node.js" "node" nil "-i")))
 
 ;;;###autoload
 (autoload 'run-ruby "inf-ruby"

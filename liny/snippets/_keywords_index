@@ -28,9 +28,21 @@
                  ("top"))
                 "emacs-lisp-mode#upcase"
                 (nil nil)
+                "for"
+                (nil nil)
                 "head"
                 (("head")
                  ("top"))
+                "js#func"
+                (("nohol")
+                 nil)
+                "js#func2"
+                (("nohol")
+                 nil)
+                "js#function"
+                (nil nil)
+                "js#var"
+                (nil nil)
                 "let"
                 (nil nil)
                 "org-mode#head"
@@ -77,7 +89,7 @@
                   "defun"
                   ("emacs-lisp-mode#defun")
                   "f"
-                  ("emacs-lisp-mode#defun")
+                  ("emacs-lisp-mode#defun" "js#func" "js#func2" "js#function")
                   "hash"
                   ("emacs-lisp-mode#hash-table")
                   "ht"
@@ -98,8 +110,12 @@
                   ("emacs-lisp-mode#upcase")
                   "upcase"
                   ("emacs-lisp-mode#upcase")
+                  "for"
+                  ("for")
                   "h"
                   ("head" "org-mode#head")
+                  "v"
+                  ("js#var")
                   "let"
                   ("let")
                   "ro"
@@ -119,5 +135,9 @@
                   ("emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let")
                   "lisp-mode"
                   ("emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let")
+                  "c-mode"
+                  ("for")
+                  "js-mode"
+                  ("for" "js#func" "js#func2" "js#function" "js#var")
                   "org-mode"
                   ("org-mode#head"))))

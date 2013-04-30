@@ -1,5 +1,12 @@
 (loaddefs-eval
- '(("zenburn-theme.el"
+ '(("script.el"
+    (20863 50879 411000 0)
+    (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
+    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
+    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
+    (autoload 'node\.js "script" "make a node.js shell\n\n(fn)" t nil)
+    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
+   ("zenburn-theme.el"
     (20832 47667 130000 0)
     (and load-file-name
          (boundp 'custom-theme-load-path)
@@ -121,12 +128,6 @@
    ("parse.el"
     (20767 46613 839000)
     (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
-   ("script.el"
-    (20767 46613 826000)
-    (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
-    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
-    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
-    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
    ("sdcv.el"
     (20767 46613 779000)
     (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
