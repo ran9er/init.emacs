@@ -8,6 +8,7 @@
     ("java"   .  "javac")
     ("hs"     .  "hugs")
     ("js"     .  "node")
+    ("coffee" .  "coffee")
     ))
 
 ;;;###autoload
@@ -62,6 +63,12 @@ File suffix is used to determine what program to run."
   "make a node.js shell"
   (interactive)
   (switch-to-buffer (make-comint "node.js" "node" nil "-i")))
+
+;;;###autoload
+(defun coffee ()
+  "make a coffee-script shell"
+  (interactive)
+  (switch-to-buffer (make-comint "coffee" "coffee" nil "-i")))
 
 ;;;###autoload
 (autoload 'run-ruby "inf-ruby"

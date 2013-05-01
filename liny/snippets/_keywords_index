@@ -33,6 +33,8 @@
                 "head"
                 (("head")
                  ("top"))
+                "js#cl"
+                (nil nil)
                 "js#func"
                 (("nohol")
                  nil)
@@ -40,7 +42,8 @@
                 (("nohol")
                  nil)
                 "js#function"
-                (nil nil)
+                (("hol")
+                 nil)
                 "js#var"
                 (nil nil)
                 "let"
@@ -67,7 +70,7 @@
                   "autoload"
                   ("emacs-lisp-mode#autoload")
                   "cl"
-                  ("emacs-lisp-mode#closure")
+                  ("emacs-lisp-mode#closure" "js#cl")
                   "closure"
                   ("emacs-lisp-mode#closure")
                   "cd"
@@ -138,6 +141,6 @@
                   "c-mode"
                   ("for")
                   "js-mode"
-                  ("for" "js#func" "js#func2" "js#function" "js#var")
+                  ("for" "js#cl" "js#func" "js#func2" "js#function" "js#var")
                   "org-mode"
                   ("org-mode#head"))))

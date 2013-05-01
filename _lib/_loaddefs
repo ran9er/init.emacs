@@ -1,18 +1,19 @@
 (loaddefs-eval
- '(("script.el"
-    (20863 50879 411000 0)
-    (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
-    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
-    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
-    (autoload 'node\.js "script" "make a node.js shell\n\n(fn)" t nil)
-    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
-   ("zenburn-theme.el"
-    (20832 47667 130000 0)
+ '(("zenburn-theme.el"
+    (20864 36441 651000 0)
     (and load-file-name
          (boundp 'custom-theme-load-path)
          (add-to-list 'custom-theme-load-path
                       (file-name-as-directory
                        (file-name-directory load-file-name)))))
+   ("script.el"
+    (20864 36441 601000 0)
+    (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
+    (autoload 'x-shell "script" "Not documented.\n\n(fn prog)" nil nil)
+    (autoload 'lua-shell "script" "make a lua shell\n\n(fn)" t nil)
+    (autoload 'node\.js "script" "make a node.js shell\n\n(fn)" t nil)
+    (autoload 'coffee "script" "make a coffee-script shell\n\n(fn)" t nil)
+    (autoload 'run-ruby "script" "Run an inferior Ruby process" t))
    ("search.el"
     (20808 64911 791000 0)
     (autoload 'search-str "search" "Not documented.\n\n(fn regexp str &rest sub)" nil nil)
