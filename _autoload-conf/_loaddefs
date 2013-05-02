@@ -1,10 +1,14 @@
 (loaddefs-eval
- '(("auto-complete.el"
+ '(("slime.el"
+    (20866 14000 883000 0)
+    (autoload 'slime "slime" "" t))
+   ("scheme.el"
+    (20866 14000 879000 0)
+    (autoload 'run-scheme "scheme" "Quack scheme editing mode" t)
+    (autoload 'scheme-mode "scheme" "Quack scheme editing mode" t))
+   ("auto-complete.el"
     (20865 65532 131000 0)
     (autoload 'global-auto-complete-mode "auto-complete" "" t))
-   ("slime.el"
-    (20865 65532 124000 0)
-    (autoload 'slime "slime" "" t))
    ("magit.el"
     (20865 55354 168000 0)
     (autoload 'magit-status "magit" nil t))

@@ -1,0 +1,10 @@
+<------alias
+env
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(setenv "PATH" (concat $0 ";" (getenv "PATH")))
