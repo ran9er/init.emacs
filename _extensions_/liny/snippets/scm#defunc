@@ -1,0 +1,10 @@
+<------alias
+d f
+<------modes
+inferior-scheme-mode scheme-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(define (${1:funcname} ${2:args%? }) $0)

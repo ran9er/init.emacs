@@ -1,5 +1,5 @@
 (setenv "PATH" (concat
-                "D:/apps/Racket"
+                "D:/apps/Racket/"
                 ";" (getenv "PATH")))
 
 (setq scheme-program-name (if (eq system-type 'windows-nt)

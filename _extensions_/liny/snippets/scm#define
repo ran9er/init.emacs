@@ -1,0 +1,10 @@
+<------alias
+d v
+<------modes
+inferior-scheme-mode scheme-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(define ${1:var} $0)

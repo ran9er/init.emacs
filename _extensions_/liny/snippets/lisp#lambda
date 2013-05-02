@@ -1,0 +1,10 @@
+<------alias
+l lbd lambda lm
+<------modes
+emacs-lisp-mode lisp-mode lisp-interaction-mode inferior-scheme-mode scheme-mode slime-repl-mode
+<------keywords
+
+<------environment
+
+<------snippet
+(lambda (${1:args%? }) $0)
