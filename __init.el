@@ -16,8 +16,9 @@
 
 ;; * working dir
 (~ _check-directory (cdr (assoc 'wk-dir *init-dirs*)) t)
-(setq work-dir (cdr (assoc 'wk-dir *init-dirs*)))
+(defvar work-dir (cdr (assoc 'wk-dir *init-dirs*)))
 (cd work-dir)
+(defvar exts-dir (cdr (assoc 'ext-dir *init-dirs*)))
 
 ;; * time-stamp-format
 ;(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")

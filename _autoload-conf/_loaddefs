@@ -1,19 +1,22 @@
 (loaddefs-eval
- '(("cws.el"
-    (20832 47664 490000 0)
-    (autoload 'cws-mode "cws" "" t))
-   ("liny.el"
-    (20832 47664 490000 0)
-    (autoload 'liny-mode "liny" "" t))
+ '(("auto-complete.el"
+    (20865 56297 23000 0)
+    (autoload 'global-auto-complete-mode "auto-complete" "" t))
    ("magit.el"
-    (20808 64911 931000 0)
+    (20865 55354 168000 0)
     (autoload 'magit-status "magit" nil t))
+   ("liny.el"
+    (20865 55354 156000 0)
+    (autoload 'liny-mode "liny" "" t))
+   ("evil-mode.el"
+    (20865 55354 146000 0)
+    (autoload 'evil-mode "evil-mode" nil t))
+   ("cws.el"
+    (20865 55354 136000 0)
+    (autoload 'cws-mode "cws" "" t))
    ("skeleton-pair.el"
     (20770 17308 740000)
     (autoload 'skeleton-pair-insert-maybe "skeleton-pair" "" t))
-   ("evil-mode.el"
-    (20767 46616 105000)
-    (autoload 'evil-mode "evil-mode" nil t))
    ("linum-mode.el"
     (20767 46616 74000)
     (autoload 'linum-mode "linum-mode" "" t))))

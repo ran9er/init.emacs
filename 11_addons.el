@@ -19,6 +19,9 @@
 (defadvice undo-tree-visualizer-mode (after undo-tree-face activate)
   (buffer-face-mode))
 
+;; *========== auto-complete
+(global-auto-complete-mode)
+
 ;; *========== anything
 ;; (require 'anything)
 

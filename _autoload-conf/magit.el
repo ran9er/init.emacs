@@ -1,6 +1,6 @@
 ;; -*- encoding: utf-8-unix; -*-
 ;; * magit
-(add-to-list 'load-path (expand-file-name "magit/" *init-dir*))
+(add-to-list 'load-path (expand-file-name "magit/" exts-dir))
 ;;;###autoload
 (autoload 'magit-status "magit" nil t)
 

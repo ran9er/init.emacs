@@ -53,6 +53,7 @@
       (setq dirs
             '((lib-dir   .   "_lib/")
               (lib-df    .   "_loaddefs")
+              (ext-dir   .   "_extensions_")
               (eal-dir   .   "_eval-after-load/")
               (alc-dir   .   "_autoload-conf/")
               (wk-dir    .   "sandbox/")))

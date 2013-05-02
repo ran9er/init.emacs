@@ -1,4 +1,4 @@
-(add-to-list 'load-path (expand-file-name "evil/" *init-dir*))
+(add-to-list 'load-path (expand-file-name "evil/" exts-dir))
 
 (require 'evil)
 (setq evil-want-C-i-jump t
