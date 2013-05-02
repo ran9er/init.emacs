@@ -1,7 +1,10 @@
 (loaddefs-eval
  '(("auto-complete.el"
-    (20865 56297 23000 0)
+    (20865 65532 131000 0)
     (autoload 'global-auto-complete-mode "auto-complete" "" t))
+   ("slime.el"
+    (20865 65532 124000 0)
+    (autoload 'slime "slime" "" t))
    ("magit.el"
     (20865 55354 168000 0)
     (autoload 'magit-status "magit" nil t))
