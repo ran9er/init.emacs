@@ -59,20 +59,20 @@
 
 (defadvice kill-ring-save (around slick-copy activate)
   "When called interactively with no active region, copy a single line instead."
-  (if (or (use-region-p) (not (called-interactively-p)))
+  (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       ad-do-it
     (kill-new (buffer-substring (line-beginning-position)
                                 (line-beginning-position 2))
-              nil '(yank-line))
+              '(yank-line))
     (message "Copied line")))
 
 (defadvice kill-region (around slick-copy)
   "When called interactively with no active region, kill a single line instead."
-  (if (or (use-region-p) (not (called-interactively-p)))
+  (if (or (use-region-p) (not (called-interactively-p 'interactive)))
       ad-do-it
     (kill-new (filter-buffer-substring (line-beginning-position)
                                        (line-beginning-position 2) t)
-              nil '(yank-line))))
+              '(yank-line))))
 
 (defadvice kill-region (before smart-kill)
   (let ((p (point))

@@ -216,7 +216,7 @@
     (let ((f (expand-file-name "update-lazily-loaddefs" user-emacs-directory)))
       (if (or force (file-exists-p f))
           (progn
-            (setq var (loaddefs-update dir ldfs))
+            (loaddefs-update dir ldfs)
             (add-hook
              'emacs-startup-hook
              `(lambda()(if (file-exists-p ,f)
@@ -224,4 +224,6 @@
     (load lf)
     (- (float-time) st)))
 
-;(test-times 1 (lazily (expand-file-name "_autoload" *init-dir*)))
+;(test-times 1 (lazily (expand-file-name "_autoload-conf" *init-dir*)))
+;(loaddefs-update (expand-file-name "_autoload-conf/" *init-dir*))
+;(loaddefs-update (expand-file-name "_lib/" *init-dir*))

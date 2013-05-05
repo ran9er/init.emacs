@@ -1,9 +1,13 @@
 (loaddefs-eval
  '(("slime.el"
-    (20866 14000 883000 0)
-    (autoload 'slime "slime" "" t))
+    (20870 17804 834000 0)
+    (autoload 'slime "slime" "" t)
+    (autoload 'sli "slime" "Not documented.\n\n(fn cmd)" t nil))
+   ("mit-scheme.el"
+    (20870 11936 473000 0)
+    (autoload 'mit-scheme "mit-scheme" "Not documented.\n\n(fn)" t nil))
    ("scheme.el"
-    (20866 14000 879000 0)
+    (20870 10406 825000 0)
     (autoload 'run-scheme "scheme" "Quack scheme editing mode" t)
     (autoload 'scheme-mode "scheme" "Quack scheme editing mode" t))
    ("auto-complete.el"
