@@ -1,8 +1,11 @@
 (loaddefs-eval
  '(("slime.el"
-    (20870 17804 834000 0)
+    (20875 23200 661000 0)
     (autoload 'slime "slime" "" t)
     (autoload 'sli "slime" "Not documented.\n\n(fn cmd)" t nil))
+   ("paredit.el"
+    (20875 23200 656000 0)
+    (autoload 'enable-paredit-mode "paredit" "" t))
    ("mit-scheme.el"
     (20870 11936 473000 0)
     (autoload 'mit-scheme "mit-scheme" "Not documented.\n\n(fn)" t nil))

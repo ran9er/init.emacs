@@ -17,7 +17,7 @@
                              ,(expand-file-name
                                "mit-scheme/lib" prefix))
                             :init mit-scheme-init)
-                (cmucl ("cmucl" "-quiet"))))
+                (node.js ("node" "-i"))))
         (setenv "SBCL_Home" (expand-file-name "sbcl" prefix)))))
 
 ;; (setq inferior-lisp-program
@@ -40,13 +40,14 @@
 ;;;###autoload
 (defun sli (cmd)
   (interactive
-   (let ((impl
-          (mapcar
-           (lambda(x)(symbol-name (car x)))
-           slime-lisp-implementations)))
+   (let* ((impl
+           (mapcar
+            (lambda(x)(symbol-name (car x)))
+            slime-lisp-implementations))
+          (def (car impl)))
      (list
       (completing-read
-       (concat "Run Lisp (default ccl):")
-       impl nil nil nil nil (car impl)))))
+       (format "Run Lisp (default %s):" def)
+       impl nil nil nil nil def))))
   (let ((cmd (read cmd)))
     (slime cmd)))
