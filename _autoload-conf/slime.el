@@ -15,7 +15,8 @@
                                "mit-scheme/bin/mit-scheme.exe" prefix)
                              "--library"
                              ,(expand-file-name
-                               "mit-scheme/lib" prefix))
+                               "mit-scheme/lib" prefix)
+                             "--edit")
                             :init mit-scheme-init)
                 (node.js ("node" "-i"))))
         (setenv "SBCL_Home" (expand-file-name "sbcl" prefix)))))

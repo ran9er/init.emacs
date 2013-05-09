@@ -1,14 +1,16 @@
 (loaddefs-eval
  '(("slime.el"
-    (20875 23200 661000 0)
+    (20875 50401 664000 0)
     (autoload 'slime "slime" "" t)
     (autoload 'sli "slime" "Not documented.\n\n(fn cmd)" t nil))
+   ("mit-scheme.el"
+    (20875 50401 657000 0)
+    (autoload 'mit-scheme-start-swank "mit-scheme" "Not documented.\n\n(fn file encoding)" nil nil)
+    (autoload 'mit-scheme-init "mit-scheme" "Not documented.\n\n(fn file encoding)" nil nil)
+    (autoload 'mit-scheme "mit-scheme" "Not documented.\n\n(fn)" t nil))
    ("paredit.el"
     (20875 23200 656000 0)
     (autoload 'enable-paredit-mode "paredit" "" t))
-   ("mit-scheme.el"
-    (20870 11936 473000 0)
-    (autoload 'mit-scheme "mit-scheme" "Not documented.\n\n(fn)" t nil))
    ("scheme.el"
     (20870 10406 825000 0)
     (autoload 'run-scheme "scheme" "Quack scheme editing mode" t)

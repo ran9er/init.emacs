@@ -1,600 +1,968 @@
-;;; swank-mit-scheme.scm --- SLIME server for MIT Scheme
-;;
-;; Copyright (C) 2008  Helmut Eller
-;;
-;; This file is licensed under the terms of the GNU General Public
-;; License as distributed with Emacs (press C-h C-c for details).
+#| -*-Scheme-*-
+
+Copyright (C) 2008 Helmut Eller
+
+This file is licensed under the terms of the GNU General Public
+License as distributed with Emacs (press C-h C-c for details).
+
+Copyright (C) 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994,
+    1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+    2006, 2007, 2008, 2009, 2010, 2011, 2012 Massachusetts Institute
+    of Technology
+
+This file is part of MIT/GNU Scheme.
+
+MIT/GNU Scheme is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+MIT/GNU Scheme is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with MIT/GNU Scheme; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301,
+USA.
+
+|#
+
+;;;; SWANK module for MIT/GNU Scheme
+;;; package: (runtime swank)
+
+;;; Suggested for .emacs:
+#|
+(when (require 'slime nil t)
+
+  (defun mit-scheme-start-swank (file encoding)
+    (format "%S\n\n" `(start-swank ,file)))
+
+  (defun mit-scheme-find-buffer-package ()
+    (save-excursion
+      (let ((case-fold-search t))
+	(goto-char (point-min))
+	(and (re-search-forward "^;+ package: \\(([^)]+)\\)" nil t)
+	     (match-string-no-properties 1)))))
+
+  (defun mit-scheme-slime-mode-init ()
+    (slime-mode t)
+    (make-local-variable 'slime-find-buffer-package-function)
+    (setq slime-find-buffer-package-function 'mit-scheme-find-buffer-package))
+
+  (slime-setup)
+  (if (not (memq 'mit-scheme slime-lisp-implementations))
+      (setq slime-lisp-implementations
+	    (cons '(mit-scheme ("mit-scheme")
+			       :init mit-scheme-start-swank)
+		  slime-lisp-implementations)))
+  (setq slime-default-lisp 'mit-scheme)
+  (add-hook 'scheme-mode-hook 'mit-scheme-slime-mode-init))
+|#
+
+(declare (usual-integrations))
 
-;;;; Installation:
-#|
+(define (start-swank #!optional port-file)
+  (let ((port-number 4005)
+	(socket))
+    (dynamic-wind
+	(lambda ()
+	  (set! socket
+		(open-tcp-server-socket port-number
+					(host-address-loopback)))
+	  unspecific)
+	(lambda ()
+	  (if (not (default-object? port-file))
+	      (call-with-output-file port-file
+		(lambda (p)
+		  (write port-number p))))
+	  (serve (tcp-server-connection-accept socket #t #f)))
+	(lambda ()
+	  (close-tcp-server-socket socket)
+	  (set! socket)
+	  unspecific))))
 
-1. You need MIT Scheme 9.0.1
-
-2. You also need the `netcat' program to create sockets 
-   (netcat-openbsd on Debian).  MIT Scheme has some socket functions
-   built-in, but I couldn't figure out how to access the locat port
-   number of a server socket.  We shell out to netcat to get us started.
-
-3. The Emacs side needs some fiddling.  I have the following in
-   my .emacs:
-
-(setq slime-lisp-implementations
-      '((mit-scheme ("mit-scheme") :init mit-scheme-init)))
-
-(defun mit-scheme-init (file encoding)
-  (format "%S\n\n"
-	  `(begin
-	    (load-option 'format)
-	    (load-option 'sos)
-	    (eval 
-	     '(construct-normal-package-from-description
-	       (make-package-description '(swank) '(()) 
-					 (vector) (vector) (vector) false))
-	     (->environment '(package)))
-	    (load ,(expand-file-name 
-		    ".../contrib/swank-mit-scheme.scm" ; <-- insert your path
-		    slime-path)
-		  (->environment '(swank)))
-	    (eval '(start-swank ,file) (->environment '(swank))))))
-
-(defun mit-scheme ()
-  (interactive)
-  (slime 'mit-scheme))
-
-(defun find-mit-scheme-package ()
-  (save-excursion
-    (let ((case-fold-search t))
-      (and (re-search-backward "^[;]+ package: \\((.+)\\).*$" nil t)
-	   (match-string-no-properties 1)))))
-
-(setq slime-find-buffer-package-function 'find-mit-scheme-package)
-(add-hook 'scheme-mode-hook (lambda () (slime-mode 1)))
-
-   The `mit-scheme-init' function first loads the SOS and FORMAT
-   libraries, then creates a package "(swank)", and loads this file
-   into that package.  Finally it starts the server.  
-
-   `find-mit-scheme-package' tries to figure out which package the
-   buffer belongs to, assuming that ";;; package: (FOO)" appears
-   somewhere in the file.  Luckily, this assumption is true for many of
-   MIT Scheme's own files.  Alternatively, you could add Emacs style
-   -*- slime-buffer-package: "(FOO)" -*- file variables.
-
-4. Start everything with `M-x mit-scheme'.
-
-|#
-
-;;; package: (swank)
-
-(if (< (car (get-subsystem-version "Release"))
-       '9)
-    (error "This file requires MIT Scheme Release 9"))
-
-(define (swank port)
-  (accept-connections (or port 4005) #f))
-
-;; ### hardcoded port number for now.  netcat-openbsd doesn't print
-;; the listener port anymore.
-(define (start-swank port-file)
-  (accept-connections 4055 port-file) 
-  )
-
-;;;; Networking
-
-#|
-;; ### doesn't work because 1) open-tcp-server-socket doesn't set the
-;; SO_REUSEADDR option and 2) we can't read the port number of the
-;; created socket.
-(define (accept-connections port port-file)
-  (let ((sock (open-tcp-server-socket  port (host-address-loopback))))
-    (format #t "Listening on port: ~s~%" port)
-    (if port-file (write-port-file port port-file))
-    (dynamic-wind 
-	(lambda () #f)
-	(lambda () (serve (tcp-server-connection-accept sock #t #f)))
-	(lambda () (close-tcp-server-socket sock)))))
-|#
-
-(define (accept-connections port port-file)
-  (let ((nc (netcat port)))
-    (format #t "Listening on port: ~s~%" (cadr nc))
-    (if port-file (write-port-file (cadr nc) port-file))
-    (dynamic-wind 
-	(lambda () #f)
-	(lambda () (serve (netcat-accept (car nc))))
-	(lambda () (close-port (subprocess-input-port (car nc)))))))
-
-(define (netcat port)
-  (let* ((sh (os/shell-file-name))
-	 (cmd (format #f "exec netcat -v -q 0 -l ~a 2>&1" port))
-	 (netcat (start-pipe-subprocess sh 
-					(vector sh "-c" cmd)
-					scheme-subprocess-environment)))
-    (list netcat port)))
-
-(define (netcat-accept nc)
-  (let* ((rx "^Connection from .+ port .+ accepted$")
-	 (line (read-line (subprocess-input-port nc)))
-	 (match (re-string-match rx line)))
-    (cond ((not match) (error "netcat:" line))
-	  (else (subprocess-input-port nc)))))
-
-(define (write-port-file portnumber filename)
-  (call-with-output-file filename (lambda (p) (write portnumber p))))
-
-(define *top-level-restart* #f)
 (define (serve socket)
-  (with-simple-restart 
-      'disconnect "Close connection."
-      (lambda ()
-	(with-keyboard-interrupt-handler 
-	    (lambda () (main-loop socket))))))
+  (with-simple-restart 'DISCONNECT "Close connection."
+    (lambda ()
+      (with-keyboard-interrupt-handler
+       (lambda ()
+	 (main-loop socket))))))
 
-(define (disconnect) 
-  (format #t "Disconnecting ...~%")
-  (invoke-restart (find-restart 'disconnect)))
+(define (with-keyboard-interrupt-handler thunk)
+  (let ((index (char->integer #\G))
+	(new-handler
+	 (lambda (char)
+	   char
+	   (with-simple-restart 'CONTINUE "Continue from interrupt."
+	     (lambda ()
+	       (error "Keyboard Interrupt.")))))
+	(old-handler))
+    (dynamic-wind
+	(lambda ()
+	  (let ((v keyboard-interrupt-vector))
+	    (set! old-handler (vector-ref v index))
+	    (vector-set! v index new-handler)))
+	thunk
+	(lambda ()
+	  (vector-set! keyboard-interrupt-vector index old-handler)
+	  (set! old-handler)
+	  unspecific))))
 
+(define (disconnect)
+  (invoke-restart (find-restart 'DISCONNECT)))
+
 (define (main-loop socket)
   (do () (#f)
-    (with-simple-restart 
-	'abort "Return to SLIME top-level."
-	(lambda () 
-	  (fluid-let ((*top-level-restart* (find-restart 'abort)))
-	    (dispatch (read-packet socket) socket 0))))))
-
-(define (with-keyboard-interrupt-handler fun)
-  (define (set-^G-handler exp)
-    (eval `(vector-set! keyboard-interrupt-vector (char->ascii #\G) ,exp)
-	  (->environment '(runtime interrupt-handler))))
-  (dynamic-wind
-      (lambda () #f)
+    (with-simple-restart 'ABORT "Return to SLIME top-level."
       (lambda ()
-	(set-^G-handler
-	 `(lambda (char) (with-simple-restart
-			  'continue "Continue from interrupt."
-			  (lambda () (error "Keyboard Interrupt.")))))
-	(fun))
-      (lambda ()
-	(set-^G-handler '^G-interrupt-handler))))
+	(fluid-let ((*top-level-restart* (find-restart 'ABORT)))
+	  (call-with-current-continuation (lambda (k) (set! escape-to-loop k)))
+	  (process-one-message socket 0))))))
 
-
-;;;; Reading/Writing of SLIME packets
+(define *top-level-restart*)
+
+(define (get-current-environment)
+  (nearest-repl/environment))
+
+(define (set-current-environment! environment)
+  (set-repl/environment! (nearest-repl) environment))
+
+(define (top-level-abort)
+  (invoke-restart *top-level-restart*))
+
+(define (bound-restarts-for-emacs)
+  (let loop ((restarts (bound-restarts)))
+    (if (pair? restarts)
+	(cons (car restarts)
+	      (if (eq? (car restarts) *top-level-restart*)
+		  '()
+		  (loop (cdr restarts))))
+	'())))
+
+(define (process-one-message socket level)
+  (dispatch (decode-message socket (read-packet socket)) socket level))
 
 (define (read-packet in)
-  "Read an S-expression from STREAM using the SLIME protocol."
-  (let* ((len (read-length in))
-	 (buffer (make-string len)))
-    (fill-buffer! in buffer)
-    (read-from-string buffer)))
+  (if (eof-object? (peek-char in))
+      (disconnect))
+  (let ((buffer
+	 (make-string
+	  (let ((buffer (make-string 6)))
+	    (read-string! buffer in)
+	    (string->number buffer 16 #t)))))
+    ;; loop until all read
+    (let loop ((start 0)
+    	       (end (string-length buffer)))
+      (if (= start end)
+    	  buffer
+    	  (let ((read-chars (read-substring! buffer start end in)))
+    	    (loop
+    	     (+ start read-chars)
+    	     end))))
+    ))
 
-(define (write-packet message out)
-  (let* ((string (write-to-string message)))
-    (log-event "WRITE: [~a]~s~%" (string-length string) string)
-    (write-length (string-length string) out)
-    (write-string string out)
-    (flush-output out)))
+(define (decode-message socket packet)
+  (bind-condition-handler (list condition-type:serious-condition)
+      (lambda (condition)
+	(write-message `(:reader-error ,packet
+				       ,(condition/report-string condition))
+		       socket)
+	(top-level-abort))
+    (lambda ()
+      (read-from-string packet))))
 
-(define (fill-buffer! in buffer)
-  (read-string! buffer in))
+(define (write-message message out)
+  (write-packet (write-to-string message) out))
 
-(define (read-length in)
-  (if (eof-object? (peek-char in)) (disconnect))
-  (do ((len 6 (1- len))
-       (sum 0 (+ (* sum 16) (char->hex-digit (read-char in)))))
-      ((zero? len) sum)))
+(define (write-packet packet out)
+  (let ((s (number->string (string-length packet) 16)))
+    (if (> (string-length s) 6)
+	(error "Expression length exceeds 24 bits:" s))
+    (write-string (string-pad-left s 6 #\0) out))
+  (write-string packet out)
+  (flush-output out))
 
-(define (ldb size position integer)
-  "LoaD a Byte of SIZE bits at bit position POSITION from INTEGER."
-  (fix:and (fix:lsh integer (- position))
-	   (1- (fix:lsh 1 size))))
+(define (dispatch message socket level)
+  (let ((p
+	 (find (lambda (p)
+		 (syntax-match? (car p) message))
+	       message-handlers)))
+    (if (not p)
+	(error "Unknown message:" message))
+    (apply (cdr p) socket level (cdr message))))
 
-(define (write-length len out)
-  (do ((pos 20 (- pos 4)))
-      ((< pos 0))
-    (write-hex-digit (ldb 4 pos len) out)))
+(define (define-message-handler pattern handler)
+  (set! message-handlers
+	(cons (cons pattern handler)
+	      message-handlers))
+  unspecific)
 
-(define (write-hex-digit n out)
-  (write-char (hex-digit->char n) out))
-
-(define (hex-digit->char n)
-  (digit->char n 16))
-
-(define (char->hex-digit c)
-  (char->digit c 16))
-
+(define message-handlers '())
 
-;;;; Event dispatching
+;;;; Message handlers
 
-(define (dispatch request socket level)
-  (log-event "READ: ~s~%" request)
-  (case (car request)
-    ((:emacs-rex) (apply emacs-rex socket level (cdr request)))))
+(define-message-handler '(':emacs-rex form datum datum index)
+  (lambda (socket level sexp pstring thread id)
+    thread
+    (call-with-current-continuation
+     (lambda (k)
+       (bind-condition-handler (list condition-type:serious-condition)
+	   (lambda (condition)
+	     (dynamic-wind
+		 (lambda ()
+		   #f)
+		 (lambda ()
+		   (invoke-sldb socket (+ level 1) condition))
+		 (lambda ()
+		   (write-message `(:return (:abort ,(condition/report-string condition)) ,id) socket))))
+	 (lambda ()
+	   (write-message `(:return (:ok ,(emacs-rex socket sexp pstring id))
+				    ,id)
+			  socket)))))))
 
-(define (swank-package)
-  (or (name->package '(swank))
-      (name->package '(user))))
+(define-message-handler '(':emacs-return-string form index string)
+  (lambda (socket level unknown index string)
+    (set! *input-buffer* (open-input-string string))
+    (let ((cont (car *reading-continuations*)))
+      (set! *reading-continuations* (cdr *reading-continuations*))
+      (cont #f))))
 
-(define *buffer-package* #f)
-(define (find-buffer-package name)
-  (if (elisp-false? name)
-      #f
-      (let ((v (ignore-errors 
-		(lambda () (name->package (read-from-string name))))))
-	(and (package? v) v))))
+(define *index*)
 
-(define swank-env (->environment (swank-package)))
-(define (user-env buffer-package)
-  (cond ((string? buffer-package)
-	 (let ((p (find-buffer-package buffer-package)))
-	   (if (not p) (error "Invalid package name: " buffer-package))
-	   (package/environment p)))
-	(else (nearest-repl/environment))))
+(define (emacs-rex socket sexp pstring id)
+  (fluid-let ((*buffer-pstring* pstring)
+	      (*index* id))
+    (eval (cons* (car sexp) socket (map quote-special (cdr sexp)))
+	  swank-env)))
 
-(define (emacs-rex socket level sexp package thread id)
-  (let ((ok? #f) (result #f) (condition #f))
-    (dynamic-wind
-	(lambda () #f)
-	(lambda ()
-	  (bind-condition-handler 
-	   (list condition-type:serious-condition)
-	   (lambda (c) (set! condition c) (invoke-sldb socket (1+ level) c))
-	   (lambda ()
-	     (fluid-let ((*buffer-package* package))
-	       (set! result 
-		     (eval (cons* (car sexp) socket (cdr sexp))
-			   swank-env))
-	       (set! ok? #t)))))
-	(lambda ()
-	  (write-packet `(:return 
-			  ,(if ok? `(:ok ,result)
-			       `(:abort 
-				 ,(if condition 
-				      (format #f "~a"
-					      (condition/type condition))
-				      "<unknown reason>")))
-			  ,id)
-			 socket)))))
+(define *buffer-pstring*)
 
-(define (swank:connection-info _)
-  (let ((p (environment->package (user-env #f))))
-    `(:pid ,(unix/current-pid)
-      :package (:name ,(write-to-string (package/name p))
-		      :prompt ,(write-to-string (package/name p)))
-      :lisp-implementation 
-      (:type "MIT Scheme" :version ,(get-subsystem-version-string "release"))
-      )))
+(define swank-env
+  (the-environment))
 
-(define (swank:quit-lisp _)
-  (%exit))
+(define (buffer-env)
+  (pstring->env *buffer-pstring*))
 
+(define (pstring->env pstring)
+  (cond ((or (not (string? pstring))
+	     (not (string? *buffer-pstring*))
+	     (string-ci=? *buffer-pstring* "COMMON-LISP-USER"))
+	 (get-current-environment))
+	((string-prefix? anonymous-package-prefix pstring)
+	 (let ((object
+		(object-unhash
+		 (string->number (string-tail pstring
+					      (string-length
+					       anonymous-package-prefix))
+				 10
+				 #t))))
+	   (if (not (environment? object))
+	       (error:wrong-type-datum object "environment"))
+	   object))
+	(else
+	 (package/environment (find-package (read-from-string pstring) #t)))))
+
+(define (env->pstring env)
+  (let ((package (environment->package env)))
+    (if package
+	(write-to-string (package/name package))
+	(string anonymous-package-prefix (object-hash env)))))
+
+(define anonymous-package-prefix
+  "environment-")
 
 ;;;; Evaluation
 
-(define (swank:listener-eval socket string)
-  ;;(call-with-values (lambda () (eval-region string socket))
-  ;;  (lambda values `(:values . ,(map write-to-string values))))
-  `(:values ,(write-to-string (eval-region string socket))))
-
-(define (eval-region string socket)
-  (let ((sexp (read-from-string string)))
-    (if (eof-object? exp)
-	(values)
-	(with-output-to-repl socket
-	  (lambda () (eval sexp (user-env *buffer-package*)))))))
-
-(define (with-output-to-repl socket fun)
-  (let ((p (make-port repl-port-type socket)))
-    (dynamic-wind
-	(lambda () #f)
-	(lambda () (with-output-to-port p fun))
-	(lambda () (flush-output p)))))
-
 (define (swank:interactive-eval socket string)
-  ;;(call-with-values (lambda () (eval-region string)) format-for-echo-area)
-  (format-values (eval-region string socket))
-  )
-
-(define (format-values . values)
-  (if (null? values) 
-      "; No value"
-      (with-string-output-port
-	  (lambda (out)
-	    (write-string "=> " out)
-	    (do ((vs values (cdr vs))) ((null? vs))
-	      (write (car vs) out)
-	      (if (not (null? (cdr vs)))
-		  (write-string ", " out)))))))
-
-(define (swank:pprint-eval _ string)
-  (pprint-to-string (eval (read-from-string string) 
-			  (user-env *buffer-package*))))
+  (with-output-to-string
+    (lambda ()
+      (write (interactive-eval (read-from-string string) socket #f)))))
 
 (define (swank:interactive-eval-region socket string)
-  (format-values (eval-region string socket)))
+  (for-each-sexp (lambda (sexp) (interactive-eval sexp socket #f))
+		 string))
 
-(define (swank:set-package _ package)
-  (set-repl/environment! (nearest-repl) 
-			 (->environment (read-from-string package)))
-  (let* ((p (environment->package (user-env #f)))
-	 (n (write-to-string (package/name p))))
-    (list n n)))
+(define (swank:listener-eval socket string)
+  (let* ((result (interactive-eval (read-from-string string)
+				   socket
+				   #f))
+	 (hash-number (hash result)))
+    (if (and *any-output?* 
+	     (not *last-character-newline?*))
+	(write-message `(:write-string "\n" :repl-result) socket))
+    (write-message `(:presentation-start ,hash-number :repl-result)
+		   socket)
+    (write-message `(:write-string ,(format #f "~s" result)
+				   :repl-result)
+		   socket)
+    (write-message `(:presentation-end ,hash-number :repl-result)
+		   socket)
+    (write-message `(:write-string "\n" :repl-result)
+		   socket)
+    (set! *any-output?* #f))
+  'NIL)
 
- 
-(define (repl-write-substring port string start end)
-  (cond ((< start end)
-	 (write-packet `(:write-string ,(substring string start end))
-		       (port/state port))))
-  (- end start))
+(define (interactive-eval sexp socket nl?)
+  (let ((value (repl-eval sexp socket)))
+    ;; (call-with-output-string
+    ;;   (lambda (port)
+    ;; 	;(port/write-result port sexp value (object-hash value) (buffer-env))
+    ;; 	(write value port)
+    ;; 	(if nl? (newline port))
+    ;; 	(hash value)))
+    value
+    ))
 
-(define (repl-write-char port char)
-  (write-packet `(:write-string ,(string char))
-                (port/state port)))
+(define (for-each-sexp procedure string)
+  (let ((input (open-input-string string)))
+    (let loop ()
+      (let ((sexp (read input)))
+	(if (not (eof-object? sexp))
+	    (begin
+	      (procedure sexp)
+	      (loop)))))))
 
-(define repl-port-type
-  (make-port-type `((write-substring ,repl-write-substring)
-		    (write-char ,repl-write-char)) #f))
+(define (repl-eval sexp socket)
+  (with-i/o-to-repl socket
+    (lambda ()
+      (with-repl-eval-boundary 'SWANK
+	(lambda ()
+	  (eval sexp (buffer-env)))))))
 
-(define (swank:create-repl socket . _)
-  (let* ((env (user-env *buffer-package*))
-	 (name (format #f "~a" 
-		       (package/name (environment->package 
-				      (user-env *buffer-package*))))))
-    (list name name)))
+(define (with-i/o-to-repl socket thunk)
+  (let ((p (make-port repl-port-type socket)))
+    (let ((trace-port (trace-output-port))
+	  (int-i/o-port (interaction-i/o-port)))
+      (dynamic-wind
+	  (lambda () (set-trace-output-port! p) (set! *output-buffer* (open-output-string)) (set-interaction-i/o-port! p)
+	     )
+	  (lambda () (with-output-to-port p (lambda () (with-input-from-port p thunk))))
+	  (lambda () (set-trace-output-port! trace-port) (set-interaction-i/o-port! int-i/o-port) (flush-output p)
+	     )))))
 
+(define repl-port-type)
+(define *last-character-newline?* #f)
+(define *any-output?* #f)
+(define *output-buffer* (open-output-string))
+(define *input-buffer* (open-input-string ""))
+(define *reading-continuations* '()) 
+(define escape-to-loop #f)
+(define *read-index* 1)
+
+(define (ensure-input port)
+  (let ((char (peek-char *input-buffer*)))
+    (if (not (eof-object? char))
+	#f
+	(call-with-current-continuation 
+	 (lambda (k)
+	   (set! *reading-continuations* (cons k *reading-continuations*))
+	   (write-message `(:read-string 1 ,*read-index*)
+			  (port/state port))
+	   (set! *read-index* (+ *read-index* 1))
+	   (escape-to-loop #f))))))
+
+(define (initialize-package!)
+  (set! repl-port-type
+	(make-port-type
+	 `((WRITE-CHAR
+	    ,(lambda (port char)
+	       ;; (write-message `(:write-string ,(string char))
+	       ;; 		      (port/state port))
+	       (display char *output-buffer*)
+	       (set! *any-output?* #t)
+	       (set! *last-character-newline?* (char=? char #\newline))
+	       1))
+	   (READ-CHAR
+	    ,(lambda (port)
+	       (ensure-input port)
+	       (read-char *input-buffer*)))
+	   (PEEK-CHAR
+	    ,(lambda (port)
+	       (ensure-input port)
+	       (peek-char *input-buffer*)))
+	   (UNREAD-CHAR
+	    ,(lambda (port c)
+	       (ensure-input port)
+	       (unread-char c *input-buffer*)))
+	   (WRITE-SUBSTRING
+	    ,(lambda (port string start end)
+	       (if (< start end)
+		   (let ((str (substring string start end)))
+		     ;; (write-message `(:write-string ,str)
+		     ;; 		    (port/state port))
+		     (display str *output-buffer*)
+		     (set! *any-output?* #t)
+		     (set! *last-character-newline?* (char=? (string-ref str (- (string-length str) 1)) #\newline))))
+	       (- end start)))
+	   (FLUSH-OUTPUT
+	    ,(lambda (port)
+	       (write-message `(:write-string ,(get-output-string *output-buffer*))
+			      (port/state port)))))
+	 #f))
+  unspecific)
+
+(define (swank:pprint-eval socket string)
+  socket
+  (pprint-to-string (eval (read-from-string string)
+			  (buffer-env))))
 
 ;;;; Compilation
 
-(define (swank:compile-string-for-emacs _ string . x)
-  (apply 
-   (lambda (errors seconds)
-     `(:compilation-result ,errors t ,seconds nil nil))
-   (call-compiler
-    (lambda ()
-      (let* ((sexps (snarf-string string))
-	     (env (user-env *buffer-package*))
-	     (scode (syntax `(begin ,@sexps) env))
-	     (compiled-expression (compile-scode scode #t)))
-	(scode-eval compiled-expression env))))))
+(define (swank:compile-string-for-emacs socket string . x)
+  socket x
+  (let ((sexps (snarf-string string)))
+    (call-compiler
+     (lambda ()
+       (let ((env (buffer-env)))
+	 (scode-eval (compile-scode (syntax `(begin ,@sexps) env) #t)
+		     env))))))
 
 (define (snarf-string string)
-  (with-input-from-string string
-    (lambda () 
-      (let loop ()
-	(let ((e (read)))
-	  (if (eof-object? e) '() (cons e (loop))))))))
+  (let ((port (open-input-string string)))
+    (let loop ()
+      (let ((e (read port)))
+	(if (eof-object? e)
+	    '()
+	    (cons e (loop)))))))
 
 (define (call-compiler fun)
   (let ((time #f))
     (with-timings fun
       (lambda (run-time gc-time real-time)
-	(set! time real-time)))
-    (list 'nil (internal-time/ticks->seconds time))))
-
-(define (swank:compiler-notes-for-emacs _) nil)
+	run-time gc-time
+	(set! time real-time)
+	unspecific))
+    (list 'NIL (string (internal-time/ticks->seconds time)))))
 
 (define (swank:compile-file-for-emacs socket file load?)
-  (apply
-   (lambda (errors seconds)
-     (list ':compilation-result errors 't seconds load? 
-	   (->namestring (pathname-new-type file "com"))))
-   (call-compiler
-    (lambda () (with-output-to-repl socket (lambda () (compile-file file)))))))
+  (call-compiler
+   (lambda ()
+     (with-i/o-to-repl socket
+       (lambda ()
+	 (compile-file file)))))
+  (if (elisp-true? load?)
+      (swank:load-file socket
+		       (pathname-new-type file "com"))))
 
 (define (swank:load-file socket file)
-  (with-output-to-repl socket
-    (lambda () 
-      (pprint-to-string 
-       (load file (user-env *buffer-package*))))))
+  (with-i/o-to-repl socket
+    (lambda ()
+      (load file (buffer-env))
+      'loaded)))
 
-(define (swank:disassemble-form _ string)
-  (let ((sexp (let ((sexp (read-from-string string)))
-		(cond ((and (pair? sexp) (eq? (car sexp) 'quote))
-		       (cadr sexp))
-		      (#t sexp)))))
-    (with-output-to-string
-      (lambda () 
-	(compiler:disassemble
-	 (eval sexp (user-env *buffer-package*)))))))
-
-(define (swank:disassemble-symbol _ string)
+(define (swank:disassemble-symbol socket string)
+  socket
   (with-output-to-string
-      (lambda () 
-	(compiler:disassemble
-	 (eval (read-from-string string) 
-	       (user-env *buffer-package*))))))
-
+    (lambda ()
+      (compiler:disassemble
+       (eval (read-from-string string)
+	     (buffer-env))))))
 
-;;;; Macroexpansion
+;;;; Directory Functions
+(define (swank:default-directory socket)
+  (->namestring (working-directory-pathname)))
 
-(define (swank:swank-macroexpand-all _ string) 
+(define (swank:set-default-directory socket directory)
+  (->namestring (set-working-directory-pathname! directory)))
+
+;;;; Describe
+(define (swank:describe-symbol socket symbol)
+  (let* ((env (buffer-env))
+	 (package (env->pstring env))
+	 (symbol (string->symbol symbol))
+	 (type (environment-reference-type env symbol))
+	 (binding (if (eq? type 'normal) (environment-lookup env symbol) #f))
+	 (binding-type (if binding (get-object-type-name binding) #f))
+	 (doc (if (and (eq? type 'normal)
+		       binding)
+		  (documentation-string binding)
+		  #f))
+	 (params (if (and binding (procedure? binding)) (procedure-parameters symbol env) #f)))
+    (string-append
+     (format #f "~a in package ~a~a of type ~a.~%~%" (string-upcase (symbol->string symbol))
+	     package
+	     (if (and binding
+		      (procedure? binding))
+		 (format #f " [originally defined in package ~a]" (env->pstring (procedure-environment binding)))
+		 "")
+	     (if binding-type binding-type type))
+     (if doc
+	 (format #f "~a~%~%" doc)
+	 "")
+     (if binding
+	 (format #f "Bound to ~a.~%" binding)
+	 "")
+     (if params
+	 (format #f "~%Signature: ~a.~%~%" params)
+	 "")
+     (if binding
+	 (format #f "It is:~%~%~a~%" (with-output-to-string (lambda () (pp binding))))
+	 ""))))
+
+(define (swank:describe-function socket function)
+  (swank:describe-symbol socket function))
+
+(define (swank:describe-definition-for-emacs socket name type)
+  type
+  (swank:describe-symbol socket name))
+
+(define (get-object-type-name obj)
+  (cond ((boolean? obj) "boolean")
+	((string? obj) "string")
+	((char? obj) "char")
+	((fixnum? obj) "fixnum")
+	((integer? obj) "integer")
+	((rational? obj) "rational")
+	((real? obj) "real")
+	((complex? obj) "complex")
+	((vector? obj) "vector")
+	((pair? obj) "pair")
+	((null? obj) "empty list")
+	((bit-string? obj) "bit-string")
+	((cell? obj) "cell")
+	((condition? obj) "condition")
+	((environment? obj) "environment")
+	((port? obj) "port")
+	((procedure? obj) "procedure")
+	((promise? obj) "promise")
+	((symbol? obj) "symbol")
+	((weak-pair? obj) "weak-pair")
+	((record-type? obj) "record-type")
+	((wide-string? obj) "wide-string")
+	(else (user-object-type obj))))
+
+;;;; Miscellaneous
+
+(define (swank:set-package socket pstring)
+  socket
+  (let ((env (pstring->env pstring)))
+    (set-current-environment! env)
+    (let ((pstring (env->pstring env)))
+      (list pstring pstring))))
+
+(define (swank:create-repl socket . args)
+  socket args
+  (let ((pstring (env->pstring (->environment '(user)))))
+    (list pstring pstring)))
+
+(define (swank:swank-macroexpand-all socket string)
+  socket
   (with-output-to-string
-      (lambda ()
-	(pp (syntax (read-from-string string)
-		    (user-env *buffer-package*))))))
+    (lambda ()
+      (pp (syntax (read-from-string string)
+		  (buffer-env))))))
+
 (define swank:swank-macroexpand-1 swank:swank-macroexpand-all)
 (define swank:swank-macroexpand swank:swank-macroexpand-all)
 
-
-;;; Arglist
-
-(define (swank:operator-arglist socket name pack)
+(define (swank:operator-arglist socket name pstring)
+  socket
   (let ((v (ignore-errors
 	    (lambda ()
-              (string-trim-right
-               (with-output-to-string
-                 (lambda ()
-                   (carefully-pa
-                    (eval (read-from-string name) (user-env pack))))))))))
-    (if (condition? v) 'nil v)))
+	      (with-output-to-string
+		(lambda ()
+		  (carefully-pa
+		   (eval (read-from-string name) (pstring->env pstring)))))))))
+    (if (condition? v) 'NIL v)))
 
 (define (carefully-pa o)
-  (cond ((arity-dispatched-procedure? o) 
+  (cond ((arity-dispatched-procedure? o)
 	 ;; MIT Scheme crashes for (pa /)
 	 (display "arity-dispatched-procedure"))
 	((procedure? o) (pa o))
 	(else (error "Not a procedure"))))
 
+(define (swank:connection-info socket)
+  socket
+  (let ((pstring (env->pstring (buffer-env))))
+    `(:pid ,(unix/current-pid)
+      :package (:name ,pstring :prompt ,pstring)
+      :lisp-implementation
+      (:type "MIT/GNU Scheme"
+       :version ,(get-subsystem-version-string "release"))
+      :version "2012-07-13"
+      :encoding
+      (:coding-systems
+       ("utf-8-unix" "iso-latin-1-unix")))))
+
+(define (swank:swank-require socket packages)
+  socket
+  packages
+  '())
+
+(define swank-extra-documentation
+  '((let bindings . body)
+    (let* bindings . body)
+    (letrec bindings . body)
+    (receive bindings expression . body)
+    (define name . body)
+    (quote expression)
+    (quasiquote expression)
+    (unquote expression)
+    (unquote-splicing expression)
+    (if test then else)
+    (set! name value)))
+
+(define (procedure-parameters symbol env)
+  (let ((type (environment-reference-type env symbol)))
+    (let ((ans (if (eq? type 'normal)
+		   (let ((binding (environment-lookup env symbol)))
+		     (if (and binding
+			      (procedure? binding))
+			 (cons symbol (read-from-string (string-trim (with-output-to-string
+								       (lambda () (pa binding))))))
+			 #f))
+		   (let ((extra (assq symbol swank-extra-documentation)))
+		     (if extra
+			 extra
+			 #f)))))
+      ans)))
+
+(define (find-expression-containing-swank-cursor-marker expr)
+  (if (list? expr)
+      (if (member 'swank::%cursor-marker% expr)
+	  expr
+	  (any (lambda (ex)
+		 (find-expression-containing-swank-cursor-marker ex))
+	       expr))
+      #f))
+
+(define (find-string-before-swank-cursor-marker expr)
+  (let ((ex (find-expression-containing-swank-cursor-marker expr)))
+    (if ex
+	(if (string? (car ex))
+	    (car ex)
+	    #f))))
+
+(define (improper-length lst)
+  (if (pair? lst)
+      (+ 1 (improper-length (cdr lst)))
+      (if (null? lst) 
+	  0
+	  1)))
+
+(define (improper->proper-list lst)
+  (if (pair? lst)
+      (cons (car lst)
+	    (improper->proper-list (cdr lst)))
+      (if (null? lst)
+	  '()
+	  (list '#!rest lst))))
+
+(define *stderr* (current-output-port))
+
+(define (wrap-item/index lst index before-marker after-marker)
+  (let loop ((i 0)
+	     (lst lst))
+    (cond ((null? (cdr lst))
+	   (list before-marker (car lst) after-marker))
+	  ((member (car lst) '(#!rest #!optional))
+	   (cons (car lst) (loop i (cdr lst))))
+	  ((= i index)
+	   (append (list before-marker (car lst) after-marker) (cdr lst)))
+	  (else
+	   (cons (car lst)
+		 (loop (+ i 1) (cdr lst))))))
+  ;; (if (>= index (improper-length lst))
+  ;;     (wrap-item/index lst (- (improper-length lst) 1) before-marker after-marker)
+  ;;     (let* ((lst (improper->proper-list lst))
+  ;; 	     (before (take lst index))
+  ;; 	     (after (if (< index (improper-length lst)) 
+  ;; 			(drop lst (+ 1 index))
+  ;; 			'()))
+  ;; 	     (item (list-ref lst index)))
+  ;; 	(append before (list before-marker item after-marker) after)))
+  )
+
+(define (highlight-at-cursor signature expr)
+  (let* ((form (find-expression-containing-swank-cursor-marker expr))
+	 (index (list-index (lambda (el) (eq? el '|swank::%cursor-marker%|)) form)))
+    (wrap-item/index (improper->proper-list signature) (- index 1) '===> '<===)))
+
+(define (swank:autodoc socket expr . params)
+  socket params
+  (let* ((op-string (find-string-before-swank-cursor-marker expr)))
+    (if op-string
+	(let* ((op (string->symbol op-string))
+	       (type (environment-reference-type (buffer-env) op)))
+	  (let ((ans (procedure-parameters op (buffer-env)))
+		(doc (if (and (eq? type 'normal)
+			      (environment-bound? (buffer-env) op)) 
+			 (documentation-string (environment-lookup (buffer-env) op))
+			 #f)))
+	    (let ((answer (if ans (with-output-to-string (lambda () 
+							   (let* ((ans (highlight-at-cursor ans expr)))
+							     (write ans))
+							   (if doc
+							       (begin
+								 (display "  - ")
+								 (display doc))))) ':not-available)))
+	      (list answer 't))))
+	(list ':not-available 't))))
+
+(define (swank:quit-lisp socket)
+  socket
+  (%exit))
 
-;;; Some unimplemented stuff.
-(define (swank:buffer-first-change . _) nil)
-(define (swank:filename-to-modulename . _) nil)
-(define (swank:swank-require . _) nil)
+;;;; Some unimplemented stuff.
+
+(define (swank:buffer-first-change socket filename)
+  socket filename
+  'NIL)
 
 ;; M-. is beyond my capabilities.
-(define (swank:find-definitions-for-emacs . _) nil)
+(define (swank:find-definitions-for-emacs socket name)
+  socket name
+  'NIL)
 
+#|
+;;; List of names obtained by grepping through "slime.el" and
+;;; "slime-repl.el".
+
+swank:commit-edited-value
+swank:compile-file-if-needed
+swank:compile-multiple-strings-for-emacs
+swank:create-server
+swank:debug-nth-thread
+swank:default-directory
+swank:describe-definition-for-emacs
+swank:describe-function
+swank:describe-inspectee
+swank:describe-symbol
+swank:documentation-symbol
+swank:eval-and-grab-output
+swank:eval-string-in-frame
+swank:find-source-location-for-emacs
+swank:frame-source-location
+swank:inspect-current-condition
+swank:inspect-in-frame
+swank:inspector-nth-part
+swank:inspector-reinspect
+swank:inspector-toggle-verbose
+swank:io-speed-test
+swank:kill-nth-thread
+swank:list-threads
+swank:pprint-eval-string-in-frame
+swank:pprint-inspector-part
+swank:profile-package
+swank:profile-report
+swank:profile-reset
+swank:profiled-functions
+swank:quit-thread-browser
+swank:re-evaluate-defvar
+swank:redirect-trace-output
+swank:restart-frame
+swank:set-default-directory
+swank:sldb-break
+swank:sldb-break-on-return
+swank:sldb-break-with-default-debugger
+swank:sldb-disassemble
+swank:sldb-next
+swank:sldb-out
+swank:sldb-return-from-frame
+swank:sldb-step
+swank:start-server
+swank:start-swank-server-in-thread
+swank:swank-compiler-macroexpand
+swank:swank-compiler-macroexpand-1
+swank:swank-format-string-expand
+swank:swank-require
+swank:swank-toggle-trace
+swank:toggle-profile-fdefinition
+swank:undefine-function
+swank:unprofile-all
+swank:untrace-all
+swank:update-indentation-information
+swank:value-for-editing
+swank:xref
+|#
 
-;;; Debugger
+;;;; Debugger
 
-(define-structure (sldb-state (conc-name sldb-state.)) condition restarts)
+(define-structure (sldb-state (conc-name sldb-state.))
+  condition
+  restarts)
 
 (define *sldb-state* #f)
+
+(define *restart-with-interactor?* #f)
+
 (define (invoke-sldb socket level condition)
-  (fluid-let ((*sldb-state* (make-sldb-state condition (bound-restarts))))
-    (dynamic-wind 
+  (fluid-let ((*sldb-state*
+	       (make-sldb-state condition (bound-restarts-for-emacs))))
+    (dynamic-wind
 	(lambda () #f)
 	(lambda ()
-	  (write-packet `(:debug 0 ,level ,@(sldb-info *sldb-state* 0 20))
-			socket)
-	  (sldb-loop level socket))
+	  (write-message `(:debug 0 ,level ,@(sldb-info *sldb-state* 0 20))
+			 socket)
+	  (write-message `(:debug-activate 0 ,level) socket)
+	  (fluid-let ((escape-to-loop (call-with-current-continuation (lambda (k) k))))
+	    (sldb-loop level socket)))
 	(lambda ()
-	  (write-packet `(:debug-return 0 ,level nil) socket)))))
+	  (if *restart-with-interactor?*
+	      (begin
+		(set! *restart-with-interactor?* #t)
+		(write-message `(:return (:abort "NIL") ,*index*) socket)))
+	  (write-message `(:debug-return 0 ,(- level 1) 'NIL) socket)))))
 
 (define (sldb-loop level socket)
-  (write-packet `(:debug-activate 0 ,level) socket)
-  (with-simple-restart 
-      'abort (format #f "Return to SLDB level ~a." level)
-      (lambda () (dispatch (read-packet socket) socket level)))
+;;  (write-message `(:debug-activate 0 ,level) socket)
+  (with-simple-restart 'ABORT (string "Return to SLDB level " level ".")
+    (lambda ()
+      (process-one-message socket level)))
   (sldb-loop level socket))
 
 (define (sldb-info state start end)
   (let ((c (sldb-state.condition state))
 	(rs (sldb-state.restarts state)))
     (list (list (condition/report-string c)
-		(format #f "  [~a]" (%condition-type/name (condition/type c)))
-		nil)
+		(string "  [" (condition-type/name (condition/type c)) "]")
+		'NIL)
 	  (sldb-restarts rs)
 	  (sldb-backtrace c start end)
 	  ;;'((0 "dummy frame"))
-	  '())))
-
-(define %condition-type/name
-  (eval '%condition-type/name (->environment '(runtime error-handler))))
+	  (list *index*))))
 
 (define (sldb-restarts restarts)
-  (map (lambda (r) 
+  (map (lambda (r)
 	 (list (symbol->string (restart/name r))
-	       (with-string-output-port 
+	       (with-string-output-port
 		(lambda (p) (write-restart-report r p)))))
        restarts))
 
-(define (swank:throw-to-toplevel . _)
-  (invoke-restart *top-level-restart*))
+(define (swank:throw-to-toplevel socket . args)
+  socket args
+  (top-level-abort))
 
-(define (swank:sldb-abort . _)
+(define (swank:sldb-abort socket . args)
+  socket args
   (abort (sldb-state.restarts *sldb-state*)))
 
-(define (swank:sldb-continue . _)
+(define (swank:sldb-continue socket . args)
+  socket args
   (continue (sldb-state.restarts *sldb-state*)))
 
-(define (swank:invoke-nth-restart-for-emacs _ _sldb-level n)
-  (invoke-restart (list-ref (sldb-state.restarts *sldb-state*) n)))
+(define (restart-has-interactor? restart)
+  (restart/interactor restart))
 
-(define (swank:debugger-info-for-emacs _ from to)
+(define (swank:invoke-nth-restart-for-emacs socket sldb-level n)
+  socket sldb-level
+  (let ((restart (list-ref (sldb-state.restarts *sldb-state*) n)))
+    (if (not (restart-has-interactor? restart))
+	(write-message `(:return (:abort "NIL") ,*index*) socket))
+    (invoke-restart-interactively restart)))
+
+(define (swank:debugger-info-for-emacs socket from to)
+  socket
   (sldb-info *sldb-state* from to))
 
-(define (swank:backtrace _ from to)
+(define (swank:backtrace socket from to)
+  socket
   (sldb-backtrace (sldb-state.condition *sldb-state*) from to))
 
 (define (sldb-backtrace condition from to)
   (sldb-backtrace-aux (condition/continuation condition) from to))
 
 (define (sldb-backtrace-aux k from to)
-  (let ((l (map frame>string (substream (continuation>frames k) from to))))
+  (let ((l (map frame->string (substream (continuation->frames k) from to))))
     (let loop ((i from) (l l))
       (if (null? l)
 	  '()
-	  (cons (list i (car l)) (loop (1+ i) (cdr l)))))))
+	  (cons (list i (car l)) (loop (+ i 1) (cdr l)))))))
 
 ;; Stack parser fails for this:
 ;; (map (lambda (x) x) "/tmp/x.x")
 
-(define (continuation>frames k)
+(define (continuation->frames k)
   (let loop ((frame (continuation->stack-frame k)))
-    (cond ((not frame)	(stream))
-	  (else
-	   (let ((next (ignore-errors
-			(lambda () (stack-frame/next-subproblem frame)))))
-	     (cons-stream frame
-			  (if (condition? next) 
-			      (stream next) 
-			      (loop next))))))))
+    (if (or (not frame)
+	    (stack-frame/repl-eval-boundary? frame))
+	(stream)
+	(cons-stream frame
+		     (let ((next
+			    (ignore-errors
+			     (lambda ()
+			       (stack-frame/next-subproblem frame)))))
+		       (if (condition? next)
+			   (stream next)
+			   (loop next)))))))
 
-(define (frame>string frame)
+(define (frame->string frame)
   (if (condition? frame)
-      (format #f "Bogus frame: ~a ~a" frame
-	      (condition/report-string frame))
-      (with-string-output-port (lambda (p) (print-frame frame p)))))
+      (string "Bogus frame: " frame
+	      " " (condition/report-string frame))
+      (call-with-output-string (lambda (p) (print-frame frame p)))))
 
 (define (print-frame frame port)
-  (define (invalid-subexpression? subexpression)
-    (or (debugging-info/undefined-expression? subexpression)
-	(debugging-info/unknown-expression? subexpression)))
-  (define (invalid-expression? expression)
-    (or (debugging-info/undefined-expression? expression)
-	(debugging-info/compiled-code? expression)))
-  (with-values (lambda () (stack-frame/debugging-info frame))
-    (lambda (expression environment subexpression)
-      (cond ((debugging-info/compiled-code? expression)
-	     (write-string ";unknown compiled code" port))
-	    ((not (debugging-info/undefined-expression? expression))
-	     (fluid-let ((*unparse-primitives-by-name?* #t))
-	       (write
-		(unsyntax (if (invalid-subexpression? subexpression)
-			      expression
-			      subexpression))
-		port)))
-	    ((debugging-info/noise? expression)
-	     (write-string ";" port)
-	     (write-string ((debugging-info/noise expression) #f)
-			   port))
-	    (else
-	     (write-string ";undefined expression" port))))))
-
+  (receive (expression environment subexpression)
+      (stack-frame/debugging-info frame)
+    environment
+    (cond ((debugging-info/compiled-code? expression)
+	   (write-string ";unknown compiled code" port))
+	  ((not (debugging-info/undefined-expression? expression))
+	   (fluid-let ((*unparse-primitives-by-name?* #t))
+	     (write
+	      (unsyntax
+	       (if (or (debugging-info/undefined-expression? subexpression)
+		       (debugging-info/unknown-expression? subexpression))
+		   expression
+		   subexpression))
+	      port)))
+	  ((debugging-info/noise? expression)
+	   (write-string ";" port)
+	   (write-string ((debugging-info/noise expression) #f)
+			 port))
+	  (else
+	   (write-string ";undefined expression" port)))))
+
 (define (substream s from to)
   (let loop ((i 0) (l '()) (s s))
-    (cond ((or (= i to) (stream-null? s)) (reverse l))
-	  ((< i from) (loop (1+ i) l (stream-cdr s)))
-	  (else (loop (1+ i) (cons (stream-car s) l) (stream-cdr s))))))
+    (cond ((or (if (null? to) #f (= i to)) (stream-null? s)) (reverse l))
+	  ((< i from) (loop (+ i 1) l (stream-cdr s)))
+	  (else (loop (+ i 1) (cons (stream-car s) l) (stream-cdr s))))))
 
-(define (swank:frame-locals-and-catch-tags _ frame)
+(define (swank:sdlb-print-condition socket)
+  socket
+  (condition/report-string (sldb-state.condition *sldb-state*))
+  )
+
+(define (swank:inspect-current-condition socket)
+  socket
+  (inspect-object (sldb-state.condition *sldb-state*)))
+
+(define (swank:frame-locals-and-catch-tags socket frame)
+  socket
   (list (map frame-var>elisp (frame-vars (sldb-get-frame frame)))
 	'()))
-  
+
 (define (frame-vars frame)
-  (with-values (lambda () (stack-frame/debugging-info frame))
-    (lambda (expression environment subexpression)
-      (cond ((environment? environment)
-	     (environment>frame-vars environment))
-	    (else '())))))
+  (receive (expression environment subexpression)
+      (stack-frame/debugging-info frame)
+    expression subexpression
+    (if (environment? environment)
+	(environment>frame-vars environment)
+	'())))
 
 (define (environment>frame-vars environment)
   (let loop ((e environment))
-    (cond ((environment->package e) '())
-	  (else (append (environment-bindings e)
-			(if (environment-has-parent? e)
-			    (loop (environment-parent e))
-			    '()))))))
+    (if (top-level-environment? e)
+	'()
+	(append (environment-bindings e)
+		(if (environment-has-parent? e)
+		    (loop (environment-parent e))
+		    '())))))
 
 (define (frame-var>elisp b)
   (list ':name (write-to-string (car b))
 	':value (cond ((null? (cdr b)) "{unavailable}")
-		      (else (>line (cadr b))))
+		      (else (->line (cadr b))))
 	':id 0))
 
 (define (sldb-get-frame index)
-  (stream-ref (continuation>frames 
-	       (condition/continuation 
+  (stream-ref (continuation->frames
+	       (condition/continuation
 		(sldb-state.condition *sldb-state*)))
 	      index))
 
@@ -603,98 +971,109 @@
     (cond ((cdr binding) (cadr binding))
 	  (else unspecific))))
 
-(define (swank:inspect-frame-var _ frame var)
+(define (swank:inspect-frame-var socket frame var)
+  socket
   (reset-inspector)
   (inspect-object (frame-var-value (sldb-get-frame frame) var)))
-
 
 ;;;; Completion
 
-(define (swank:simple-completions _ string package)
-  (let ((strings (all-completions string (user-env package) string-prefix?)))
+(define (swank:simple-completions socket string pstring)
+  socket
+  (let ((strings (all-completions string (pstring->env pstring))))
     (list (sort strings string<?)
 	  (longest-common-prefix strings))))
 
-(define (all-completions pattern env match?)
-  (let ((ss (map %symbol->string (environment-names env))))
-    (keep-matching-items ss (lambda (s) (match? pattern s)))))
-
-;; symbol->string is too slow
-(define %symbol->string symbol-name)
-
-(define (environment-names env)
-  (append (environment-bound-names env)
-	  (if (environment-has-parent? env)
-	      (environment-names (environment-parent env))
-	      '())))
+(define (all-completions prefix environment)
+  (let ((prefix
+	 (if (environment-lookup environment '*PARSER-CANONICALIZE-SYMBOLS?*)
+	     (string-downcase prefix)
+	     prefix))
+	(completions '()))
+    (for-each-interned-symbol
+     (lambda (symbol)
+       (if (and (string-prefix? prefix (symbol-name symbol))
+		(environment-bound? environment symbol))
+	   (set! completions (cons (symbol-name symbol) completions)))
+       unspecific))
+    completions))
 
 (define (longest-common-prefix strings)
-  (define (common-prefix s1 s2)
-    (substring s1 0 (string-match-forward s1 s2)))
-  (reduce common-prefix "" strings))
-
+  (reduce (lambda (s1 s2)
+	    (substring s1 0 (string-match-forward s1 s2)))
+	  ""
+	  strings))
 
 ;;;; Apropos
 
-(define (swank:apropos-list-for-emacs _ name #!optional 
-				      external-only case-sensitive package)
-  (let* ((pkg (and (string? package)
-		   (find-package (read-from-string package))))
-	 (parent (and (not (default-object? external-only))
-		      (elisp-false? external-only)))
-	 (ss  (append-map (lambda (p)
-			    (map (lambda (s) (cons p s))
-				 (apropos-list name p (and pkg parent))))
-			  (if pkg (list pkg) (all-packages))))
-	 (ss (sublist ss 0 (min (length ss) 200))))
-    (map (lambda (e)
-	   (let ((p (car e)) (s (cdr e)))
-	     (list ':designator (format #f "~a ~a" s (package/name p))
-		   ':variable (>line
-			       (ignore-errors
-				(lambda () (package-lookup p s)))))))
-	 ss)))
+(define (swank:apropos-list-for-emacs socket text external-only? case-sensitive?
+				      pstring)
+  socket case-sensitive?
+  (let ((env
+	 (if (elisp-true? external-only?)
+	     system-global-environment
+	     (pstring->env pstring))))
+    (map (lambda (symbol)
+	   `(:designator ,(string symbol) ;;  " " pstring
+	     ,@(case (environment-reference-type env symbol)
+		 ((UNBOUND) '())
+		 ((UNASSIGNED) `(:variable :not-documented))
+		 ((MACRO) `(:macro :not-documented))
+		 (else
+		  (let ((v (environment-lookup env symbol)))
+		    `(,(cond ((generic-procedure? v) ':generic-function)
+			     ((procedure? v) ':function)
+			     (else ':variable))
+		      ,(with-output-to-string (lambda () (write v)))))))))
+	 (reverse (apropos-list text env #t)))))
 
-(define (swank:list-all-package-names . _)
-  (map (lambda (p) (write-to-string (package/name p)))
+(define (swank:list-all-package-names socket . args)
+  socket args
+  (map (lambda (package) (env->pstring (package/environment package)))
        (all-packages)))
 
 (define (all-packages)
-  (define (package-and-children package)
-    (append (list package)
-	    (append-map package-and-children (package/children package))))
-  (package-and-children system-global-package))
-
+  (let loop ((package system-global-package))
+    (cons package
+	  (append-map loop (package/children package)))))
 
 ;;;; Inspector
 
-(define-structure (inspector-state (conc-name istate.))
-  object parts next previous content)
+(define-record-type <istate>
+    (make-istate object parts next previous content)
+    istate?
+  (object istate-object)
+  (parts istate-parts)
+  (next istate-next set-istate-next!)
+  (previous istate-previous)
+  (content istate-content))
 
 (define istate #f)
 
 (define (reset-inspector)
-  (set! istate #f))
+  (set! istate #f)
+  unspecific)
 
-(define (swank:init-inspector _ string)
+(define (swank:init-inspector socket string)
+  socket
   (reset-inspector)
-  (inspect-object (eval (read-from-string string) 
-			(user-env *buffer-package*))))
+  (inspect-object (eval (read-from-string string)
+			(buffer-env))))
 
 (define (inspect-object o)
   (let ((previous istate)
 	(content (inspect o))
-	(parts (make-eqv-hash-table)))
-    (set! istate (make-inspector-state o parts #f previous content))
-    (if previous (set-istate.next! previous istate))
-    (istate>elisp istate)))
+	(parts (make-strong-eqv-hash-table)))
+    (set! istate (make-istate o parts #f previous content))
+    (if previous (set-istate-next! previous istate))
+    (istate->elisp istate)))
 
-(define (istate>elisp istate)
-  (list ':title (>line (istate.object istate))
-	':id (assign-index (istate.object istate) (istate.parts istate))
-	':content (prepare-range (istate.parts istate)
-				 (istate.content istate)
-				 0 500)))
+(define (istate->elisp istate)
+  `(:title ,(->line (istate-object istate))
+    :id ,(assign-index (istate-object istate) (istate-parts istate))
+    :content ,(prepare-range (istate-parts istate)
+			     (istate-content istate)
+			     0 500)))
 
 (define (assign-index o parts)
   (let ((i (hash-table/count parts)))
@@ -712,113 +1091,121 @@
 
 (define (prepare-parts ps parts)
   (define (line label value)
-    `(,(format #f "~a: " label)
-      (:value ,(>line value) ,(assign-index value parts))
+    `(,(string label ": ")
+      (:value ,(->line value) ,(assign-index value parts))
       "\n"))
   (append-map (lambda (p)
 		(cond ((string? p) (list p))
 		      ((symbol? p) (list (symbol->string p)))
-		      (#t
+		      (else
 		       (case (car p)
 			 ((line) (apply line (cdr p)))
 			 (else (error "Invalid part:" p))))))
 	      ps))
+
+(define (swank:inspect-nth-part socket index)
+  socket
+  (inspect-object (hash-table/get (istate-parts istate) index 'no-such-part)))
 
-(define (swank:inspect-nth-part _ index)
-  (inspect-object (hash-table/get (istate.parts istate) index 'no-such-part)))
-
-(define (swank:quit-inspector _)
+(define (swank:quit-inspector socket)
+  socket
   (reset-inspector))
 
-(define (swank:inspector-pop _)
-  (cond ((istate.previous istate)
-	 (set! istate (istate.previous istate))
-	 (istate>elisp istate))
-	(else 'nil)))
+(define (swank:inspector-pop socket)
+  socket
+  (cond ((istate-previous istate)
+	 (set! istate (istate-previous istate))
+	 (istate->elisp istate))
+	(else 'NIL)))
 
-(define (swank:inspector-next _)
-  (cond ((istate.next istate)
-	 (set! istate (istate.next istate))
-	 (istate>elisp istate))
-	(else 'nil)))
+(define (swank:inspector-next socket)
+  socket
+  (cond ((istate-next istate)
+	 (set! istate (istate-next istate))
+	 (istate->elisp istate))
+	(else 'NIL)))
 
-(define (swank:inspector-range _ from to)
-  (prepare-range (istate.parts istate)
-		 (istate.content istate)
+(define (swank:inspector-range socket from to)
+  socket
+  (prepare-range (istate-parts istate)
+		 (istate-content istate)
 		 from to))
 
-(define-syntax stream*
-  (syntax-rules ()
-    ((stream* tail) tail)
-    ((stream* e1 e2 ...) (cons-stream e1 (stream* e2 ...)))))
+(define (iline label value)
+  `(LINE ,label ,value))
 
-(define (iline label value) `(line ,label ,value))
-
-(define-generic inspect (o))
-
-(define-method inspect ((o <object>))
+(define (inspect o)
   (cond ((environment? o) (inspect-environment o))
 	((vector? o) (inspect-vector o))
 	((procedure? o) (inspect-procedure o))
 	((compiled-code-block? o) (inspect-code-block o))
+	((pair? o) (inspect-pair o))
 	;;((system-pair? o) (inspect-system-pair o))
 	((probably-scode? o) (inspect-scode o))
 	(else (inspect-fallback o))))
 
 (define (inspect-fallback o)
+  (cons-stream (iline "Object" o)
+	       (stream)))
+
+#;
+(define (inspect-fallback o)
   (let* ((class (object-class o))
 	 (slots (class-slots class)))
-    (stream*
-     (iline "Class" class)
-     (let loop ((slots slots))
-       (cond ((null? slots) (stream))
-	     (else
-	      (let ((n (slot-name (car slots))))
-		(stream* (iline n (slot-value o n))
-			 (loop (cdr slots))))))))))
+    (cons-stream (iline "Class" class)
+		 (let loop ((slots slots))
+		   (if (pair? slots)
+		       (let ((n (slot-name (car slots))))
+			 (cons-stream (iline n (slot-value o n))
+				      (loop (cdr slots))))
+		       (stream))))))
 
-(define-method inspect ((o <pair>))
-  (if (or (pair? (cdr o)) (null? (cdr o)))
-      (inspect-list o)
-      (inspect-cons o)))
-
-(define (inspect-cons o)
-  (stream (iline "car" (car o))
-	  (iline "cdr" (cdr o))))
-
-(define (inspect-list o)
-  (let loop ((i 0) (o o))
-    (cond ((null? o) (stream))
-	  ((or (pair? (cdr o)) (null? (cdr o)))
-	   (stream* (iline i (car o))
-		    (loop (1+ i) (cdr o))))
-	  (else 
-	   (stream (iline i (car o))
-		   (iline "tail" (cdr o)))))))
-
-(define (inspect-environment o)
-  (stream*
-   (iline "(package)" (environment->package o))
-   (let loop ((bs (environment-bindings o)))
-     (cond ((null? bs)
-	    (if (environment-has-parent? o) 
-		(stream (iline "(<parent>)" (environment-parent o)))
-		(stream)))
-	   (else 
-	    (let* ((b (car bs)) (s (car b)))
-	      (cond ((null? (cdr b))
-		     (stream* s " {" (environment-reference-type o s) "}\n"
-			      (loop (cdr bs))))
-		    (else 
-		     (stream* (iline s (cadr b))
-			      (loop (cdr bs)))))))))))
+(define (inspect-pair pair)
+  (if (or (pair? (cdr pair))
+	  (null? (cdr pair)))
+      (let loop ((l1 pair) (l2 pair) (i 0))
+	(cond ((pair? l1)
+	       (cons-stream (iline i (car l1))
+			    (let ((l1 (cdr l1)))
+			      (if (eq? l1 l2)
+				  (stream "{circular list detected}")
+				  (loop l1
+					(if (odd? i) (cdr l2) l2)
+					(+ i 1))))))
+	      ((null? l1) (stream))
+	      (else (stream (iline "tail" (cdr l1))))))
+      (stream (iline "car" (car pair))
+	      (iline "cdr" (cdr pair)))))
+
+(define (inspect-environment env)
+  (let ((package (environment->package env))
+	(tail
+	 (let loop ((bindings (environment-bindings env)))
+	   (if (pair? bindings)
+	       (cons-stream (let ((binding (car bindings)))
+			      (iline (car binding)
+				     (if (pair? (cdr binding))
+					 (cadr binding)
+					 (string "{"
+						 (environment-reference-type
+						  env
+						  (car binding))
+						 "}"))))
+			    (loop (cdr bindings)))
+	       (if (environment-has-parent? env)
+		   (stream (iline "(<parent>)" (environment-parent env)))
+		   (stream))))))
+    (if package
+	(cons-stream (iline "(package)" package) tail)
+	tail)))
 
 (define (inspect-vector o)
   (let ((len (vector-length o)))
     (let loop ((i 0))
-      (cond ((= i len) (stream))
-	    (else (stream* (iline i (vector-ref o i))
-			   (loop (1+ i))))))))
+      (if (< i len)
+	  (cons-stream (iline i (vector-ref o i))
+		       (loop (+ i 1)))
+	  (stream)))))
 
 (define (inspect-procedure o)
   (cond ((primitive-procedure? o)
@@ -831,68 +1218,188 @@
 		 (iline "env" (ignore-errors
 			       (lambda () (procedure-environment o))))))
 	(else
-	 (stream
-	  (iline "block" (compiled-entry/block o))
-	  (with-output-to-string (lambda () (compiler:disassemble o)))))))
+	 (stream (iline "block" (compiled-entry/block o))
+		 (with-output-to-string
+		   (lambda ()
+		     (compiler:disassemble o)))))))
 
-(define (inspect-code-block o)
-  (stream-append
-   (let loop ((i (compiled-code-block/constants-start o)))
-     (cond ((>= i (compiled-code-block/constants-end o)) (stream))
-	   (else 
-	    (stream* 
-	     (iline i (system-vector-ref o i))
-	     (loop (+ i compiled-code-block/bytes-per-object))))))
-   (stream (iline "debuginfo" (compiled-code-block/debugging-info o))
-	   (iline "env" (compiled-code-block/environment o))
-	   (with-output-to-string (lambda () (compiler:disassemble o))))))
+(define (inspect-code-block block)
+  (let loop ((i (compiled-code-block/constants-start block)))
+    (if (< i (compiled-code-block/constants-end block))
+	(cons-stream (iline i (system-vector-ref block i))
+		     (loop (+ i compiled-code-block/bytes-per-object)))
+	(stream (iline "debuginfo" (compiled-code-block/debugging-info block))
+		(iline "env" (compiled-code-block/environment block))
+		(with-output-to-string
+		  (lambda ()
+		    (compiler:disassemble block)))))))
 
 (define (inspect-scode o)
   (stream (pprint-to-string o)))
 
 (define (probably-scode? o)
-  (define tests (list access? assignment? combination? comment?
-		      conditional? definition? delay? disjunction? lambda?
-		      quotation? sequence? the-environment? variable?))
-  (let loop ((tests tests))
-    (cond ((null? tests) #f)
-	  (((car tests) o))
-	  (else (loop (cdr tests))))))
+  (any (lambda (predicate) (predicate o))
+       scode-predicates))
+
+(define scode-predicates
+  (list access? assignment? combination? comment?
+	conditional? definition? delay? disjunction? lambda?
+	quotation? sequence? the-environment? variable?))
 
 (define (inspect-system-pair o)
   (stream (iline "car" (system-pair-car o))
 	  (iline "cdr" (system-pair-cdr o))))
-
 
 ;;;; Auxilary functions
 
-(define nil '())
-(define t 't)
-(define (elisp-false? o) (member o '(nil ())))
+(define (elisp-false? o) (or (null? o) (eq? o 'NIL)))
 (define (elisp-true? o) (not (elisp-false? o)))
-(define (>line o) 
+
+(define (->line o)
   (let ((r (write-to-string o 100)))
-    (cond ((not (car r)) (cdr r))
-	  (else (string-append (cdr r) " ..")))))
-;; Must compile >line otherwise we can't write unassigend-reference-traps.
-(set! >line (compile-procedure >line))
-(define (read-from-string s) (with-input-from-string s read))
-(define (pprint-to-string o) 
-  (with-string-output-port 
-      (lambda (p)
-	(fluid-let ((*unparser-list-breadth-limit* 10)
-		    (*unparser-list-depth-limit* 4)
-		    (*unparser-string-length-limit* 100))
-	  (pp o p)))))
-;(define (1+ n) (+ n 1))
-(define (1- n) (- n 1))
-(define (package-lookup package name)
-  (let ((p (if (package? package) package (find-package package))))
-    (environment-lookup (package/environment p) name)))
-(define log-port (current-output-port))
-(define (log-event fstring . args)
-  ;;(apply format log-port fstring args)
-  #f
+    (if (car r)
+	(string-append (cdr r) " ..")
+	(cdr r))))
+
+(define (read-from-string s)
+  (read (open-input-string s)))
+
+(define (pprint-to-string o)
+  (call-with-output-string
+    (lambda (p)
+      (fluid-let ((*unparser-list-breadth-limit* 10)
+		  (*unparser-list-depth-limit* 4)
+		  (*unparser-string-length-limit* 100))
+	(pp o p)))))
+
+;; quote keywords, t and nil
+(define (quote-special x)
+  (cond ((and (symbol? x)
+	      (or
+	       (and (> (string-length (symbol->string x)) 0)
+		    (char=? #\: (string-ref (symbol->string x) 0)))
+	       (eq? x 't)))
+	 `(quote ,x))
+	((and (symbol? x)
+	      (eq? x 'nil))
+	 '())
+	(else
+	 x)))
+
+(define swank:completions swank:simple-completions)
+
+;; only return the object, not a list
+(define (swank:lookup-presented-object number)
+  ;(unhash number)
+  't
   )
 
-;;; swank-mit-scheme.scm ends here
+(define (swank:lookup-presented-object-or-lose n)
+  (unhash (inexact->exact n)))
+
+;; depends on the implementation of swank:lookup-presented-object
+(define (cl:nth-value socket n lst)
+  lst)
+
+;; the following two are a clutch, contrib/swank-presentation.el uses #. for some forms :-/
+(eval 
+  '(define (handler:dot port db ctx char1 char2)
+     (let ((form (read port)))
+       (if (and (list? form)
+		(eq? (car form)
+		     'swank:lookup-presented-object-or-lose))
+	   (make-quotation (unhash (inexact->exact (cadr form))))
+	   form)))
+  (->environment '(runtime parser)))
+
+(eval 
+  '(vector-set! (parser-table/special runtime-parser-table) (char->integer #\.) handler:dot)
+  (->environment '(runtime parser)))
+
+;; ,in (runtime advice)
+(eval 
+ '(define trace-indentation -2)
+ (->environment '(runtime advice)))
+
+(eval '(define (trace-indent level)
+	 (display (make-string level #\space)))
+      (->environment '(runtime advice)))
+(eval '(define (trace-display port procedure arguments #!optional result)
+	 (fresh-line port)
+	 (let ((width (- (max 40 (output-port/x-size port)) 1))
+	       (write-truncated
+		(lambda (object width)
+		  (let ((output (write-to-string object width)))
+		    (if (car output)
+			(substring-fill! (cdr output) (- width 3) width #\.))
+		    (write-string (cdr output) port)))))
+	   (if (default-object? result)
+	       (begin 
+		 (set! trace-indentation (+ 2 trace-indentation))
+		 (trace-indent trace-indentation)
+		 (write-string 
+		  (format #f "(Enter (~a ~a)~%" (procedure-name procedure) (decorated-string-append "" " " "" (map (lambda (arg) (format #f "~a" arg)) arguments)))
+		  port))
+	       (begin
+		 (trace-indent trace-indentation)
+		 (set! trace-indentation (- trace-indentation 2))
+		 (write-string 
+		  (format #f " Leave ~a " (procedure-name procedure))
+		  port)
+		 (write-truncated result (- width 2))
+		 (write-string ")" port)
+		 (newline port)))))
+      (->environment '(runtime advice)))
+
+(eval '(define (procedure-name proc)
+	 (cond ((arity-dispatched-procedure? proc)
+		;; TODO
+		proc)
+	       ((compound-procedure? proc)
+		(car (lambda-components* (procedure-lambda proc) list)))
+	       ((compiled-procedure? proc)
+		(string->symbol (compiled-procedure/name proc)))
+	       ((primitive-procedure? proc)
+		(primitive-procedure-name proc))
+	       ((arity-dispatched-procedure? proc)
+		(let ((p (entity-procedure proc)))
+		  (compiled-procedure/name proc)))
+	       (else
+		(error proc))))
+      (->environment '(runtime advice)))
+
+(define (documentation-string proc)
+  "Extract the documentation string from a procedure.
+
+The documentation string is the first expression inside a procedure's body, if it is a string."
+  (if (procedure? proc)
+      (let ((code (unsyntax (procedure-lambda proc))))
+	(if (and (list? code)
+		 (> (length code) 3)
+		 (string? (list-ref code 2)))
+	    (list-ref code 2)
+	    #f))))
+
+(initialize-package!)
+
+
+;; todo:
+;; sldb-insert-frame-call-to-repl
+;; sldb-inspect-condition
+;; sldb-disassemble
+;; swank:frame-package-name
+;; swank:inspect-in-frame
+;; swank:frame-source-location
+#|
+(defun careful-symbol-value (symbol)
+   (check-type symbol symbol)
+   (restart-case (if (boundp symbol)
+                     (return-from careful-symbol-value 
+                                  (symbol-value symbol))
+                     (error 'unbound-variable
+                            :name symbol))
+     (use-value (value)
+       :report "Specify a value to use this time."
+       :interactive (lambda () (format t "Supply a value: ") (list(read)))
+       value)))
+|#
