@@ -1380,7 +1380,7 @@ The documentation string is the first expression inside a procedure's body, if i
 	    (list-ref code 2)
 	    #f))))
 
-(initialize-package!)
+;(initialize-package!)
 
 
 ;; todo:
