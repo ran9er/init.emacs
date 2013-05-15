@@ -1,0 +1,3 @@
+RControl::Capslock
+Capslock::Control 
+ 

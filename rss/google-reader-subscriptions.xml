@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+    <head>
+        <title>Google 阅读器中 William 的订阅</title>
+    </head>
+    <body>
+        <outline text="cnBeta.COM" title="cnBeta.COM" type="rss"
+            xmlUrl="http://www.cnbeta.com/backend.php" htmlUrl="http://www.cnbeta.com"/>
+        <outline text="Engadget 中国版" title="Engadget 中国版" type="rss"
+            xmlUrl="http://cn.engadget.com/rss.xml" htmlUrl="http://cn.engadget.com"/>
+        <outline text="LinuxEden-Linux伊甸园" title="LinuxEden-Linux伊甸园"
+            type="rss" xmlUrl="http://www.linuxeden.com/rss.php" htmlUrl="http://www.linuxeden.com"/>
+        <outline text="LinuxGem" title="LinuxGem" type="rss"
+            xmlUrl="http://www.linuxgem.org/feed" htmlUrl="http://www.linuxgem.org/"/>
+        <outline text="LinuxSir.Org - Linux 发行版Archlinux讨论区"
+            title="LinuxSir.Org - Linux 发行版Archlinux讨论区" type="rss"
+            xmlUrl="http://linuxsir.org/bbs/external.php?type=RSS2&amp;forumids=96" htmlUrl="http://www.linuxsir.org/bbs"/>
+        <outline text="LinuxTOY" title="LinuxTOY" type="rss"
+            xmlUrl="http://feedproxy.google.com/linuxtoy" htmlUrl="http://linuxtoy.org"/>
+        <outline text="Linux桌面中文网" title="Linux桌面中文网" type="rss"
+            xmlUrl="http://feed.feedsky.com/ldcn" htmlUrl="http://imtx.me/"/>
+        <outline
+            text="PortableApps.com - Portable software for USB drives"
+            title="PortableApps.com - Portable software for USB drives"
+            type="rss" xmlUrl="http://portableapps.com/feeds/general" htmlUrl="http://portableapps.com"/>
+        <outline text="Recent Package Updates"
+            title="Recent Package Updates" type="rss"
+            xmlUrl="http://www.archlinux.org/feeds/packages/" htmlUrl="http://www.archlinux.org/packages/"/>
+        <outline text="Solidot" title="Solidot" type="rss"
+            xmlUrl="http://feeds.feedburner.com/solidot" htmlUrl="http://solidot.org/"/>
+        <outline text="南方周末-热点新闻" title="南方周末-热点新闻" type="rss"
+            xmlUrl="http://www.infzm.com/rss/home/rss2.0.xml" htmlUrl="http://www.infzm.com/"/>
+        <outline text="博客园-首页原创精华区" title="博客园-首页原创精华区" type="rss"
+            xmlUrl="http://www.cnblogs.com/rss" htmlUrl="http://www.cnblogs.com/"/>
+        <outline text="善用佳软" title="善用佳软" type="rss"
+            xmlUrl="http://feed.xbeta.info/" htmlUrl="http://xbeta.info"/>
+        <outline text="嘻来嚷往" title="嘻来嚷往" type="rss"
+            xmlUrl="http://feed.xirang.us/" htmlUrl="http://xfruits.com/freezeblue/"/>
+        <outline text="小众软件" title="小众软件" type="rss"
+            xmlUrl="http://feed.appinn.com/" htmlUrl="http://www.appinn.com"/>
+        <outline text="未注册用户的 InfoQ 个性化 RSS Feed - 请注册后升级！"
+            title="未注册用户的 InfoQ 个性化 RSS Feed - 请注册后升级！" type="rss"
+            xmlUrl="http://www.infoq.com/cn/rss/rss.action?token=mfSsvSpLcoXzOK0ccsYb43yqqchWm17b" htmlUrl="http://www.infoq.com/cn/"/>
+        <outline text="槽边往事---《比特海日志》" title="槽边往事---《比特海日志》" type="rss"
+            xmlUrl="http://www.hecaitou.com/blogs/hecaitou/Rss.aspx" htmlUrl="http://www.hecaitou.com/blogs/hecaitou/"/>
+        <outline text="超现实创意网" title="超现实创意网" type="rss"
+            xmlUrl="http://feed.feedsky.com/chaoxs" htmlUrl="http://www.chaoxs.com"/>
+    </body>
+</opml>

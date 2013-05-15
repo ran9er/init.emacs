@@ -1,8 +1,4 @@
 ;; -*- encoding: utf-8-unix; -*-
-;; don't need load-once, because eshell-load-hook load only once
-;;;###autoload
-(autoload 'eshell "eshell" "" t)
-
 ;; * bash-completion
 ;+++++++++++++++++++++++++++++++++++++++
 (when nil
@@ -39,7 +35,7 @@
            (eldoc-mode)
 ;           (lisp-symbol)
            (my-auto-pair)
-           ;; (enable-theme 'eshell)
+           (enable-theme 'eshell)
            (eshell-scroll-conservatively)
            (setq
                  pcomplete-cycle-completions   nil
@@ -56,7 +52,7 @@
               ;; "M-n"   'next-line
               "<up>"    'eshell-previous-matching-input-from-input
               "<down>"  'eshell-next-matching-input-from-input
-              "C-9"     (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
+              "C-9"     (outside "()" 1 " ")
               "C-8"     'down-list
               "C-7"     '(lambda nil (interactive)(up-list -1))
               )
@@ -75,7 +71,7 @@
       eshell-rm-interactive-query   t
       eshell-mv-overwrite-files     nil
       ;;  aliases file 中不能有多余的空行，否则报正则表达式错误
-      eshell-aliases-file       (expand-file-name "_eshell_/eshell-alias" *init-dir*)
+      eshell-aliases-file       (expand-file-name "_eshell/eshell-alias" *init-dir*)
       eshell-highlight-prompt   t
       ;; 提示符设置，两项必须对应起来，否则报 read-only 且不能补全
       eshell-prompt-regexp      "^[^#$\n]* [#$>]+ "
@@ -98,17 +94,47 @@
                     scroll-step              1))))
 
 ;; * exntension
-(mapcar
- 'require
- '(eshell-ls
-   eshell-user-key
-   eshell-user-func
-   eshell-cmpl
-   eshell-bmk))
+(rqx 0
+     ;eshell-ls
+     eshell-user-key
+     eshell-cmpl
+     eshell-bmk)
 
 ;; * face
 ;(make-face 'eshell-custom-face)
 ;(set-face-attribute 'eshell-custom-face nil :font "宋体-10")
+
+;; * func & alias
+(defun eshell/ff(file)
+  (find-file file))
+
+(defun eshell/img(img)
+  (propertize "Image" (quote display) (create-image (expand-file-name img))))
+
+(defun eshell/ee ()
+  (find-file (expand-file-name "44_eshell.el" *init-dir*)))
+
+(defun eshell/aa ()
+  (find-file eshell-aliases-file))
+
+(defun eshell/rr ()
+  (find-file (expand-file-name "_qref.org" work-dir)))
+
+(defun eshell/ed (file1 file2)
+  (ediff-files file1 file2))
+
+;; ** alternate func
+(defun eshell/less (&rest args)
+  "Invoke `view-file' on a file. "less +42 foo" will go to line 42 in
+    the buffer for foo."
+  (while args
+    (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+        (let* ((line (string-to-number (match-string 1 (pop args))))
+               (file (pop args)))
+          (tyler-eshell-view-file file)
+          (goto-line line))
+      (tyler-eshell-view-file (pop args)))))
+(defalias 'eshell/more 'eshell/less)
 
 ;; * last command timer
 (add-hook 'eshell-load-hook
@@ -156,3 +182,33 @@
 ;+++++++++++++++++++++++++++++++++++++++
 
 
+;; * other func
+(defun eshell-maybe-bol ()
+  (interactive)
+  (let ((p (point)))
+    (eshell-bol)
+    (if (= p (point))
+        (beginning-of-line))))
+
+(defun eshell/vi (&rest args)
+  "Invoke `find-file' on the file.
+\"vi +42 foo\" also goes to line 42 in the buffer."
+  (while args
+    (if (string-match "\\`\\+\\([0-9]+\\)\\'" (car args))
+        (let* ((line (string-to-number (match-string 1 (pop args))))
+               (file (pop args)))
+          (find-file file)
+          (goto-line line))
+      (find-file (pop args)))))
+
+(defun eshell/emacs (&rest args)
+  "Open a file in emacs. Some habits die hard."
+  (if (null args)
+      ;; If I just ran "emacs", I probably expect to be launching
+      ;; Emacs, which is rather silly since I'm already in Emacs.
+      ;; So just pretend to do what I ask.
+      (bury-buffer)
+    ;; We have to expand the file names or else naming a directory in an
+    ;; argument causes later arguments to be looked for in that directory,
+    ;; not the starting directory
+    (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))

@@ -18,7 +18,7 @@
 (~ _check-directory (cdr (assoc 'wk-dir *init-dirs*)) t)
 (defvar work-dir (cdr (assoc 'wk-dir *init-dirs*)))
 (cd
- (if (eq system-type 'window-nt)
+ (if (eq system-type 'windows-nt)
      work-dir
    "~"))
 (defvar exts-dir (cdr (assoc 'ext-dir *init-dirs*)))
