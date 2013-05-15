@@ -17,7 +17,10 @@
 ;; * working dir
 (~ _check-directory (cdr (assoc 'wk-dir *init-dirs*)) t)
 (defvar work-dir (cdr (assoc 'wk-dir *init-dirs*)))
-(cd work-dir)
+(cd
+ (if (eq system-type 'window-nt)
+     work-dir
+   "~"))
 (defvar exts-dir (cdr (assoc 'ext-dir *init-dirs*)))
 
 ;; * time-stamp-format

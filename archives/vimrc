@@ -1,106 +1,106 @@
-"ÔËĞĞÔÚ·Ç¼æÈİ(VI)Ä£Ê½ÏÂ(ÃüÁîÄ£Ê½ÏÂ TAB ²¹È«)
+"è¿è¡Œåœ¨éå…¼å®¹(VI)æ¨¡å¼ä¸‹(å‘½ä»¤æ¨¡å¼ä¸‹ TAB è¡¥å…¨)
 set nocompatible
  
-"Éè¶¨ÎÄ¼ş±àÂë
-"ÄÚ²¿±àÂë
+"è®¾å®šæ–‡ä»¶ç¼–ç 
+"å†…éƒ¨ç¼–ç 
 set encoding=utf-8
-"Ä¬ÈÏ±£´æ±àÂë
+"é»˜è®¤ä¿å­˜ç¼–ç 
 set fileencoding=utf-8
-"Ê¶±ğ±àÂë
+"è¯†åˆ«ç¼–ç 
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
-"ÕıÈ·´¦ÀíÖĞÎÄÕÛĞĞ
+"æ­£ç¡®å¤„ç†ä¸­æ–‡æŠ˜è¡Œ
 set formatoptions+=mM
-"½«²»Ã÷¿í¶ÈµÄ×Ö·û×÷ÎªË«×Ö½Ú
+"å°†ä¸æ˜å®½åº¦çš„å­—ç¬¦ä½œä¸ºåŒå­—èŠ‚
 set ambiwidth=double
  
 set guifont=Monaco:h10:w6
 "set guifontwide=NSimSun-18030,NSimSun
  
-"¿ªÆôÓï·¨¼ÓÁÁ
+"å¼€å¯è¯­æ³•åŠ äº®
 syntax on
-"ÅäÉ«·ç¸ñ
+"é…è‰²é£æ ¼
 colorscheme desert
  
-"¼ò½àÆô¶¯Ä£Ê½
+"ç®€æ´å¯åŠ¨æ¨¡å¼
 set shortmess=atI
-"Éè¶¨ GUI Ñ¡Ïî
-"set guioptions=gmrLtT  m:²Ëµ¥ T:¹¤¾ßÀ¸ r:¹ö¶¯Ìõ
+"è®¾å®š GUI é€‰é¡¹
+"set guioptions=gmrLtT  m:èœå• T:å·¥å…·æ  r:æ»šåŠ¨æ¡
 set guioptions=gLt
-"  "×´Ì¬À¸ÑùÊ½
+"  "çŠ¶æ€æ æ ·å¼
 "  set laststatus=2
 "    function! CurDir()
 "       let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
 "       return curdir
 "    endfunction
 "  set statusline=\ %F%m%r%h\ [%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-"ÔÚ×´Ì¬À¸Î»ÖÃÏÔÊ¾²¹È«²Ëµ¥
+"åœ¨çŠ¶æ€æ ä½ç½®æ˜¾ç¤ºè¡¥å…¨èœå•
 set wildmenu
-"ÃüÁîĞĞ¸ß¶È
+"å‘½ä»¤è¡Œé«˜åº¦
 set cmdheight=1
-"ÏÔÊ¾±ê³ß
+"æ˜¾ç¤ºæ ‡å°º
 set ruler
  
-"ÏÔÊ¾²»ÍêÕûµÄ¶ÎÂä
+"æ˜¾ç¤ºä¸å®Œæ•´çš„æ®µè½
 set display=lastline
-"×Ô¶¯ÕÛĞĞ
+"è‡ªåŠ¨æŠ˜è¡Œ
 "set nowrap
 set wrap
-"°´ÍêÕûµ¥´ÊÕÛĞĞ
+"æŒ‰å®Œæ•´å•è¯æŠ˜è¡Œ
 set nolinebreak
 "set linebreak
-"Éè¶¨ĞĞ¾à ( GUI ½çÃæÖĞÉúĞ§ )
+"è®¾å®šè¡Œè· ( GUI ç•Œé¢ä¸­ç”Ÿæ•ˆ )
 set linespace=4
-"ĞĞ¿í£¨ÊäÈëÊ±×Ô¶¯²åÈë»»ĞĞ·û£©
+"è¡Œå®½ï¼ˆè¾“å…¥æ—¶è‡ªåŠ¨æ’å…¥æ¢è¡Œç¬¦ï¼‰
 "set textwidth=80
 set textwidth=0
-"j k ÔÚÆÁÄ»ĞĞ¼äÉÏÏÂÒÆ¶¯£»gj gk ÔÚÎïÀíĞĞ¼äÉÏÏÂÒÆ¶¯
+"j k åœ¨å±å¹•è¡Œé—´ä¸Šä¸‹ç§»åŠ¨ï¼›gj gk åœ¨ç‰©ç†è¡Œé—´ä¸Šä¸‹ç§»åŠ¨
 noremap j gj
 noremap k gk
 noremap gj j
 noremap gk k
-"Ê¹ÓÃ Space ·­Ò³
+"ä½¿ç”¨ Space ç¿»é¡µ
 noremap <Space> <PageDown>
  
-"ÔÊĞíËùÓĞÄ£Ê½ÏÂµÄĞé¿Õ¼ä±à¼­ £¨Ğé¿Õ¼ä:²»°üº¬ÈÎºÎÎÄ±¾µÄ¿Õ¼ä¡£Èç»»ĞĞ·ûÖ®ºó£©
+"å…è®¸æ‰€æœ‰æ¨¡å¼ä¸‹çš„è™šç©ºé—´ç¼–è¾‘ ï¼ˆè™šç©ºé—´:ä¸åŒ…å«ä»»ä½•æ–‡æœ¬çš„ç©ºé—´ã€‚å¦‚æ¢è¡Œç¬¦ä¹‹åï¼‰
 "set virtualedit=all
-"½ûÖ¹ÔÚĞé¿Õ¼ä±à¼­
+"ç¦æ­¢åœ¨è™šç©ºé—´ç¼–è¾‘
 "set virtualedit=
-"»»ĞĞ·ûºóÒ»¸ñ×÷ÎªĞé¿Õ¼ä
+"æ¢è¡Œç¬¦åä¸€æ ¼ä½œä¸ºè™šç©ºé—´
 set virtualedit=onemore,block
  
-"Éè¶¨ÖÆ±í·û¿í¶È
+"è®¾å®šåˆ¶è¡¨ç¬¦å®½åº¦
 set tabstop=4
-"Éè¶¨ Tab Ëõ½øµÄ¿Õ¸ñÊı
+"è®¾å®š Tab ç¼©è¿›çš„ç©ºæ ¼æ•°
 set shiftwidth=4
-"½«Ëõ½ø×ª»»Îª¿Õ¸ñ
+"å°†ç¼©è¿›è½¬æ¢ä¸ºç©ºæ ¼
 set expandtab
-"Éè¶¨×Ô¶¯Ëõ½ø(ĞÂĞĞÓëÇ°Ò»ĞĞËõ½øÏàÍ¬)
+"è®¾å®šè‡ªåŠ¨ç¼©è¿›(æ–°è¡Œä¸å‰ä¸€è¡Œç¼©è¿›ç›¸åŒ)
 "set autoindent
 set noautoindent
-"²åÈëÄ£Ê½ÏÂ£¬¡°¡û¡±ÈçºÎÉ¾³ı¹â±êÇ°µÄ×Ö·û£ºĞĞÊ×¿Õ°×¡¢»»ĞĞ·û¡¢²åÈëµãÖ®Ç°µÄ×Ö·û
+"æ’å…¥æ¨¡å¼ä¸‹ï¼Œâ€œâ†â€å¦‚ä½•åˆ é™¤å…‰æ ‡å‰çš„å­—ç¬¦ï¼šè¡Œé¦–ç©ºç™½ã€æ¢è¡Œç¬¦ã€æ’å…¥ç‚¹ä¹‹å‰çš„å­—ç¬¦
 set backspace=indent,eol,start
-"Õ³ÌùÄ£Ê½
+"ç²˜è´´æ¨¡å¼
 "set paste "set nopaste
  
-"ÃüÁîĞĞÀúÊ·¼ÍÂ¼
+"å‘½ä»¤è¡Œå†å²çºªå½•
 set history=500
  
-"½ûÓÃÔöÁ¿ËÑË÷
+"ç¦ç”¨å¢é‡æœç´¢
 set incsearch
 "set noincsearch
-"ËÑË÷Ê±ºöÂÔ´óĞ¡Ğ´
+"æœç´¢æ—¶å¿½ç•¥å¤§å°å†™
 set ignorecase
 "set noignorecase
-"¸ßÁÁÏÔÊ¾ËÑË÷½á¹û
+"é«˜äº®æ˜¾ç¤ºæœç´¢ç»“æœ
 set hlsearch
  
-"Éè¶¨ÕÛµş·½Ê½
+"è®¾å®šæŠ˜å æ–¹å¼
 "set foldmethod=manual
  
-"ÒÔÏÂ×Ö·û½«±»ÊÓÎªµ¥´ÊµÄÒ»²¿·Ö (ASCII)£º
+"ä»¥ä¸‹å­—ç¬¦å°†è¢«è§†ä¸ºå•è¯çš„ä¸€éƒ¨åˆ† (ASCII)ï¼š
 set iskeyword+=33-47,58-64,91-96,123-128
 
-"¼ÇÒä×îºó±à¼­×´Ì¬
+"è®°å¿†æœ€åç¼–è¾‘çŠ¶æ€
 au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 set viminfo='1000,f1,<500
 
