@@ -39,8 +39,20 @@
                   :coding-system utf-8-unix)
             (Racket ("racket")
                     :coding-system utf-8-unix)
-            (node.js ("node" "-i"))
-            (ruby ("ruby") :coding-system utf-8-unix)))))
+            (ruby ("ruby") :coding-system utf-8-unix
+                  :init (lambda (port-filename coding-system)
+                          (format
+                           "require \"%s\"\nswank(\"%s\")\n"
+                           ,(expand-file-name
+                             "_extensions_/slime/contrib/swank.rb" *init-dir*)
+                           port-filename)))
+            (node.js ("node" "-i")
+                     :init (lambda (port-filename coding-system)
+                             (format
+                              "require(\"%s\")\nstart_swank(\"%s\")\n"
+                              ,(expand-file-name
+                                "_extensions_/swank-js/swank.js" *init-dir*)
+                              port-filename)))))))
 
 ;; (setq inferior-lisp-program
 ;;       (expand-file-name "../../sbcl/sbcl.exe" exec-directory))
