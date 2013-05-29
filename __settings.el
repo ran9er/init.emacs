@@ -45,7 +45,7 @@
  ;; 当使用 M-x COMMAND 后，过 1 秒钟显示该 COMMAND 绑定的键。
  ;; suggest-key-bindings 1
  save-abbrevs          nil
- ;; debug-on-error        t
+ debug-on-error        t
  )
 
 ;; narrow
