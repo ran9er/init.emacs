@@ -2,8 +2,8 @@
 (defvar skeleton-pair-cond-alist
   '(
     (?\( . ((t _ ")")))
-    (?\{ . (((char-bf '(?$ ?=)) _ "}")
-            (t n _ n "}")))
+    (?\{ . (((match-str-bf "(.*)\\|function") n _ n "}")
+            (t _ "}")))
     (?\[ . (((or (char-bf ?/)(char-bf ?=)) n _ n "]")
             (t _ "]")))
     (?/  . (((bolp) "*" n  _  n "*/")
@@ -33,6 +33,16 @@
     (save-excursion
       (skip-chars-backward " \t")
       (memq (char-before (point)) x))))
+
+(defun match-str-bf (regexp &optional back)
+  "str-bf is writen by ran9er"
+  (string-match
+   regexp
+   (save-excursion
+     (skip-chars-backward " \t")
+     (buffer-substring-no-properties
+      (point)
+      (progn (funcall (or back 'backward-sexp))(point))))))
 
 ;;;###autoload
 (defun skeleton-pair-alist-update ()

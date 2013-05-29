@@ -819,6 +819,7 @@
         beg mid prev result)
     (with-temp-buffer
       (insert str)
+      ;replace \$
       (setq beg (point-min))
       (goto-char beg)
       (while (re-search-forward regexp nil t)
@@ -832,6 +833,7 @@
         (if prev
             (setq result
                   (cons (buffer-substring-no-properties (cdr prev) beg)
+                        ;^ replace back to \$
                         (cons (car prev)
                               result)))
           (setq result
