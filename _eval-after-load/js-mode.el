@@ -16,4 +16,4 @@
 ;;                      " *, *" t))
 ;;               )))
 
-(add-hook 'javascript-mode-hook 'my-auto-pair)
+(add-hook 'javascript-mode-hook 'skeleton-pair-alist-update)

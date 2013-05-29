@@ -1,34 +1,33 @@
+(setq skeleton-pair t)
 (defvar skeleton-pair-cond-alist
   '(
-    ((char-bf '(?$ ?=)) . (?\{ _ "}"))
-    ((or (char-bf ?/)(char-bf ?=)) . (?\[ n _ n "]"))
-    ((bolp) . (?/ "*" n  _  n "*/"))
-    (t . (?/ _))
-    ((bolp) . (?. -1 "->"))
-    (t . (?. _))
+    (?\( . ((t _ ")")))
+    (?\{ . (((char-bf '(?$ ?=)) _ "}")
+            (t n _ n "}")))
+    (?\[ . (((or (char-bf ?/)(char-bf ?=)) n _ n "]")
+            (t _ "]")))
+    (?/  . (((bolp) "*" n  _  n "*/")
+            (t _)))
+    (?.  . (((bolp) -1 "->")
+            (t _)))
+    (?\" . ((t _ "\"")))
     ))
-(defadvice skeleton-pair-insert-maybe (around xxx activate)
-  (let ((skeleton-pair-alist skeleton-pair-alist)
-        (x skeleton-pair-cond-alist))
+
+(defadvice skeleton-pair-insert-maybe (around condition activate)
+  (let* ((skeleton-pair-alist skeleton-pair-alist)
+         (key last-command-event)
+         (cnd (cdr (assq key skeleton-pair-cond-alist))))
     (while
         (and
-         x
+         cnd
          (null
-          (if (and
-               (eq last-command-event (cadr (car x)))
-               (eval (caar x)))
-              (setq skeleton-pair-alist (list (cdar x)))
+          (if (eval (caar cnd))
+              (setq skeleton-pair-alist (list (cons key (cdar cnd))))
             nil)))
-      (setq x (cdr x)))
+      (setq cnd (cdr cnd)))
+    ;; (message (format "%S" skeleton-pair-alist))
     ad-do-it))
-;; (defadvice skeleton-pair-insert-maybe (around xxx activate)
-;;   (let ((skeleton-pair-alist skeleton-pair-alist))
-;;     (mapc
-;;      (lambda(x)
-;;        (if (and (eq last-command-event (cadr x))(eval (car x)))
-;;            (setq skeleton-pair-alist (list (cdr x)))))
-;;      skeleton-pair-cond-alist)
-;;     ad-do-it))
+
 (defun char-bf (x)
   (let ((x (if (listp x) x (list x))))
     (save-excursion
@@ -38,11 +37,12 @@
 ;;;###autoload
 (defun skeleton-pair-alist-update ()
   (interactive)
-  (mapcar
+  (mapc
    (lambda(x)
      ;; (local-set-key (char-to-string (cadr x)) 'skeleton-pair-insert-maybe)
      (define-key (current-local-map)
-       (eval `(kbd ,(char-to-string (cadr x))))
+       (eval `(kbd ,(char-to-string (car x))))
+       ;; (char-to-string (cadr x))
        'skeleton-pair-insert-maybe))
    skeleton-pair-cond-alist))
 ;; (skeleton-pair-alist-update)

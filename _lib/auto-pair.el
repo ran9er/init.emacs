@@ -16,7 +16,7 @@
         (setq skeleton-pair t)
         (define-key-s 1  '("(" "{" "\"" "[") 'skeleton-pair-insert-maybe))
 
-(defadvice skeleton-pair-insert-maybe (around xxx activate)
+(defadvice skeleton-pair-insert-maybe (around condition activate)
   (let ((skeleton-pair-alist skeleton-pair-alist)
         (c-before
          (lambda(x)(save-excursion

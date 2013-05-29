@@ -1,4 +1,3 @@
-(load-once
- ;; (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
- ;; (autoload 'lua-mode "lua-mode" "" t nil)
-)
+(add-to-list 'auto-mode-alist '("\\.wlua\\'" . lua-mode))
+
+(add-hook 'lua-mode-hook 'skeleton-pair-alist-update)

@@ -67,7 +67,10 @@
                 (nil nil)
                 "t"
                 (nil
-                 ("top" "tail" "notop" "head"))))
+                 ("top" "tail" "notop" "head"))
+                "wx.lua.newfile"
+                (("head")
+                 nil)))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                  ("env"
                   ("#env")
@@ -148,7 +151,11 @@
                   "snip"
                   ("snippets=file")
                   "t"
-                  ("t")))
+                  ("t")
+                  "new"
+                  ("wx.lua.newfile")
+                  "newfile"
+                  ("wx.lua.newfile")))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                  ("emacs-lisp-mode"
                   ("#env" "eltempl" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
@@ -169,4 +176,6 @@
                   "slime-repl-mode"
                   ("lisp#lambda")
                   "org-mode"
-                  ("org-mode#head"))))
+                  ("org-mode#head")
+                  "lua-mode"
+                  ("wx.lua.newfile"))))

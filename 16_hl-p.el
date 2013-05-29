@@ -35,7 +35,7 @@
 ;; 					'((lambda (action pair pos-before)
 ;; 						(hl-paren-color-update)))))))
 
-(add-hook 'emacs-lisp-mode-hook 'my-auto-pair)
+(add-hook 'emacs-lisp-mode-hook 'skeleton-pair-alist-update)
 
 ;; * Enables highlight-parentheses-mode on all buffers:
 
