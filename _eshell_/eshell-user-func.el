@@ -67,20 +67,30 @@
     ;; not the starting directory
     (mapc #'find-file (mapcar #'expand-file-name (eshell-flatten-list (reverse args))))))
 
-(defun eshell/xza (from &optional to)
-  (let* ((tmp (concat to (make-temp-name "") ".tar"))
-         (from (directory-file-name from))
-         (to (concat (expand-file-name from to) ".txz")))
-    (shell-command (format "tar cvf %s %s" tmp from))
-    (shell-command (format "7z a -txz %s %s" to tmp))
+(defun eshell/xz (opt from &optional to tmp-loc)
+  "obsolete"
+  (let* ((o7 (format "7z %s -txz" opt))
+         (ot (format "tar %s"
+                     (cond
+                      ((equal "a" opt)
+                       "cvf")
+                      ((equal "x" opt)
+                       "xvf"))))
+         (postfix ".txz")
+         (tmp (expand-file-name
+               (concat (make-temp-name "") ".tar")
+               (or tmp-loc temporary-file-directory)))
+         (mc (lambda (&rest str)
+               (shell-command (mapconcat 'identity str " ")))))
+    (cond
+     ((equal "a" opt)
+      (setq from
+            (if (stringp from)
+                (list (expand-file-name from))
+              (mapcar 'expand-file-name from)))
+      (apply mc ot tmp from)
+      (funcall mc o7 to tmp))
+     ((equal "x" opt)
+      (funcall mc o7 from (concat "-o" tmp))
+      (funcall mc ot tmp "-C" to)))
     (delete-file tmp)))
-
-(defun eshell/xzx (from &optional to)
-  (let* ((tmp (concat to (make-temp-name "")))
-         f)
-    (shell-command (format "7z x -txz %s -o%s" from tmp))
-    (setq f (car (directory-files tmp nil "tar")))
-    (shell-command (format "cd %s && tar xf %s -C %s" tmp f to))
-    (delete-directory tmp t)))
-
-

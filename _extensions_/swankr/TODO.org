@@ -1,0 +1,143 @@
+#+TITLE: swankr: TODO items
+#+AUTHOR: Christophe Rhodes
+#+EMAIL: csr21@cantab.net
+#+OPTIONS: H:2
+* Conveniences
+** make it straightforward to try
+   - document new startup method
+** ?documentation within emacs 
+   - like ESS at a minimum
+   - more org-mode-like navigation?
+** handle SIGINT somehow
+   this might be difficult; it probably requires dynamic variables to
+   be able to get the slimeConnection and sldbState currently active
+   (because the interrupt can happen at any point...)
+* Protocol requests
+** core slimefuns [33/95]
+   - [ ] ping
+   - [X] create-repl
+   - [ ] create-listener
+   - [X] connection-info
+   - [ ] io-speed-test
+   - [ ] toggle-debug-on-swank-error
+   - [X] interactive-eval
+   - [X] eval-and-grab-output
+   - [ ] interactive-eval-region
+   - [ ] re-evaluate-defvar
+   - [ ] pprint-eval
+   - [ ] set-package
+   - [X] listener-eval
+   - [ ] ed-in-emacs
+   - [ ] inspect-in-emacs
+   - [X] value-for-editing
+   - [X] commit-edited-value
+   - [ ] sldb-break-with-default-debugger
+   - [X] backtrace
+   - [X] debugger-info-for-emacs
+   - [ ] invoke-nth-restart
+   - [ ] sldb-abort
+   - [ ] sldb-continue
+   - [ ] simple-break
+   - [X] throw-to-toplevel
+   - [X] invoke-nth-restart-for-emacs
+   - [X] eval-string-in-frame
+   - [ ] pprint-eval-string-in-frame
+   - [X] frame-locals-and-catch-tags
+   - [ ] sldb-disassemble
+   - [ ] sldb-return-from-frame
+   - [ ] sldb-break
+   - [ ] sldb-step
+   - [ ] sldb-next
+   - [ ] sldb-out
+   - [X] compile-file-for-emacs
+   - [X] compile-string-for-emacs
+   - [ ] compile-multiple-strings-for-emacs
+   - [ ] compile-file-if-needed
+   - [X] load-file
+   - [X] swank-require
+   - [ ] swank-macroexpand-1
+   - [ ] swank-macroexpand
+   - [ ] swank-macroexpand-all
+   - [ ] swank-compiler-macroexpand-1
+   - [ ] swank-compiler-macroexpand
+   - [ ] swank-format-string-expand
+   - [ ] disassemble-form
+   - [X] simple-completions
+   - [X] operator-arglist
+   - [ ] apropos-list-for-emacs
+   - [ ] describe-symbol
+   - [ ] describe-function
+   - [ ] describe-definition-for-emacs
+   - [ ] documentation-symbol
+   - [ ] list-all-package-names
+   - [ ] swank-toggle-trace
+   - [ ] untrace-all
+   - [ ] redirect-trace-output
+   - [ ] undefine-function
+   - [ ] toggle-profile-fdefinition
+   - [ ] profile-by-substring
+   - [ ] find-definition-for-thing
+   - [ ] find-source-location-for-emacs
+   - [X] find-definitions-for-emacs
+   - [ ] xref
+   - [ ] xrefs
+   - [X] init-inspector
+   - [X] inspector-nth-part
+   - [X] inspect-nth-part
+   - [ ] inspector-range
+   - [ ] inspector-call-nth-action
+   - [X] inspector-pop
+   - [X] inspector-next
+   - [ ] inspector-reinspect
+   - [ ] inspector-toggle-verbose
+   - [X] inspector-eval
+   - [ ] inspector-history
+   - [X] quit-inspector
+   - [ ] describe-inspectee
+   - [ ] pprint-inspector-part
+   - [ ] inspect-in-frame
+   - [X] inspect-current-condition
+   - [X] inspect-frame-var
+   - [ ] list-threads
+   - [ ] quit-thread-browser
+   - [ ] debug-nth-thread
+   - [ ] kill-nth-thread
+   - [ ] start-swank-server-in-thread
+   - [ ] mop
+   - [ ] update-indentation-information
+   - [X] frame-source-location (NB: not currently a slimefun)
+   - [X] buffer-first-change (NB: not currently a slimefun)
+   - [X] default-directory (NB: not currently a slimefun)
+   - [X] set-default-directory (NB: not currently a slimefun)
+** swank-presentations [4/5]
+   - [X] lookup-presented-object
+   - [X] lookup-presented-object-or-lose
+   - [X] clear-repl-results
+   - [ ] inspect-presentation
+   - [X] cl:nth-value (NB: not a slimefun)
+* Unimplemented contribs
+** Wanted
+*** swank-fancy-inspector
+*** swank-c-p-c
+*** swank-fuzzy
+*** swank-arglists
+*** swank-snapshot
+*** swank-clipboard
+** Possible
+*** swank-motd
+*** swank-asdf
+    Or rather some equivalent functionality, offering tab-completion
+    and ,load-library repl shortcut
+* New features
+** fix slime-media for CL compatibility
+   (something makes it hard to use images from CL -- package printing
+   stuff?)
+** more use of slime-media
+   We have this functionality; let's use it!
+*** bold / emphasis in ordinary printing
+    e.g. italic for marginal significance, bold for clear (or for
+    highest value in contingency tables)
+* COMMENT:
+Local Variables:
+mode: org;
+End:

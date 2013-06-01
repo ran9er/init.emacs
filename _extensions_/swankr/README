@@ -1,0 +1,136 @@
+#+TITLE: swankr: SWANK (and SLIME) for R
+#+AUTHOR: Christophe Rhodes
+#+EMAIL: csr21@cantab.net
+* Introduction
+  This is swankr, an implementation of the swank[fn:1] protocol for
+  R[fn:2].  While the coverage of swank protocol functions is
+  currently limited, enough is implemented for swankr to be useful: at
+  the very minimum, it can be used to develop and extend itself.
+** Relationship with ESS
+   Emacs Speaks Statistics[fn:3] provides an interaction mode for R
+   (among other statistical software packages), including an interface
+   to R's toplevel, and keybindings to send input to R, to look up
+   documentation, and so on.  Where it differs most noticeably from
+   swankr is in the level of integration of various facilities with
+   emacs: ESS uses the browser() debugger, whereas swankr provides its
+   own debugger, sldb; swankr provides a custom REPL with hooks for
+   common commands; and so on.  On the other hand, ESS is mature,
+   feature-rich software, while swankr is only a little more advanced
+   than a proof-of-concept.  For Lisp programmers, perhaps the most
+   useful analogy is to say that swankr intends to be to ESS what
+   SLIME is to ILISP.  At present, ESS mode remains active in R source
+   buffers, providing font-locking functionality among other things.
+* Installation
+** Emacs configuration
+*** Installing SLIME
+    SLIME is required separately from swankr.  To install slime,
+    perhaps the simplest is to pull the CVS sources into a
+    user-specific site directory, and arrange for that to be on the
+    emacs =load-path=; I did
+#+begin_src sh
+mkdir -p ~/.emacs.d/site-lisp
+cd ~/.emacs.d/site-lisp
+cvs -z3 -d:pserver:anonymous:anonymous@common-lisp.net:/project/slime/cvsroot co slime
+#+end_src
+
+    Following that, I have in my =~/.emacs= (you will need to adjust
+    paths to executables and source files):
+#+begin_src emacs-lisp
+;;; ~/.emacs.d/
+(let ((default-directory (concat user-emacs-directory (convert-standard-filename "site-lisp/"))))
+  (normal-top-level-add-subdirs-to-load-path))
+
+;;; SLIME
+(require 'slime)
+(setq slime-net-coding-system 'utf-8-unix)
+(slime-setup '(slime-asdf slime-repl slime-scratch slime-presentations slime-media))
+(setq slime-lisp-implementations
+      '((sbcl ("sbcl" "--dynamic-space-size" "2048" "--load" "/home/csr21/src/lisp/quicklisp/setup.lisp"))
+        (git-sbcl ("sh" "/home/csr21/src/lisp/sbcl/run-sbcl.sh" "--dynamic-space-size" "2048"))
+        (R ("R" "--no-save" "--max-vsize=4096M")
+           :init (lambda (port-filename coding-system) 
+                   (format
+                    "source('/home/csr21/src/R/swankr/swank.R', keep.source=TRUE, chdir=TRUE)\nstartSwank('%s')\n" port-filename)))))
+(global-set-key (kbd "s-s") 'slime-selector)
+#+end_src
+*** Additional refinements
+   In addition, for keybindings like =C-c C-c= to work properly, emacs
+   needs to be told how to guess where a function definition begins.
+   This can be achieved with /e.g./
+#+BEGIN_SRC emacs-lisp
+   (add-hook 'ess-mode-hook
+     (lambda () 
+       (setq defun-prompt-regexp "^\\(\\(\\sw\\|\\s_\\)+\\|\\s\"\\S\"+\\s\"\\)\\s-*\\(=\\|<-\\)\\s-*function\\s-*(.*)\\s-*")))
+#+END_SRC
+   Fontification of quoted function names is suboptimal by default in
+   ESS; the following form in =~/.emacs= fixes that for ESS 5.11.
+#+BEGIN_SRC emacs-lisp
+   (eval-after-load "ess-common"
+     (setq ess-R-mode-font-lock-keywords
+           (append 
+             (list '("\\(\\sw\\|\\s_\\)+\\s-*\\(=\\|<-\\)\\s-*function"
+                     1 font-lock-function-name-face t)
+                   '("\\s\"\\(\\S\"+\\)\\s\"\\s-*\\(=\\|<-\\)\\s-*function"
+                     1 font-lock-function-name-face t))
+             ess-R-mode-font-lock-keywords)))
+#+END_SRC
+*** Running
+    After performing the installation steps above, =M-- M-x slime RET R
+    RET= should start swank.  You will be prompted to accept a version
+    mismatch -- simply accept -- then the SLIME REPL should start up,
+    giving a prompt.  Enjoy!
+** Proof-of-concept (OBSOLETE)
+   [ The instructions here are for the seriously impatient, and do not
+   give as good an experience ]
+
+   To begin using swankr:
+
+   1. start R;
+   2. load the swank.R file:
+#+BEGIN_SRC R
+      source("swank.R")
+#+END_SRC
+   3. at the R prompt, run
+#+BEGIN_SRC R
+      swank();
+#+END_SRC
+   4. within emacs, load and initialize slime;
+#+BEGIN_SRC emacs-lisp
+      (require 'slime)
+      (slime-setup '(slime-repl slime-presentations slime-media))
+#+END_SRC
+   5. run =M-x slime-connect=, accepting the default host and port,
+      and acknowledging the protocol version mismatch.
+
+   At this point, an R REPL should appear.
+* Development
+  swankr's primary development repository is a git repository,
+  accessible through
+  <http://common-lisp.net/r/users/crhodes/swankr.git> and
+  git://common-lisp.net/users/crhodes/swankr.git; a web view of the
+  development history is [[http://common-lisp.net/gitweb?p=users/crhodes/swankr.git][available through gitweb]].  You can also view
+  the current lists of [[file:BUGS.org]] and [[file:TODO.org]] items.
+* Acknowledgments
+  Thanks to my colleagues at [[http://www.gold.ac.uk/][Goldsmiths, University of London]], for
+  suggesting that I investigate R for numerical and graphical
+  investigations, and to my colleagues at [[http://www.teclo.net/][Teclo Networks AG]] for giving
+  me motivation to get around to it.  Initial development was done at
+  the [[http://ismir2010.ismir.net/][International Symposium on Music Information Retrieval]], which I
+  attended (indirectly) thanks to the EPSRC-funded [[http://www.omras2.org/][OMRAS2]] research
+  project and the [[http://www.londoninternational.ac.uk][University of London External System]]; Helmut Eller's
+  partial implementation of swank for Ruby was an excellent blueprint
+  to get development started.
+* Footnotes
+[fn:1] part of SLIME, the Superior Lisp Interaction Mode for Emacs:
+<http://common-lisp.net/project/slime/>.
+
+[fn:2] a free software environment for statistical computing and
+graphics: <http://www.r-project.org/>.
+
+[fn:3] also known as ESS, an emacs mode for interacting with a number
+of statistical software packages, including R:
+<http://ess.r-project.org/>.
+* COMMENT:
+Local Variables:
+mode: org;
+End:

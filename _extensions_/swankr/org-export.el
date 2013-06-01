@@ -1,0 +1,5 @@
+(let* ((orig org-emphasis-regexp-components)
+       (new `(,(nth 0 orig) ,(nth 1 orig) ,(remove ?\" (nth 2 orig))
+              ,(nth 3 orig) ,(nth 4 orig) ,(nth 5 orig))))
+  (org-set-emph-re 'org-emphasis-regexp-components new)
+  (org-export-as-html nil))

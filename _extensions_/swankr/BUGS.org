@@ -1,0 +1,89 @@
+#+SEQ_TODO: OPEN | RESOLVED
+#+TITLE: swankr: Bug list
+#+AUTHOR: Christophe Rhodes
+#+EMAIL: csr21@cantab.net
+#+OPTIONS: H:0 toc:nil
+* RESOLVED #1 printed output not redirected to slime repl       :MINOR:FIXED:
+  The output from functions performing printing is sent to the
+  standard output of the process running =swank()=, not to an emacs
+  stream.
+* OPEN #2 popping beyond inspector history crashes                   :NORMAL:
+  Inspecting something and hitting =l= causes the R debugger to pop
+  up from trying to send =NULL= in a sexp to Emacs.
+* RESOLVED #3 source reference in compile-string-for-emacs   :WISHLIST:FIXED:
+  It would be good if we could associate the expressions in the string
+  with a reference to the corresponding source.  Unfortunately, emacs
+  only passes the buffer position in bytes (or maybe characters),
+  whereas R's srcrefs work with lines and columns.
+* OPEN #4 multibyte characters corrupt slime connection              :NORMAL:
+  Not in all circumstances (e.g. ="£"= is OK) but =1:£= fails in
+  slime-net-read-or-lose.
+* RESOLVED #5 respect visibility of evaluated results        :WISHLIST:FIXED:
+  I think we can do this by calling =.Internal(eval.with.vis(...))=
+  instead of just regular =eval()=
+* OPEN #6 occasional invalid sink() errors                           :NORMAL:
+  Not sure yet when it happens, but it makes the terminal browser pop up.
+* OPEN #7 swank server is uninterruptible                            :NORMAL:
+  at least in certain conditions
+* RESOLVED #8 startup is not filesystem-location independent    :MINOR:FIXED:
+  Requires the cwd to be the swankr directory to be able to find
+  swank-presentations and swank-media
+* RESOLVED #9 help and ? to produce help buffers             :WISHLIST:FIXED:
+  Not like ESS, though: that works by looking at the user's input with
+  a regexp.  Use slime-media?
+* RESOLVED #10 0 or more than 1 exprs at REPL                   :MINOR:FIXED:
+  Entering 0 exprs (whitespace or the empty string) at the REPL gives
+  an error from `swank:listener-eval`, which subscripts the parse tree
+  with index 1.  (Entering more than one simply ignores all after the
+  first, assuming that they all parse).  We should be a bit more like
+  R's repl, evaluating each of the exprs in turn and treating the
+  results a bit like CL's multiple values
+* OPEN #11 no newline when using :popup-buffer for ?help              :MINOR:
+  Logged here so that I don't forget it if I sort out #9 first: we
+  need to be able to indicate "no repl result please" if we open a new
+  temporary buffer to display the result.
+* RESOLVED #12 escaping when searching for completions         :NORMAL:FIXED:
+  Gets thoroughly confused on completing "read." because the "." is
+  treated as a regexp "any character" pattern.
+* OPEN #13 source location in sldb wrong                              :MINOR:
+  I think there's an off-by-one in the association between frames and
+  srcrefs.  Test case is something like 1+"foo" at the repl, and then
+  hitting "v" on the `swank:listener-eval` frame.  Also the arglists
+  seem weird to me; in a call like frob(foo), I would expect to see
+  the value of foo in the locals.
+* OPEN #14 thread argument to emacsRex unused                        :NORMAL:
+  This is a problem not least because it causes all sorts of problems
+  in inspecting swank-internal frames in sldb; test case is 1+"foo",
+  then RET on the eval(expr, envir, enclos) frame just below
+  `swank:listener-eval`.
+* OPEN #15 write and use Rd2org instead of Rd2txt                  :WISHLIST:
+  org-mode is the future!
+* OPEN #16 ESS configuration                                          :MINOR:
+  sorting out the function regexp at least, but generally reducing
+  dependence might be good.
+* OPEN #17 encoding / external-format confusion                      :NORMAL:
+  We declare ourselves capable of handling utf-8-unix encoding, but
+  whether we actually do anything close to being correct is unclear.
+  (Almost certainly not; I suspect we naïvely use nchar() in places).
+  We could either declare our encoding as latin1-unix, or make the
+  server utf8ly correct.  To reproduce, simply type "ë" at the repl.
+* OPEN #18 ess-help needs to be loaded automatically                  :MINOR:
+  to reproduce: in a fresh emacs, type ?help
+* OPEN #19 base graphics don't work automatically                    :NORMAL:
+  They can be made to by passing --interactive to R on startup, but
+  I'm not sure what else that does.
+* RESOLVED #20 closing the connection causes infinite R errors :IMPORTANT:FIXED:
+  reported by "Philipp Marek" <philipp@marek.priv.at> by private mail.
+* RESOLVED #21 inspecting an environment causes error in match() :MINOR:FIXED:
+  reported by "Philipp Marek" <philipp@marek.priv.at> by private mail.
+
+  To reproduce, C-c I globalenv() RET, or hit RET on environment
+  presentations in the debugger (if presentations are on).
+* RESOLVED #22 completion of named list fields               :WISHLIST:FIXED:
+  It is very nice in ESS to be able to type df$ TAB and get a
+  completion list of the data frame's columns.  Supporting it in
+  swankr should be really easy.
+* COMMENT:
+Local Variables:
+mode: org;
+End:
