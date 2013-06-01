@@ -62,6 +62,21 @@
     '(progn
        (define-key lisp-mode-map (kbd "TAB") 'lisp-indent-or-complete)))
 
+(add-hook 'slime-mode-hook
+          (lambda ()
+            (set (make-local-variable 'skeleton-pair-cond-alist)
+                 (append
+                  '(
+                    (?\( . ((t _ ")")))
+                    (?\{ . (((match-str-bf "(.*)\\|function") n _ n "}")
+                            (t _ "}")))
+                    (?\[ . (((match-str-bf "--") "[" n _ n "--]]")
+                            (t _ "]")))
+                    )
+                  skeleton-pair-cond-alist))
+            (skeleton-pair-alist-update)))
+
+
 ;;按回车键后下一行代码自动缩进
 (add-hook 'lisp-mode-hook '(lambda ()
       (local-set-key (kbd "RET") 'newline-and-indent)))
