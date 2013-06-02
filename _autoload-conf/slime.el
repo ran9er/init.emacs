@@ -62,19 +62,9 @@
     '(progn
        (define-key lisp-mode-map (kbd "TAB") 'lisp-indent-or-complete)))
 
-(add-hook 'slime-mode-hook
+(add-hook 'slime-repl-mode-hook
           (lambda ()
-            (set (make-local-variable 'skeleton-pair-cond-alist)
-                 (append
-                  '(
-                    (?\( . ((t _ ")")))
-                    (?\{ . (((match-str-bf "(.*)\\|function") n _ n "}")
-                            (t _ "}")))
-                    (?\[ . (((match-str-bf "--") "[" n _ n "--]]")
-                            (t _ "]")))
-                    )
-                  skeleton-pair-cond-alist))
-            (skeleton-pair-alist-update)))
+            (skeleton-pair-alist-update slime-repl-mode-map)))
 
 
 ;;按回车键后下一行代码自动缩进
@@ -86,10 +76,11 @@
 
 ;(setq inferior-lisp-program "lisp")
 (slime-setup '(slime-fancy
+               slime-autodoc
                slime-asdf
                slime-banner
                slime-clipboard
-               slime-scheme
+               slime-highlight-edits
                ))
 (setq slime-complete-symbol*-fancy t)
 (setq slime-complete-symbol-function 'slime-fuzzy-complete-symbol)

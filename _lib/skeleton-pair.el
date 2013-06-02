@@ -48,15 +48,16 @@
       (progn (funcall (or back 'backward-sexp))(point))))))
 
 ;;;###autoload
-(defun skeleton-pair-alist-update ()
+(defun skeleton-pair-alist-update (&optional keymap)
   (interactive)
-  (mapc
-   (lambda(x)
-     ;; (local-set-key (char-to-string (cadr x)) 'skeleton-pair-insert-maybe)
-     (define-key (current-local-map)
-       (eval `(kbd ,(char-to-string (car x))))
-       ;; (char-to-string (cadr x))
-       'skeleton-pair-insert-maybe))
-   skeleton-pair-cond-alist))
+  (let ((keymap (or keymap (current-local-map))))
+    (mapc ;; (local-set-key (char-to-string (cadr x)) 'skeleton-pair-insert-maybe)
+     (eval
+      `(lambda(x)
+         (define-key ',keymap
+           (eval `(kbd ,(char-to-string (car x))))
+           ;; (char-to-string (cadr x))
+           'skeleton-pair-insert-maybe)))
+     skeleton-pair-cond-alist)))
 ;; (skeleton-pair-alist-update)
 
