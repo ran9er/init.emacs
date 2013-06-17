@@ -1,8 +1,5 @@
 (#s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
-               ("#emacs-lisp-mode#test#"
-                (nil
-                 ("top"))
-                "#env"
+               ("#env"
                 (nil nil)
                 "eltempl"
                 (nil nil)
@@ -75,9 +72,7 @@
                 (("head")
                  nil)))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
-                 ("test"
-                  ("#emacs-lisp-mode#test#" "emacs-lisp-mode#test")
-                  "env"
+                 ("env"
                   ("#env")
                   "eltempl"
                   ("eltempl")
@@ -125,6 +120,8 @@
                   ("emacs-lisp-mode#read-file")
                   "rf"
                   ("emacs-lisp-mode#read-file")
+                  "test"
+                  ("emacs-lisp-mode#test")
                   "uc"
                   ("emacs-lisp-mode#upcase")
                   "upcase"
@@ -162,14 +159,14 @@
                   "wxnew"
                   ("wx.lua.newfile")))
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
-                 ("all"
-                  ("#emacs-lisp-mode#test#" "emacs-lisp-mode#autoload" "emacs-lisp-mode#condition-case" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "emacs-lisp-mode#upcase" "head" "remove-overlays" "save-excursion" "snippets=file" "t")
-                  "emacs-lisp-mode"
-                  ("#emacs-lisp-mode#test#" "#env" "eltempl" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
+                 ("emacs-lisp-mode"
+                  ("#env" "eltempl" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
                   "lisp-interaction-mode"
-                  ("#emacs-lisp-mode#test#" "#env" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
+                  ("#env" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
                   "lisp-mode"
-                  ("#emacs-lisp-mode#test#" "#env" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
+                  ("#env" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
+                  "all"
+                  ("emacs-lisp-mode#autoload" "emacs-lisp-mode#condition-case" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "emacs-lisp-mode#upcase" "head" "remove-overlays" "save-excursion" "snippets=file" "t")
                   "c-mode"
                   ("for")
                   "js-mode"

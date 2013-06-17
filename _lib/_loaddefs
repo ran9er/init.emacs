@@ -1,5 +1,11 @@
 (loaddefs-eval
- '(("zenburn-theme.el"
+ '(("skeleton-pair.el"
+    (20923 55131 345000 0)
+    (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn &optional keymap)" t nil))
+   ("auto-pair.el"
+    (20923 55131 307000 0)
+    (autoload 'my-auto-pair "auto-pair" "Not documented.\n\n(fn)" t nil))
+   ("zenburn-theme.el"
     (20864 36441 651000 0)
     (and load-file-name
          (boundp 'custom-theme-load-path)
@@ -28,15 +34,9 @@
     (autoload 'mask-check "mask" "Not documented.\n\n(fn idx n)" nil nil)
     (autoload 'mask-gen-lst "mask" "Not documented.\n\n(fn n)" nil nil)
     (autoload 'mask-count-t "mask" "Not documented.\n\n(fn n)" nil nil))
-   ("skeleton-pair.el"
-    (20770 17307 343000)
-    (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn)" t nil))
    ("arith.el"
     (20767 46615 336000)
     (autoload 'average "arith" "Not documented.\n\n(fn &rest lst)" nil nil))
-   ("auto-pair.el"
-    (20767 46615 320000)
-    (autoload 'my-auto-pair "auto-pair" "Not documented.\n\n(fn)" t nil))
    ("beacon.el"
     (20767 46615 305000)
     (autoload 'swap-point "beacon" "Not documented.\n\n(fn)" t nil)
