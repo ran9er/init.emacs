@@ -6,44 +6,54 @@
     "f" View-search-last-regexp-forward
     "b" View-search-last-regexp-backward
     ))
+
 ;; ** defun change-mode-line-color
+(defvar viewmode-mode-line-face
+  (mapcar
+   (lambda(x)
+     (mapcar
+      (lambda(y)
+        (adjust-color (face-attribute 'mode-line y) x))
+      '(:foreground :background)))
+   '(-40 0)))
+
 (defun change-mode-line-color ()
   (interactive)
   (when (get-buffer-window (current-buffer))
     (cond (window-system
-           (cond (buffer-read-only
-                  (set-face-foreground 'modeline "orange"))
-                 (t
-                  (set-face-foreground 'modeline "white"))))
+           (set-face-foreground 'mode-line
+                                (if buffer-read-only (caar viewmode-mode-line-face)
+                                  (caadr viewmode-mode-line-face))))
           (t
-           (set-face-background 'modeline
-                                (if buffer-read-only "red"
-                                  "white"))))))
+           (set-face-background 'mode-line
+                                (if buffer-read-only (cadar viewmode-mode-line-face)
+                                  (cadadr viewmode-mode-line-face)))))))
 ;; ** defmacro change-mode-line-color-advice
 (defmacro change-mode-line-color-advice (f)
   `(defadvice ,f (after change-mode-line-color activate)
      (change-mode-line-color)
      (force-mode-line-update)))
 ;; ** progn
-(mapc
- (lambda(x)
-   (eval
-    `(change-mode-line-color-advice ,x)))
- '(set-window-configuration
-   switch-to-buffer
-   pop-to-buffer
-   other-window
-   toggle-read-only
-   vc-toggle-read-only
-   vc-next-action
-   view-mode-enable
-   view-mode-disable
-   bury-buffer
-   kill-buffer
-   delete-window
-   ;; for windows.el
-   win-switch-to-window
-   win-toggle-window))
+(when t
+  (mapc
+   (lambda(x)
+     (eval
+      `(change-mode-line-color-advice ,x)))
+   '(set-window-configuration
+     switch-to-buffer
+     pop-to-buffer
+     other-window
+     toggle-read-only
+     vc-toggle-read-only
+     vc-next-action
+     view-mode-enable
+     view-mode-disable
+     bury-buffer
+     kill-buffer
+     delete-window
+     ;; for windows.el
+     win-switch-to-window
+     win-toggle-window)))
 ;; (change-mode-line-color)
 (add-hook
  'view-mode-hook
