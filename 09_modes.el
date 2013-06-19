@@ -13,3 +13,6 @@
 (autoload 'markdown-mode "markdown-mode.el"
    "Major mode for editing Markdown files" t)
 
+;; *========== Java
+(if (fboundp 'jde-mode)
+    (add-to-list 'auto-mode-alist '("\\.java\\'" . jde-mode)))
