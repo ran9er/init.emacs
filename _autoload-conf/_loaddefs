@@ -1,6 +1,9 @@
 (loaddefs-eval
- '(("mew.el"
-    (20923 55283 242000 0)
+ '(("jde.el"
+    (20929 52228 745000 0)
+    (autoload 'jde-mode "jde" "" t))
+   ("mew.el"
+    (20929 50055 292000 0)
     (autoload 'mew "mew" nil t)
     (autoload 'mew-send "mew" nil t)
     (autoload 'mew-user-agent-compose "mew" nil t))

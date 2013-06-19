@@ -1,17 +1,21 @@
 (loaddefs-eval
- '(("skeleton-pair.el"
+ '(("zenburn-theme.el"
+    (20929 50055 89000 0)
+    (and load-file-name
+         (boundp 'custom-theme-load-path)
+         (add-to-list 'custom-theme-load-path
+                      (file-name-as-directory
+                       (file-name-directory load-file-name))))
+    (add-to-list 'safe-local-eval-forms
+                 '(when
+                      (require 'rainbow-mode nil t)
+                    (rainbow-mode 1))))
+   ("skeleton-pair.el"
     (20923 55131 345000 0)
     (autoload 'skeleton-pair-alist-update "skeleton-pair" "Not documented.\n\n(fn &optional keymap)" t nil))
    ("auto-pair.el"
     (20923 55131 307000 0)
     (autoload 'my-auto-pair "auto-pair" "Not documented.\n\n(fn)" t nil))
-   ("zenburn-theme.el"
-    (20864 36441 651000 0)
-    (and load-file-name
-         (boundp 'custom-theme-load-path)
-         (add-to-list 'custom-theme-load-path
-                      (file-name-as-directory
-                       (file-name-directory load-file-name)))))
    ("script.el"
     (20864 36441 601000 0)
     (autoload 'run-current-file "script" "Execute or compile the current file.\nFor example, if the current buffer is the file x.pl,\nthen it'll call “perl x.pl” in a shell.\nThe file can be php, perl, python, bash, java.\nFile suffix is used to determine what program to run.\n\n(fn)" t nil)
