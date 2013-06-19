@@ -69,7 +69,7 @@
 
 ;; * coding-system
 ;; 语言环境
-;(set-language-environment 'utf-8)
+(set-language-environment 'utf-8)
 ;(set-clipboard-coding-system 'utf-8)            ;; 剪切板，用于和其他程序之间复制内容
 (setq default-buffer-file-coding-system  'utf-8-unix)     ; 文件
 ;; (when (eq system-type 'windows-nt)

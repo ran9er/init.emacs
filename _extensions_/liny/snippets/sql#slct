@@ -1,0 +1,15 @@
+<------alias
+slc slct
+<------modes
+sql-mode sql-interactive-mode
+<------keywords
+
+<------environment
+(liny-custom-syntax 'head "#")
+<------snippet
+SELECT #{1:*%?,}
+FROM #{2:table}
+  WHERE #{3:conditions}
+  GROUP BY #{4:group_by_expression}
+  HAVING #{5:group_condition}
+  ORDER BY #{6:columns};#0

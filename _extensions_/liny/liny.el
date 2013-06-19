@@ -108,6 +108,7 @@
 
 (defvar liny-custom-meta nil)
 
+(defvar liny-temp-str (make-temp-name "liny-"))
 (defvar liny-syntax-delimiter
   '(("\\(:\\)" . liny-action-prompt)
     ("\\(\\$\\)(" . (lambda(s p o)(eval (read s)))))
@@ -819,7 +820,8 @@
         beg mid prev result)
     (with-temp-buffer
       (insert str)
-      ;replace \$
+      ;; replace \$
+      ;;(replace-string "\$" liny-temp-str)
       (setq beg (point-min))
       (goto-char beg)
       (while (re-search-forward regexp nil t)

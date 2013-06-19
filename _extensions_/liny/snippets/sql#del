@@ -1,0 +1,11 @@
+<------alias
+del dlt
+<------modes
+sql-mode sql-interactive-mode
+<------keywords
+
+<------environment
+(liny-custom-syntax 'head "#")
+<------snippet
+DELETE FROM #{1:table}
+  WHERE #{3:condition};#0

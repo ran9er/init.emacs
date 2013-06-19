@@ -1,6 +1,8 @@
 (#s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                ("#env"
                 (nil nil)
+                "custom-syntax"
+                (nil nil)
                 "eltempl"
                 (nil nil)
                 "emacs-lisp-mode#autoload"
@@ -65,6 +67,22 @@
                 (nil nil)
                 "snippets=file"
                 (nil nil)
+                "sql#create"
+                (nil nil)
+                "sql#del"
+                (nil nil)
+                "sql#func"
+                (nil nil)
+                "sql#insert"
+                (nil nil)
+                "sql#select"
+                (nil nil)
+                "sql#slct"
+                (nil nil)
+                "sql#update"
+                (nil nil)
+                "sql#view"
+                (nil nil)
                 "t"
                 (nil
                  ("top" "tail" "notop" "head"))
@@ -74,6 +92,10 @@
    #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8 data
                  ("env"
                   ("#env")
+                  "cstm"
+                  ("custom-syntax")
+                  "cust"
+                  ("custom-syntax")
                   "eltempl"
                   ("eltempl")
                   "et"
@@ -101,7 +123,7 @@
                   "condcase"
                   ("emacs-lisp-mode#condition-case")
                   "def"
-                  ("emacs-lisp-mode#defun")
+                  ("emacs-lisp-mode#defun" "sql#func")
                   "defun"
                   ("emacs-lisp-mode#defun")
                   "f"
@@ -150,6 +172,38 @@
                   ("scm#define" "scm#defunc")
                   "snip"
                   ("snippets=file")
+                  "create"
+                  ("sql#create")
+                  "crt"
+                  ("sql#create")
+                  "del"
+                  ("sql#del")
+                  "dlt"
+                  ("sql#del")
+                  "fun"
+                  ("sql#func")
+                  "func"
+                  ("sql#func")
+                  "ins"
+                  ("sql#insert")
+                  "is"
+                  ("sql#insert")
+                  "sl"
+                  ("sql#select")
+                  "slc"
+                  ("sql#select" "sql#slct")
+                  "slct"
+                  ("sql#slct")
+                  "ud"
+                  ("sql#update")
+                  "udt"
+                  ("sql#update")
+                  "up"
+                  ("sql#update")
+                  "view"
+                  ("sql#view")
+                  "vw"
+                  ("sql#view")
                   "t"
                   ("t")
                   "new"
@@ -166,7 +220,7 @@
                   "lisp-mode"
                   ("#env" "emacs-lisp-mode#closure" "emacs-lisp-mode#cond" "emacs-lisp-mode#defun" "emacs-lisp-mode#hash-table" "emacs-lisp-mode#let" "emacs-lisp-mode#ol" "emacs-lisp-mode#read-file" "emacs-lisp-mode#test" "let" "lisp#lambda")
                   "all"
-                  ("emacs-lisp-mode#autoload" "emacs-lisp-mode#condition-case" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "emacs-lisp-mode#upcase" "head" "remove-overlays" "save-excursion" "snippets=file" "t")
+                  ("custom-syntax" "emacs-lisp-mode#autoload" "emacs-lisp-mode#condition-case" "emacs-lisp-mode#ol" "emacs-lisp-mode#test" "emacs-lisp-mode#upcase" "head" "remove-overlays" "save-excursion" "snippets=file" "t")
                   "c-mode"
                   ("for")
                   "js-mode"
@@ -179,5 +233,9 @@
                   ("lisp#lambda")
                   "org-mode"
                   ("org-mode#head")
+                  "sql-interactive-mode"
+                  ("sql#create" "sql#del" "sql#func" "sql#insert" "sql#select" "sql#slct" "sql#update" "sql#view")
+                  "sql-mode"
+                  ("sql#create" "sql#del" "sql#func" "sql#insert" "sql#select" "sql#slct" "sql#update" "sql#view")
                   "lua-mode"
                   ("wx.lua.newfile"))))

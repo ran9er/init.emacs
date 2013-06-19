@@ -1,0 +1,12 @@
+<------alias
+def fun func
+<------modes
+sql-mode sql-interactive-mode
+<------keywords
+
+<------environment
+(liny-custom-syntax 'head "#")
+<------snippet
+CREATE OR REPLACE FUNCTION #{1:func}(#{2:args%?,}) RETURNS #{3:integer} AS $$
+  #0
+$$ LANGUAGE SQL;

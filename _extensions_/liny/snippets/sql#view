@@ -1,0 +1,12 @@
+<------alias
+vw view
+<------modes
+sql-mode sql-interactive-mode
+<------keywords
+
+<------environment
+(liny-custom-syntax 'head "#")
+<------snippet
+CREATE OR REPLACE VIEW #{1:views} AS 
+ SELECT #{2:*%?,}
+   FROM #{3:tables};#0

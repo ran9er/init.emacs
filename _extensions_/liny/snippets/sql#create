@@ -1,0 +1,13 @@
+<------alias
+crt create
+<------modes
+sql-mode sql-interactive-mode
+<------keywords
+
+<------environment
+(liny-custom-syntax 'head "#")
+<------snippet
+CREATE TABLE "#{1:name}"
+(
+  #{2%{${1:field},
+  $0}});#0

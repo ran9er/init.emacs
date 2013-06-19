@@ -1,0 +1,10 @@
+<------alias
+cstm cust
+<------modes
+all
+<------keywords
+
+<------environment
+
+<------snippet
+(liny-custom-syntax 'head "#")$0
