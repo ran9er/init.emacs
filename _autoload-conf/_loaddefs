@@ -1,16 +1,18 @@
 (loaddefs-eval
- '(("jde.el"
-    (20929 52228 745000 0)
+ '(("slime.el"
+    (20930 26172 859000 0)
+    (autoload 'slime "slime" "" t)
+    (autoload 'sli "slime" "Not documented.\n\n(fn cmd)" t nil)
+    (autoload 'sbcl "slime" "Not documented.\n\n(fn)" t nil)
+    (autoload 'R "slime" "Not documented.\n\n(fn)" t nil))
+   ("jde.el"
+    (20930 26172 859000 0)
     (autoload 'jde-mode "jde" "" t))
    ("mew.el"
     (20929 50055 292000 0)
     (autoload 'mew "mew" nil t)
     (autoload 'mew-send "mew" nil t)
     (autoload 'mew-user-agent-compose "mew" nil t))
-   ("slime.el"
-    (20923 55132 108000 0)
-    (autoload 'slime "slime" "" t)
-    (autoload 'sli "slime" "Not documented.\n\n(fn cmd)" t nil))
    ("skeleton-pair.el"
     (20923 55132 76000 0)
     (autoload 'skeleton-pair-insert-maybe "skeleton-pair" "" t))

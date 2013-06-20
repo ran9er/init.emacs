@@ -22,12 +22,12 @@
   (when (get-buffer-window (current-buffer))
     (cond (window-system
            (set-face-foreground 'mode-line
-                                (if buffer-read-only (caar viewmode-mode-line-face)
-                                  (caadr viewmode-mode-line-face))))
+                                (if buffer-read-only (nth 0 (nth 0 viewmode-mode-line-face))
+                                  (nth 0 (nth 1 viewmode-mode-line-face)))))
           (t
            (set-face-background 'mode-line
-                                (if buffer-read-only (cadar viewmode-mode-line-face)
-                                  (cadadr viewmode-mode-line-face)))))))
+                                (if buffer-read-only (nth 1 (nth 0 viewmode-mode-line-face))
+                                  (nth 1 (nth 1 viewmode-mode-line-face))))))))
 ;; ** defmacro change-mode-line-color-advice
 (defmacro change-mode-line-color-advice (f)
   `(defadvice ,f (after change-mode-line-color activate)

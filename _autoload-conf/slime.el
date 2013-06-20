@@ -102,3 +102,13 @@
        impl nil nil nil nil def))))
   (let ((cmd (read cmd)))
     (slime cmd)))
+
+;;;###autoload
+(defun sbcl ()
+  (interactive)
+  (slime 'sbcl))
+
+;;;###autoload
+(defun R ()
+  (interactive)
+  (slime 'R))
