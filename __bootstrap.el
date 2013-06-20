@@ -10,7 +10,7 @@
            (this-dir (file-name-directory load-file-name))
            (tmp (make-temp-name ""))
            init-name-match base-dir pre-init-files init-dir init-files
-           dirs ; default
+           dirs dc; default
            (_check-directory
             (lambda (x &optional dir-p base)
               (let ((f (expand-file-name x (or base *init-dir*))))
@@ -82,15 +82,18 @@
          ((lambda (x) (file-name-as-directory
                    ;; *init-dir* is the newest directory with "init" and "emacs" in it's name
                    ;; or directory where this file is located (*init-dir* is $HOME or site-lisp)
-                   (or (car (sort x 'file-newer-than-file-p)) this-dir)))
-          (mapcar (lambda (x) (if (file-directory-p x) x tmp))
-                  (directory-files base-dir t init-name-match t)))))
+                   (or (car x) this-dir)))
+          (setq dc
+                (mapcar
+                 (lambda (f) (if (file-directory-p f) f tmp))
+                 (directory-files base-dir t init-name-match 'file-newer-than-file-p))))))
        ;; when this file's name is not .emacs or site-start.el, for example as bootstrap.el
        ;; load this file in emacs init file : (load "...../bootstrap.el")
        (t (setq init-dir this-dir)))
       ;; export
       (defvar *init-time* nil)
       (defvar *init-dir* init-dir)
+      (defvar *init-dir-candidates* dc)
       (message (format "*init-dir* is %s" *init-dir*))
       (defvar *init-dirs*
         (mapcar

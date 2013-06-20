@@ -113,9 +113,21 @@ See also `define-key-s'."
       (color-values color)))))
 
 ;; * add-exec-path
+(defun add-environment (env elt)
+  (let* ((sep (if (eq system-type 'windows-nt)
+                  ";" ":"))
+         (ev (split-string (or (getenv env) "") sep))
+         nev)
+    (unless (member elt ev)
+      (mapc
+       (lambda(x)(if (equal x "") nil
+              (setq nev (append nev (list x)))))
+       (cons elt ev))
+      (setenv env (mapconcat 'identity nev sep)))))
+
 (defun add-exec-path (path)
   (interactive "Dexec-path: ")
-  (setenv "PATH" (concat path ";" (getenv "PATH")))
+  (add-environment "PATH" path)
   (push path exec-path))
 
 ;; * add-watchwords
