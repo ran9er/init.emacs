@@ -1,6 +1,5 @@
-(setenv "PATH" (concat
-                "D:/apps/Racket/"
-                ";" (getenv "PATH")))
+(add-exec-path (expand-file-name "../../Racket"))
+(add-exec-path (expand-file-name "../../mit-scheme/bin"))
 
 (setq scheme-program-name (if (eq system-type 'windows-nt)
                                 "Racket" "guile"))

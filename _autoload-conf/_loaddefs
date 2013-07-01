@@ -1,12 +1,22 @@
 (loaddefs-eval
  '(("slime.el"
-    (20930 26172 859000 0)
+    (20934 65448 341000 0)
     (autoload 'slime "slime" "" t)
     (autoload 'sli "slime" "Not documented.\n\n(fn cmd)" t nil)
     (autoload 'sbcl "slime" "Not documented.\n\n(fn)" t nil)
     (autoload 'R "slime" "Not documented.\n\n(fn)" t nil))
+   ("mit-scheme.el"
+    (20934 65448 322000 0)
+    (autoload 'mit-scheme-init "mit-scheme" "Not documented.\n\n(fn file encoding)" nil nil)
+    (autoload 'mit-scheme "mit-scheme" "Not documented.\n\n(fn)" t nil))
+   ("xscheme.el"
+    (20934 65448 303000 0)
+    (autoload 'xscheme "xscheme" "Loads xscheme and runs a scheme process in the current buffer.\n\n(fn)" t nil))
+   ("cws.el"
+    (20933 26253 458000 0)
+    (autoload 'cws-mode "cws" "" t))
    ("jde.el"
-    (20930 26172 859000 0)
+    (20933 25043 370000 0)
     (autoload 'jde-mode "jde" "" t))
    ("mew.el"
     (20929 50055 292000 0)
@@ -16,11 +26,6 @@
    ("skeleton-pair.el"
     (20923 55132 76000 0)
     (autoload 'skeleton-pair-insert-maybe "skeleton-pair" "" t))
-   ("mit-scheme.el"
-    (20923 55132 59000 0)
-    (autoload 'mit-scheme-start-swank "mit-scheme" "Not documented.\n\n(fn file encoding)" nil nil)
-    (autoload 'mit-scheme-init "mit-scheme" "Not documented.\n\n(fn file encoding)" nil nil)
-    (autoload 'mit-scheme "mit-scheme" "Not documented.\n\n(fn)" t nil))
    ("paredit.el"
     (20875 23200 656000 0)
     (autoload 'enable-paredit-mode "paredit" "" t))
@@ -40,9 +45,6 @@
    ("evil-mode.el"
     (20865 55354 146000 0)
     (autoload 'evil-mode "evil-mode" nil t))
-   ("cws.el"
-    (20865 55354 136000 0)
-    (autoload 'cws-mode "cws" "" t))
    ("linum-mode.el"
     (20767 46616 74000)
     (autoload 'linum-mode "linum-mode" "" t))))

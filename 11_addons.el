@@ -42,6 +42,9 @@
 ;; *========== iedit
 (autoload 'iedit-mode "iedit" "" t nil)
 
+;; *========== linY
+;; (liny-mode)
+
 ;; *========== multi-term
 ;; (require 'multi-term)
 ;; (if (eq system-type 'gnu/linux)

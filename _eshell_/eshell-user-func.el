@@ -8,7 +8,7 @@
   (propertize "Image" (quote display) (create-image (expand-file-name img))))
 
 (defun eshell/ee ()
-  (find-file (expand-file-name "_extensions/+eshell.el" *init-dir*)))
+  (find-file (expand-file-name "_extensions/+eshell.el" iff-source)))
 
 (defun eshell/aa ()
   (find-file eshell-aliases-file))

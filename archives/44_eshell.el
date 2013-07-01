@@ -34,7 +34,8 @@
            (outline-minor-mode 1)
            (eldoc-mode)
 ;           (lisp-symbol)
-           (my-auto-pair)
+           ;; (my-auto-pair)
+           (enable-paredit-mode)
            (enable-theme 'eshell)
            (eshell-scroll-conservatively)
            (setq
@@ -52,9 +53,9 @@
               ;; "M-n"   'next-line
               "<up>"    'eshell-previous-matching-input-from-input
               "<down>"  'eshell-next-matching-input-from-input
-              "C-9"     (outside "()" 1 " ")
-              "C-8"     'down-list
-              "C-7"     '(lambda nil (interactive)(up-list -1))
+              ;; "C-9"     (outside "()" 1 " ")
+              ;; "C-8"     'down-list
+              ;; "C-7"     '(lambda nil (interactive)(up-list -1))
               )
 ;          (buffer-face-set 'eshell-custom-face)
 ))
@@ -71,7 +72,7 @@
       eshell-rm-interactive-query   t
       eshell-mv-overwrite-files     nil
       ;;  aliases file 中不能有多余的空行，否则报正则表达式错误
-      eshell-aliases-file       (expand-file-name "_eshell/eshell-alias" *init-dir*)
+      eshell-aliases-file       (expand-file-name "_eshell/eshell-alias" iff-source)
       eshell-highlight-prompt   t
       ;; 提示符设置，两项必须对应起来，否则报 read-only 且不能补全
       eshell-prompt-regexp      "^[^#$\n]* [#$>]+ "
@@ -112,7 +113,7 @@
   (propertize "Image" (quote display) (create-image (expand-file-name img))))
 
 (defun eshell/ee ()
-  (find-file (expand-file-name "44_eshell.el" *init-dir*)))
+  (find-file (expand-file-name "44_eshell.el" iff-source)))
 
 (defun eshell/aa ()
   (find-file eshell-aliases-file))

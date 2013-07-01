@@ -45,8 +45,8 @@
  ;; 当使用 M-x COMMAND 后，过 1 秒钟显示该 COMMAND 绑定的键。
  ;; suggest-key-bindings 1
  save-abbrevs          nil
- debug-on-error        t
  )
+(setq-default truncate-partial-width-windows nil) ;分割窗口自动换行
 
 ;; narrow
 (put 'narrow-to-region 'disabled nil)
@@ -89,11 +89,13 @@
             (lisp-block-comment)
             (hl-line-mode)
             ;; (indent-hint-lisp)
-            (def-key-s ,(concat-symbol mode '-map)
-              "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
-              "C-8"       'outside-kill
-              "C-6"       'down-list
-              "C-7"       '(lambda nil (interactive)(up-list -1)))
+            (if (fboundp 'enable-paredit-mode)
+                (enable-paredit-mode)
+              (def-key-s ,(concat-symbol mode '-map)
+                "C-9"       (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
+                "C-8"       'outside-kill
+                "C-6"       'down-list
+                "C-7"       '(lambda nil (interactive)(up-list -1))))
             )))
       '(lisp-mode
         lisp-interaction-mode

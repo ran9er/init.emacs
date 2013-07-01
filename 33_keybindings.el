@@ -22,14 +22,14 @@
     "M-o"       other-window                        ;; 切换到其它缓冲区 Alt+o ;; C-x o
     ;; "M-\\"      resize-horizontal-space            ;; delete-horizontal-space
     "C-x C-q"   view-mode                           ;; 切换 view-mode
-    "M-q"       toggle-read-only                    ;; fill-paragraph
+    ;; "M-q"       read-only-mode                      ;; fill-paragraph
     "C-z"       beacon
     "M-z"       beacon-jump
     "C-x c"     my-clean-buffer                     ;;
     "C-x C"     desktop-clear                       ;;
     "C-x g"     magit-status
     ;; "C-x C-r"   recentf-open-files-compl            ;; 最近打开的文件
-    "C-x C-r"   recentf-open-files                  ;; 最近打开的文件
+    "C-x C-r"   recentf-ido-find-file               ;; 最近打开的文件
     "C-."       undo-tree-visualize
     "C-;"       comment-or-uncomment-region         ;; toggle-comment-region
     "C-x i"     expand-abbrev                       ;; ido-insert-file

@@ -17,7 +17,7 @@
     (setq word (read-string (format "查字典 (默认 %s): " word)
                             nil nil word))
     (set-buffer (get-buffer-create "*sdcv*"))
-;    (set-buffer-file-coding-system cp936)  ;;
+    ;; (set-buffer-file-coding-system 'gbk)  ;;
     (if (fboundp 'custom-buffer-face-mode)
         (custom-buffer-face-mode))
     (buffer-disable-undo)

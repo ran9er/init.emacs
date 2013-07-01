@@ -224,6 +224,6 @@
     (load lf)
     (- (float-time) st)))
 
-;(test-times 1 (lazily (expand-file-name "_autoload-conf" *init-dir*)))
-;(loaddefs-update (expand-file-name "_autoload-conf/" *init-dir*))
-;(loaddefs-update (expand-file-name "_lib/" *init-dir*))
+;(test-times 1 (lazily (expand-file-name "_autoload-conf" iff-source)))
+;(loaddefs-update (expand-file-name "_autoload-conf/" iff-source))
+;(loaddefs-update (expand-file-name "_lib/" iff-source))

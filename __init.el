@@ -1,10 +1,4 @@
 ;; -*- encoding: utf-8-unix; -*-
-;; * feature-file
-;; (add-hook 'eshell-load-hook
-;;           '(lambda ()
-;;              (load (gethash "+eshell" *feature-file-hash*
-;;                             (make-temp-name ""))
-;;                    t)))
 
 ;; * environment
 (if (eq system-type 'windows-nt)
@@ -12,16 +6,17 @@
           (list
            (expand-file-name "../../git/bin/" exec-directory)
            (expand-file-name "../other/mpg123/" exec-directory)
+           (expand-file-name "../other/exec/" exec-directory)
            exec-directory)))
 
 ;; * working dir
-(~ _check-directory (cdr (assoc 'wk-dir *init-dirs*)) t)
-(defvar work-dir (cdr (assoc 'wk-dir *init-dirs*)))
+(funcall iff--check-directory (cdr (assoc 'wk-dir iff-branch)) t)
+(defvar work-dir (cdr (assoc 'wk-dir iff-branch)))
 (cd
  (if (eq system-type 'windows-nt)
      work-dir
    "~"))
-(defvar exts-dir (cdr (assoc 'ext-dir *init-dirs*)))
+(defvar exts-dir (cdr (assoc 'ext-dir iff-branch)))
 
 ;; * time-stamp-format
 ;(setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
@@ -63,9 +58,8 @@
 (setq message-log-max         t        ;完整的 message-log
       inhibit-startup-message t        ;禁用启动画面
       initial-scratch-message          ;初始内容
-      (purecopy "\
-;; In sandbox
-"))
+      ";; Matrix\n"
+      )
 
 ;; * coding-system
 ;; 语言环境
@@ -93,3 +87,9 @@
 ;(server-start)
 
 (remove-hook 'find-file-hook 'vc-find-file-hook)
+
+(defvar lisp-box
+  (lambda ()
+    (split-window-horizontally)
+    (sbcl)))
+;; (add-hook 'emacs-startup-hook lisp-box)

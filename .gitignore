@@ -1,4 +1,6 @@
-*/
+sandbox/*
+archives/*
+_test/*
 *~
 *#
 *.elc
@@ -8,4 +10,8 @@
 qref.org
 TAGS
 .gitconfig
+.gitignore
 *novel*
+Makefile
+EXclude
+test.el

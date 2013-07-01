@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html401/strict.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>JDEE 2.4.1 Release Notes</title>
+<style type="text/css">
+		    body {
+		    font-family: Arial, sans-serif;
+		    font-size: 11pt
+		    }
+
+		    h1 {
+		    font-family: Arial, sans-serif;
+		    background-color: #d4d4d4;
+		    font-weight: bold;
+		    font-size: 18pt
+		    }
+
+		    h2 {
+		    font-style: italic;
+		    font-family: Arial, sans-serif;
+		    margin-bottom: 1px;
+		    font-size: 18pt;
+		    border-bottom-color: black;
+		    border-bottom-style: solid;
+		    border-bottom-width: thin
+		    }
+
+		    div.code {
+		    font-family: "Courier New", serif;
+		    font-size: 10pt;
+		    background-color: #d4d4d4;
+		    border-color: black;
+		    border-width: 1px;
+		    border-style: dotted;
+		    #            margin-right: 100%;
+		    margin-left: 20pt;
+		    margin-top: 5pt;
+		    margin-bottom: 5pt;
+		    }
+
+		    div.code pre {
+		    margin-top: 5pt;
+		    margin-bottom: 5pt;
+		    margin-left: 10pt;
+		    margin-right: 10pt;
+		    }
+
+		    li {
+		    margin-bottom: 1%;
+		    }
+
+		    div.component li {
+		    margin-bottom: 0pt;
+		    }            
+		</style>
+</head>
+<body>
+<h1>
+<a name="top">JDEE 2.4.1 Release Notes</a>
+</h1>
+	    The goal of this release is to include support for GNU
+	    Emacs 24 and its bundled CEDET distribution. Also included
+	    is a jde-help enhancement.
+	<hr>
+<ul>
+<li>
+              Automatically set jde-jdk-registry on Mac OS X and
+              GNU/Linux systems to default JDK if it can be
+              determined. Default value of jde-jdk is this auto
+              detected JDK as long as JAVA_HOME is not set by the
+              user.
+            <br>
+		    Thanks to shyamalprasad</li>
+<li>
+                Enable support for CEDET bundled in GNU Emacs 23.4 and
+                later. Many people contributed to getting us here.
+                Particular thanks go to Vincent Belaiche and Eric
+                Ludlam for help with getting us over the last few
+                bumps.
+            <br>
+		    Thanks to shyamalprasad</li>
+<li>
+New jde-help now provides the following:
+<ul>
+
+<li>When class found in more than one docset, user is prompted to select one.</li>
+
+<li>Now supports using beanshell as a method of documentation existence (instead of just wget and w3)</li>
+
+</ul>
+Variable jde-help-docsets now has a different format.  To convert to the new format, execute the following:
+<div class="code">
+
+<pre>
+(let ((sets (mapcar '(lambda (docset)
+		       (let ((type (car docset))
+			     (url (second docset))
+			     version)
+			 (if (equal type "JDK API")
+			     (setq version
+				   (cond ((string-match "6" url) "1.6")
+					 ((string-match "5" url) "1.5")
+					 ((string-match "4" url) "1.4"))))
+			 (if (not (string-match "^http" url))
+			     (setq url (concat "file://" url)))
+			 (list nil url version)))
+		    jde-help-docsets)))
+  (customize-set-variable 'jde-help-docsets sets)
+  (customize-variable 'jde-help-docsets)
+  (save-excursion
+    (set-buffer (get-buffer-create "*Temp Convert jde-help-docsets*"))
+    (insert "If on windows, translate correct file URLs (i.e. file://C|/path...)
+Now, confirm customized variables are set correctly and then click the State
+button and save.")
+    (display-buffer (current-buffer))))
+</pre>
+
+</div>
+
+<br>
+		    Thanks to paullandes</li>
+</ul>
+</body>
+</html>

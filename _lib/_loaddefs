@@ -1,5 +1,8 @@
 (loaddefs-eval
- '(("zenburn-theme.el"
+ '(("sdcv.el"
+    (20934 65447 329000 0)
+    (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
+   ("zenburn-theme.el"
     (20929 50055 89000 0)
     (and load-file-name
          (boundp 'custom-theme-load-path)
@@ -133,9 +136,6 @@
    ("parse.el"
     (20767 46613 839000)
     (autoload 'wordpress "parse" "Not documented.\n\n(fn beg end)" t nil))
-   ("sdcv.el"
-    (20767 46613 779000)
-    (autoload 'sdcv-to-buffer "sdcv" "Not documented.\n\n(fn)" t nil))
    ("string.el"
     (20767 46613 725000)
     (autoload 'join-string "string" "(mapconcat 'identity lst s)\n\n(fn lst s)" nil nil)

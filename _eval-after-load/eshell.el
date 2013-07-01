@@ -1,5 +1,4 @@
 ;; -*- encoding: utf-8-unix; -*-
-;; don't need load-once, because eshell-load-hook load only once
 ;;;###autoload
 (autoload 'eshell "eshell" "" t)
 
@@ -38,7 +37,6 @@
            (outline-minor-mode 1)
            (eldoc-mode)
 ;           (lisp-symbol)
-           (skeleton-pair-alist-update)
            ;; (enable-theme 'eshell)
            (eshell-scroll-conservatively)
            (setq
@@ -49,17 +47,19 @@
                  eshell-scroll-show-maximum-output t)
            (add-to-list 'eshell-output-filter-functions
                         'eshell-postoutput-scroll-to-bottom)
-            (def-key-s eshell-mode-map
-              ;; "C-p"   'eshell-previous-matching-input-from-input
-              ;; "C-n"   'eshell-next-matching-input-from-input
-              ;; "M-p"   'previous-line
-              ;; "M-n"   'next-line
-              "<up>"    'eshell-previous-matching-input-from-input
-              "<down>"  'eshell-next-matching-input-from-input
-              "C-9"     (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
-              "C-8"     'down-list
-              "C-7"     '(lambda nil (interactive)(up-list -1))
-              )
+           (enable-paredit-mode)
+           ;; (skeleton-pair-alist-update)
+           ;; (def-key-s eshell-mode-map
+           ;;   ;; "C-p"   'eshell-previous-matching-input-from-input
+           ;;   ;; "C-n"   'eshell-next-matching-input-from-input
+           ;;   ;; "M-p"   'previous-line
+           ;;   ;; "M-n"   'next-line
+           ;;   "<up>"    'eshell-previous-matching-input-from-input
+           ;;   "<down>"  'eshell-next-matching-input-from-input
+           ;;   "C-9"     (lambda(&optional x)(interactive "P")(outside "()" 1 " " x))
+           ;;   "C-8"     'down-list
+           ;;   "C-7"     '(lambda nil (interactive)(up-list -1))
+           ;;   )
 ;          (buffer-face-set 'eshell-custom-face)
 ))
 
@@ -75,7 +75,7 @@
       eshell-rm-interactive-query   t
       eshell-mv-overwrite-files     nil
       ;;  aliases file 中不能有多余的空行，否则报正则表达式错误
-      eshell-aliases-file       (expand-file-name "_eshell_/eshell-alias" *init-dir*)
+      eshell-aliases-file       (expand-file-name "_eshell_/eshell-alias" iff-source)
       eshell-highlight-prompt   t
       ;; 提示符设置，两项必须对应起来，否则报 read-only 且不能补全
       eshell-prompt-regexp      "^[^#$\n]* [#$>]+ "

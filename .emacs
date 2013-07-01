@@ -1,5 +1,5 @@
-;; (unless (boundp '*init-dir*)
-;;   (defvar *init-dir*
+;; (unless (boundp 'iff-source)
+;;   (defvar iff-source
 ;;     ((lambda (init-name-match base-dir)
 ;;        ((lambda (x) (file-name-as-directory
 ;;                  (or (car (sort x 'file-newer-than-file-p))
@@ -16,6 +16,6 @@
 ;;   (load
 ;;    (expand-file-name
 ;;     "bootstrap.el"
-;;     *init-dir*)))
+;;     iff-source)))
 
-(load "../init.emacs/bootstrap")
+(load "../iff/__bootstrap")
